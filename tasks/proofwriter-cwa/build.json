@@ -1,0 +1,250 @@
+{
+ "archive_sha256": "bbc5694901e8306d0bd659aa1ad53ccfd02c201864f4b320ffa3777827d1fc26",
+ "axis_counts": {
+  "pool": {
+   "depth": {
+    "0": 55079,
+    "1": 28872,
+    "2": 12839,
+    "3": 6922,
+    "4": 2523,
+    "5": 2101
+   },
+   "facts_bin": {
+    "0-3": 21068,
+    "13+": 22206,
+    "4-7": 27057,
+    "8-12": 38005
+   },
+   "paraphrased": {
+    "False": 100328,
+    "True": 8008
+   },
+   "proof_size_bin": {
+    "0-1": 74380,
+    "2": 10779,
+    "3-4": 13023,
+    "5+": 10154
+   },
+   "reference_label": {
+    "false": 54172,
+    "true": 54164
+   },
+   "rules_bin": {
+    "0-2": 20220,
+    "3-5": 18060,
+    "6-7": 32207,
+    "8+": 37849
+   },
+   "statement_negated": {
+    "False": 54172,
+    "True": 54164
+   },
+   "strategy": {
+    "inv-proof": 29700,
+    "inv-random": 12157,
+    "inv-rconc": 12307,
+    "proof": 29700,
+    "random": 17478,
+    "rconc": 6994
+   },
+   "theory_kind": {
+    "attribute": 57452,
+    "relation": 50884
+   },
+   "theory_max_depth": {
+    "0": 10222,
+    "1": 24135,
+    "2": 22375,
+    "3": 27493,
+    "4": 3648,
+    "5": 18719,
+    "6": 1512,
+    "7": 136,
+    "8": 48,
+    "9": 48
+   },
+   "theory_negation": {
+    "negation": 50032,
+    "no-negation": 58304
+   },
+   "words_bin": {
+    "0-49": 20016,
+    "110+": 35228,
+    "50-79": 26816,
+    "80-109": 26276
+   }
+  },
+  "selected": {
+   "depth": {
+    "0": 300,
+    "1": 300,
+    "2": 300,
+    "3": 300,
+    "4": 300,
+    "5": 300
+   },
+   "facts_bin": {
+    "0-3": 360,
+    "13+": 203,
+    "4-7": 425,
+    "8-12": 812
+   },
+   "paraphrased": {
+    "False": 1306,
+    "True": 494
+   },
+   "proof_size_bin": {
+    "0-1": 966,
+    "2": 82,
+    "3-4": 237,
+    "5+": 515
+   },
+   "reference_label": {
+    "false": 900,
+    "true": 900
+   },
+   "rules_bin": {
+    "0-2": 208,
+    "3-5": 405,
+    "6-7": 605,
+    "8+": 582
+   },
+   "statement_negated": {
+    "False": 882,
+    "True": 918
+   },
+   "strategy": {
+    "inv-proof": 501,
+    "inv-random": 75,
+    "inv-rconc": 342,
+    "proof": 483,
+    "random": 75,
+    "rconc": 324
+   },
+   "theory_kind": {
+    "attribute": 1016,
+    "relation": 784
+   },
+   "theory_max_depth": {
+    "0": 71,
+    "1": 155,
+    "2": 230,
+    "3": 619,
+    "4": 171,
+    "5": 513,
+    "6": 38,
+    "7": 2,
+    "8": 1
+   },
+   "theory_negation": {
+    "negation": 870,
+    "no-negation": 930
+   },
+   "words_bin": {
+    "0-49": 256,
+    "110+": 630,
+    "50-79": 432,
+    "80-109": 482
+   }
+  }
+ },
+ "configs": [
+  "depth-0",
+  "depth-1",
+  "depth-2",
+  "depth-3",
+  "depth-5",
+  "NatLang"
+ ],
+ "depths": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "label_check": "every selected label recomputed by hard_decisions.solver; zero disagreements",
+ "n_requested": 1800,
+ "n_selected": 1800,
+ "pick_cap_per_stratum": 150,
+ "pool_cap_per_stratum": 1000,
+ "seed": 0,
+ "semantics": "CWA",
+ "strata": [
+  {
+   "available": 30200,
+   "depth": 0,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 24879,
+   "depth": 0,
+   "label": "true",
+   "selected": 150
+  },
+  {
+   "available": 12168,
+   "depth": 1,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 16704,
+   "depth": 1,
+   "label": "true",
+   "selected": 150
+  },
+  {
+   "available": 6123,
+   "depth": 2,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 6716,
+   "depth": 2,
+   "label": "true",
+   "selected": 150
+  },
+  {
+   "available": 3402,
+   "depth": 3,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 3520,
+   "depth": 3,
+   "label": "true",
+   "selected": 150
+  },
+  {
+   "available": 1238,
+   "depth": 4,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 1285,
+   "depth": 4,
+   "label": "true",
+   "selected": 150
+  },
+  {
+   "available": 1041,
+   "depth": 5,
+   "label": "false",
+   "selected": 150
+  },
+  {
+   "available": 1060,
+   "depth": 5,
+   "label": "true",
+   "selected": 150
+  }
+ ],
+ "weights": {}
+}

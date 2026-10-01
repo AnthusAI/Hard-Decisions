@@ -1,0 +1,7 @@
+semantics: OWA
+question: "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived."
+options: ["true", "false", "unknown"]
+descriptions:
+  "true": "The statement follows from the facts and rules."
+  "false": "The negation of the statement follows from the facts and rules."
+  "unknown": "Neither the statement nor its negation follows from the facts and rules."

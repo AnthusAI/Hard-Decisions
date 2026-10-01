@@ -1,0 +1,6 @@
+semantics: CWA
+question: "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived."
+options: ["true", "false"]
+descriptions:
+  "true": "The statement holds under the closed-world assumption."
+  "false": "The statement does not hold under the closed-world assumption."
