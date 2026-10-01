@@ -57,7 +57,7 @@ test("no thin pages: every indexable page carries real content", () => {
 
 test("hub pages link to every leaf below them", () => {
   const home = content.find((p) => p.path === "/");
-  const hubs = { "/models/": /^\/models\/[^/]+\/$/, "/compare/": /^\/compare\/[^/]+\/$/, "/breakdowns/": /^\/breakdowns\/[^/]+\/$/ };
+  const hubs = { "/models/": /^\/(?:models|compare)\/[^/]+\/$/, "/breakdowns/": /^\/breakdowns\/[^/]+\/$/ };
   for (const [hub, re] of Object.entries(hubs)) {
     const page = content.find((p) => p.path === hub);
     for (const leaf of content.filter((p) => re.test(p.path))) assert.ok(page.html.includes(`href="${leaf.path}"`), `${hub} does not link ${leaf.path}`);

@@ -2,7 +2,7 @@
 // URL, alt text, title and description in the page's metadata. A card's headline is always its
 // page's heading, and every number on a card is also on its page (test/build.test.mjs checks both).
 import { createHash } from "node:crypto";
-import { data, models, modelById, urls, axes, axisByKey, OWA, CWA, taskBySlug, pct, pts, int, fmt, overall, axisRow, isComplete,
+import { data, models, modelById, urls, axes, groups, axisByKey, OWA, CWA, taskBySlug, pct, pts, int, fmt, overall, axisRow, isComplete,
   ranked, leader, latency, retest, axisSpread, valueLabel, L, listOf } from "./site.js";
 import { intro, liveComparisons, modelTitle } from "./content.js";
 import { predictions, tally, STATUS_WORDS } from "./predictions.js";
@@ -11,7 +11,7 @@ import { coinFlipClaim } from "./insights.js";
 export const STAMP = `v${data.provenance.version} · ${data.provenance.generated}`;
 const complete = (slug) => ranked(slug).filter((x) => x.complete);
 // Descriptions stay within 320 characters (test/build.test.mjs): drop whole sentences from the end.
-const fit = (text, max = 320) => {
+export const fit = (text, max = 320) => {
   let out = text;
   while (out.length > max && /[.!?]\s+\S[^]*$/.test(out)) out = out.replace(/\s+[^.!?]*[.!?]?\s*$/, "").replace(/([^.!?])$/, "$1.");
   return out;
@@ -97,45 +97,39 @@ function axisCard(axis) {
     rows: a ? [{ engine: a.id, text: `${pct(a.lo.accuracy)}% on ${valueLabel(axis.key, a.lo.value)}, ${pct(a.hi.accuracy)}% on ${valueLabel(axis.key, a.hi.value)}` }] : [] };
 }
 
+function groupCard(g) {
+  if (g.single) return { ...axisCard(g.axes[0]), headline: g.h1 };
+  const leads = g.axes.map((a) => ({ a, l: axisLead(a.key) })).filter((x) => x.l);
+  return { template: "axis", headline: g.h1, description: fit(`${g.what} Every model, both tasks, with 95% intervals.`),
+    rows: leads.slice(0, 2).map(({ a, l }) => ({ engine: l.id, text: `${L(l.id)}: ${pct(l.lo.accuracy)}% to ${pct(l.hi.accuracy)}% by ${a.label.toLowerCase()}` })) };
+}
+
 function hubCard(key, extra = {}) {
   const c = complete(OWA);
   return { template: "hub", headline: intro[key].title, description: intro[key].intro, bars: c.slice(0, 5).map((x) => bar(x.m.id, x.r.accuracy)), rows: [],
     numberNote: "accuracy on 1,800 open-world problems", ...extra };
 }
 
-function preregCard() {
-  const t = tally();
-  const total = Object.values(t).reduce((a, b) => a + b, 0) - (t["no claim"] || 0);
-  const held = (t.held || 0) + (t["held so far"] || 0);
-  const parts = Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`);
-  return { template: "topic", headline: intro.preregistration.title, description: `${intro.preregistration.intro} So far: ${listOf(parts)}.`,
-    number: `${held} of ${total}`, numberNote: "predictions held so far", rows: [{ text: `${listOf(parts)}` }] };
-}
 
 function repeatCard() {
   const r = retest("jev", OWA), r2 = retest("jev", CWA);
   if (!r) return { template: "topic", headline: intro.repeatability.title, description: intro.repeatability.intro, rows: [{ text: "Reruns in progress" }] };
+  const others = models.filter((m) => m.id !== "jev").map((m) => ({ id: m.id, r: retest(m.id, OWA) })).filter((x) => x.r);
   return { template: "topic", headline: intro.repeatability.title,
-    description: `Asked every question twice, Jev gave the same answer on ${pct(r.agreement)}% of open-world items${r2 ? ` and ${pct(r2.agreement)}% of closed-world ones` : ""} (Gwet's AC1 ${fmt(r.ac1, 3)}). Reruns of the other models are in progress. Calibration of each model's probabilities, from its saved answers.`,
+    description: `Asked every question twice, Jev gave the same answer on ${pct(r.agreement)}% of open-world items${r2 ? ` and ${pct(r2.agreement)}% of closed-world ones` : ""} (Gwet's AC1 ${fmt(r.ac1, 3)}).${others.length ? ` ${listOf(others.map((x) => `${L(x.id)} ${pct(x.r.agreement)}%`))}.` : ""} Calibration of each model's probabilities, from its saved answers.`,
     number: `${pct(r.agreement)}%`, numberNote: "of Jev's open-world answers were the same when asked twice",
     rows: [{ engine: "jev", text: `Gwet's AC1 ${fmt(r.ac1, 3)}; ${r.changed} of ${int(r.n)} answers changed` }] };
 }
 
 function latencyCard() {
   const l = latency("jev", OWA);
-  if (!l) return { template: "topic", headline: intro.latency.title, description: intro.latency.intro, rows: [{ text: "Timing runs in progress" }] };
-  return { template: "topic", headline: intro.latency.title,
-    description: `Jev took a median ${Math.round(l.p50)} ms per decision on the open-world task, measured over the network against TypeSafe's servers. Open models were timed on a laptop, so the numbers are not like for like.`,
+  if (!l) return { template: "topic", headline: intro.speed.title, description: intro.speed.intro, rows: [{ text: "Timing runs in progress" }] };
+  return { template: "topic", headline: intro.speed.title,
+    description: `Jev took a median ${Math.round(l.p50)} ms per decision on the open-world task, measured over the network against TypeSafe's servers. Open models were timed on a laptop, so the numbers are not like for like. Parameters, weights and memory for every model.`,
     number: `${Math.round(l.p50)} ms`, numberNote: "Jev's median time per open-world decision, over the network",
     rows: [{ text: "Hosted models timed against vendor servers; open models on a laptop" }] };
 }
 
-function sizesCard() {
-  const rows = ["laya", "kev-0.8b", "kev-4b", "kev-9b"].filter((id) => data.facts[id]).map((id) => ({ engine: modelById[id] && modelById[id].measured ? id : null,
-    text: `${L(id)}: ${String(data.facts[id].parameters).split(" ")[0]} parameters` })).slice(0, 4);
-  return { template: "topic", headline: intro.sizes.title,
-    description: `Parameters, weights on disk and memory for every model: ${rows.map((r) => r.text).join("; ")}. Jev and GPT-6 Luna do not publish their sizes.`, rows };
-}
 
 function depth5Card(key) {
   const c = complete(OWA);
@@ -143,11 +137,14 @@ function depth5Card(key) {
   return { template: "topic", headline: intro[key].title, description: intro[key].intro, bars, rows: [], numberNote: "accuracy at proof depth 5, open world" };
 }
 
-function methodCard() {
+function measuredCard() {
   const n = data.tasks.reduce((a, t) => a + t.n, 0);
-  return { template: "topic", headline: intro.methodology.title, description: intro.methodology.intro, number: int(n),
+  const t = tally();
+  const total = Object.values(t).reduce((a, b) => a + b, 0) - (t["no claim"] || 0);
+  const held = (t.held || 0) + (t["held so far"] || 0);
+  return { template: "topic", headline: intro.measured.title, description: fit(`${intro.measured.intro} So far ${held} of ${total} predictions held.`), number: int(n),
     numberNote: `problems: ${int(taskBySlug[OWA].n)} per task, about 300 per proof depth`,
-    rows: [{ text: "One request per problem, the same question for every model" }] };
+    rows: [{ text: "One request per problem, the same question for every model" }, { text: `${held} of ${total} predictions held so far` }] };
 }
 
 function aboutCard() {
@@ -183,16 +180,13 @@ export function allCards() {
   const out = [];
   out.push(finish(urls.home(), homeCard()));
   out.push(finish(urls.models(), hubCard("models")));
-  for (const m of models) out.push(finish(urls.model(m.id), modelCard(m)));
-  out.push(finish(urls.compare(), hubCard("compare")));
+  out.push(finish(urls.model("jev"), modelCard(modelById.jev)));
   for (const c of liveComparisons) out.push(finish(urls.comparison(c.slug), comparisonCard(c)));
   out.push(finish(urls.breakdowns(), hubCard("breakdowns", { bars: complete(OWA).map((x) => bar(x.m.id, axisRow(x.m.id, OWA, "depth", "5").accuracy)), numberNote: "accuracy at proof depth 5, open world" })));
-  for (const a of axes) out.push(finish(urls.axis(a.key), axisCard(a)));
-  out.push(finish(urls.page("methodology"), methodCard()));
-  out.push(finish(urls.page("preregistration"), preregCard()));
+  for (const g of groups) out.push(finish(urls.group(g.slug), groupCard(g)));
+  out.push(finish(urls.measured(), measuredCard()));
   out.push(finish(urls.page("repeatability"), repeatCard()));
-  out.push(finish(urls.page("latency"), latencyCard()));
-  out.push(finish(urls.page("model-sizes"), sizesCard()));
+  out.push(finish(urls.speed(), latencyCard()));
   out.push(finish(urls.page("evaluating-decision-models"), depth5Card("evaluating")));
   out.push(finish(urls.page("fine-tuning-decision-models"), depth5Card("finetuning")));
   out.push(finish(urls.page("aligning-decision-models"), { ...hubCard("aligning"), template: "topic" }));

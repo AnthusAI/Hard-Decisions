@@ -33,8 +33,8 @@ test("every breakdown other than depth says it is descriptive", () => {
   }
 });
 
-test("the preregistration page reports every prediction with a verdict, word for word", () => {
-  const page = content.find((p) => p.path === "/preregistration/");
+test("How we measured reports every prediction with a verdict, word for word", () => {
+  const page = content.find((p) => p.path === "/how-we-measured/");
   const t = text(page.html);
   for (const sec of DATA.prereg.sections) for (const pr of sec.predictions) {
     const words = pr.text.replace(/`/g, "").slice(0, 60);
@@ -54,9 +54,9 @@ test("a model with no scored results never gets a page or a number", () => {
   }
 });
 
-test("each model page shows its scored overall accuracy on each task, as the scored rows give it", () => {
+test("each model's page (Jev's, or its comparison with Jev) shows its scored overall accuracy on each task, as the scored rows give it", () => {
   for (const [slug, r] of Object.entries(DATA.results)) for (const [id, s] of Object.entries(r.studies.engines)) {
-    const page = content.find((p) => p.path.startsWith("/models/") && p.path !== "/models/" && text(p.html).includes(`${pct(s.overall.accuracy)}%`) && p.html.includes(`--eng-`));
+    const page = content.find((p) => (p.path === "/models/jev/" || p.path.startsWith("/compare/")) && text(p.html).includes(`${pct(s.overall.accuracy)}%`) && p.html.includes(`--eng-`));
     assert.ok(page, `${id} ${slug}: ${pct(s.overall.accuracy)}% is on no model page`);
   }
 });

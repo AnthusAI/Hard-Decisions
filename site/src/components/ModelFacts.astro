@@ -1,0 +1,22 @@
+---
+// One model's published facts, measured memory and time per decision. The laptop-versus-server
+// caveat is stated by the page, once, not here.
+import { modelById, taskOrder, TASK_INFO, int, gb, latency, memoryOf, whereRun } from "../lib/site.js";
+const { id, heading = null } = Astro.props;
+const m = modelById[id];
+const facts = m.facts || {};
+const mem = memoryOf(id);
+---
+{heading && <h3>{heading}</h3>}
+<dl class="defs compact">
+  <div><dt>Parameters</dt><dd>{facts.parameters || "—"}</dd></div>
+  {facts.architecture && <div><dt>Architecture</dt><dd>{facts.architecture}</dd></div>}
+  <div><dt>Weights</dt><dd>{facts.weights || "—"}</dd></div>
+  {facts.precision && <div><dt>Precision</dt><dd>{facts.precision}</dd></div>}
+  <div><dt>Where it ran</dt><dd>{facts.where_run || whereRun(id)}</dd></div>
+  <div><dt>Maker's stated hardware</dt><dd>{facts.hardware || "—"}</dd></div>
+  {!m.hosted && <div><dt>Memory measured</dt><dd>{mem && mem.phys_footprint_peak_mb ? `${gb(mem.phys_footprint_mb)} in use, ${gb(mem.phys_footprint_peak_mb)} peak` : "pending: not yet recorded in a run manifest"}</dd></div>}
+  {facts.price && <div><dt>Price</dt><dd>{facts.price}</dd></div>}
+  {taskOrder.map((s) => { const l = latency(id, s); return l && <div><dt>Time per decision, {TASK_INFO[s].short.toLowerCase()}</dt><dd>{l.complete ? `median ${int(Math.round(l.p50))} ms, 90th percentile ${int(Math.round(l.p90))} ms` : `in progress (${int(l.n)} of ${int(l.of)} items timed)`}{m.hosted ? ", over the network" : ", on a laptop"}</dd></div>; })}
+  {facts.source && <div><dt>Source</dt><dd><a href={facts.source}>{facts.source.replace(/^https?:\/\//, "")}</a></dd></div>}
+</dl>

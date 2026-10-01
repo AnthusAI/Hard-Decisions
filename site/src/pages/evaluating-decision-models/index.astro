@@ -58,7 +58,7 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
 
   <section class="wrap section" aria-labelledby="pair-h">
     <h2 class="display" id="pair-h">4. Compare models on the same items</h2>
-    <p>Every model here answered the same problems, so differences come with a paired interval that is narrower than two separate ones. Where two models are close, only a paired comparison can say whether the gap is real. <a href={urls.compare()}>Paired comparisons</a>.</p>
+    <p>Every model here answered the same problems, so differences come with a paired interval that is narrower than two separate ones. Where two models are close, only a paired comparison can say whether the gap is real. <a href={urls.models()}>Paired comparisons</a>.</p>
   </section>
 
   <section class="wrap section" aria-labelledby="rt-h">
@@ -68,12 +68,12 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
 
   <section class="wrap section" aria-labelledby="lat-h">
     <h2 class="display" id="lat-h">6. Time it where you will run it</h2>
-    <p>Latency depends on where the model runs as much as on the model. Our hosted numbers include the network; our open-model numbers are one laptop. Neither predicts your deployment. <a href={urls.page("latency")}>Latency</a> · <a href={urls.page("model-sizes")}>Sizes and memory</a>.</p>
+    <p>Latency depends on where the model runs as much as on the model. Our hosted numbers include the network; our open-model numbers are one laptop. Neither predicts your deployment. <a href={urls.speed()}>Latency</a> · <a href={urls.speed()}>Sizes and memory</a>.</p>
   </section>
 
   <section class="wrap section" aria-labelledby="pre-h">
     <h2 class="display" id="pre-h">7. Write down what you expect first</h2>
-    <p>We preregistered our predictions before any model answered. So far {t.held || 0} held and {t.failed || 0} failed{t.mixed || t["partly held"] ? `, with ${(t.mixed || 0) + (t["partly held"] || 0)} mixed or partly held` : ""}. {failed.length > 0 && `The failures were the informative part: ${listOf(failed)}. `}An evaluation that only confirms what you expected is easy to fool yourself with. <a href={urls.page("preregistration")}>Every prediction</a>.</p>
+    <p>We preregistered our predictions before any model answered. So far {t.held || 0} held and {t.failed || 0} failed{t.mixed || t["partly held"] ? `, with ${(t.mixed || 0) + (t["partly held"] || 0)} mixed or partly held` : ""}. {failed.length > 0 && `The failures were the informative part: ${listOf(failed)}. `}An evaluation that only confirms what you expected is easy to fool yourself with. <a href={urls.predictions()}>Every prediction</a>.</p>
   </section>
 
   <section class="wrap section" aria-labelledby="jev-h">

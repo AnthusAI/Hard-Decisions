@@ -81,7 +81,7 @@ const leaning = cwaDone.map((m) => ({ m, l: lean(m.id, CWA) })).filter((x) => x.
         <li><EngineName engine={m} href={urls.model(m.id)} /><span>open world{statusWords(m.id, OWA) ? ` (${statusWords(m.id, OWA)})` : ""}; depth 0 {pct(axisRow(m.id, OWA, "depth", "0").accuracy)}%, depth 5 {pct(axisRow(m.id, OWA, "depth", "5").accuracy)}%</span><span class="av">{pct(overall(m.id, OWA).accuracy)}%</span></li>
       ))}
     </ul>
-    {a3 && <p>We preregistered that a bigger Kev would be more accurate overall. Verdict so far: <strong>{STATUS_WORDS[a3.predictions[0].status].toLowerCase()}</strong>. {a3.predictions[0].checks.slice(1).join(" ")} A larger base model changes where a model is strong, not only how strong it is. <a href={urls.comparison("kev-sizes")}>Kev model sizes</a>.</p>}
+    {a3 && <p>We preregistered that a bigger Kev would be more accurate overall. Verdict so far: <strong>{STATUS_WORDS[a3.predictions[0].status].toLowerCase()}</strong>. {a3.predictions[0].checks.slice(1).join(" ")} A larger base model changes where a model is strong, not only how strong it is. <a href={urls.comparison("jev-vs-kev")}>Kev model sizes</a>.</p>}
   </section>
 
   <section class="wrap section" aria-labelledby="jev-h">

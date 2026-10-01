@@ -7,37 +7,46 @@ import AccTable from "../../../components/AccTable.astro";
 import DiffRows from "../../../components/DiffRows.astro";
 import EngineName from "../../../components/EngineName.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
-import { models, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, int, axisTable, axisRow, pair, recallAt, derived, overall,
+import { models, modelById, urls, axes, groups, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, int, axisTable, axisRow, pair, recallAt, derived, overall,
   isComplete, valueLabel, L, listOf } from "../../../lib/site.js";
 import { axisLead, axisLeadText } from "../../../lib/cards.js";
 
 export function getStaticPaths() {
-  return axes.map((a) => ({ params: { axis: a.slug }, props: { a } }));
+  return groups.map((g) => ({ params: { group: g.slug }, props: { g } }));
 }
-const { a } = Astro.props;
+const { g } = Astro.props;
+// A page with one axis keeps the axis's own words; a page with several gives each its own section.
+const a = g.axes[0];
+const multi = !g.single;
+// How strongly an axis moves with depth: the range of mean depth across its slices.
+const depthRangeOf = (key) => {
+  const p = taskBySlug[OWA].profile[key] || {};
+  const d = Object.values(p).filter((x) => x.n >= 20).map((x) => x.mean_depth);
+  return d.length ? [Math.min(...d), Math.max(...d)] : null;
+};
 const ids = models.map((m) => m.id);
 const lead = axisLead(a.key);
 const leadText = axisLeadText(a.key);
 const isDepth = a.key === "depth";
 const complete = models.filter((m) => isComplete(m.id, OWA));
-const others = axes.filter((x) => x.key !== a.key);
-// How strongly this axis moves with depth: the spread of mean depth across its values.
-const prof = taskBySlug[OWA].profile[a.key] || {};
-const depths = Object.values(prof).filter((p) => p.n >= 20).map((p) => p.mean_depth);
-const depthRange = depths.length ? [Math.min(...depths), Math.max(...depths)] : null;
+const others = groups.filter((x) => x.slug !== g.slug);
+const depthRange = depthRangeOf(a.key);
 const claim = isDepth ? coinFlipClaim() : null;
 ---
-<Base title={a.h1} description={a.what} path={urls.axis(a.key)} current={{ page: "axis", axis: a.key }}
-  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Breakdowns", href: urls.breakdowns() }, { label: a.label }]}>
+<Base title={g.h1} description={g.what} path={urls.group(g.slug)} current={{ page: "axis", group: g.slug }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Breakdowns", href: urls.breakdowns() }, { label: g.label }]}>
   <section class="wrap hero">
     <p class="kicker">Breakdown · {isDepth ? "the controlled difficulty axis" : "descriptive"}</p>
-    <h1 class="display xl">{a.h1}</h1>
-    <p class="deck">{a.what}</p>
+    <h1 class="display xl">{g.h1}</h1>
+    <p class="deck">{g.what}</p>
     {claim && <p class="claim">{claim.sentence}</p>}
-    {lead && <p class="finding"><span class="finding-num">{pct(lead.spread)}</span><span class="finding-txt">{leadText}. <EngineName engine={modelById[lead.id]} href={urls.model(lead.id)} /> is the most accurate model overall; every model is below.</span></p>}
-    {!isDepth && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not {a.label.toLowerCase()}.{depthRange && ` Across these slices the average proof depth runs from ${depthRange[0].toFixed(1)} to ${depthRange[1].toFixed(1)}, so depth differs between slices and can add to or mask any gap.`} The answer mix and mean depth of every slice are in the tables.</p>}
+    {multi && <nav class="reg-links" aria-label="On this page">{g.axes.map((x) => <a href={`#${x.slug}`}>{x.label}</a>)}</nav>}
+    {!multi && lead && <p class="finding"><span class="finding-num">{pct(lead.spread)}</span><span class="finding-txt">{leadText}. <EngineName engine={modelById[lead.id]} href={urls.model(lead.id)} /> is the most accurate model overall; every model is below.</span></p>}
+    {multi && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not these properties. Several of them grow with depth and with each other, so each section gives the average proof depth of its slices; the answer mix and mean depth of every slice are in the tables.</p>}
+    {!isDepth && !multi && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not {a.label.toLowerCase()}.{depthRange && ` Across these slices the average proof depth runs from ${depthRange[0].toFixed(1)} to ${depthRange[1].toFixed(1)}, so depth differs between slices and can add to or mask any gap.`} The answer mix and mean depth of every slice are in the tables.</p>}
   </section>
 
+  {!multi && <Fragment>
   {taskOrder.map((s) => { const rows = axisTable(s, a.key, ids); const t = taskBySlug[s]; return (
     <section class="wrap section" aria-labelledby={`${s}-h`}>
       <h2 class="display" id={`${s}-h`}>{a.label}, {TASK_INFO[s].short.toLowerCase()} task</h2>
@@ -49,6 +58,26 @@ const claim = isDepth ? coinFlipClaim() : null;
       <AccTable rows={rows} ids={ids} slug={s} valueHead={a.label} caption={`${a.label}, ${TASK_INFO[s].short}`} showProfile={!isDepth} />
     </section>
   ); })}
+  </Fragment>}
+  {multi && g.axes.map((x) => { const l = axisLead(x.key); const dr = depthRangeOf(x.key); return (
+    <section class="wrap section" id={x.slug} aria-labelledby={`${x.slug}-h`}>
+      <h2 class="display" id={`${x.slug}-h`}>{x.h1}</h2>
+      <p class="lede">{x.what}</p>
+      {l && <p class="lead-sentence">{axisLeadText(x.key)}.</p>}
+      <p class="fnote">Descriptive, not causal.{dr && ` The average proof depth of these slices runs from ${dr[0].toFixed(1)} to ${dr[1].toFixed(1)}, so depth differs between them and can add to or mask any gap.`}</p>
+      {taskOrder.map((s) => { const rows = axisTable(s, x.key, ids); const t = taskBySlug[s]; return (
+        <Fragment>
+          <h3>{x.label}, {TASK_INFO[s].short.toLowerCase()} task</h3>
+          <figure class="hero-fig">
+            <Legend ids={ids} slug={s} />
+            <DotRows rows={rows} ids={ids} chance={1 / t.options.length} label={`${x.label} on the ${TASK_INFO[s].short.toLowerCase()} task`} />
+          </figure>
+          <AccTable rows={rows} ids={ids} slug={s} valueHead={x.label} caption={`${x.label}, ${TASK_INFO[s].short}`} showProfile />
+        </Fragment>
+      ); })}
+    </section>
+  ); })}
+  {multi && <section class="wrap section tight"><p class="note">In each chart a line is one model: its accuracy, with the 95% interval as a bar. The dashed line is chance; the grey tick is the score of always giving the slice's most common answer.</p></section>}
 
   {isDepth && (
     <Fragment>
@@ -99,7 +128,7 @@ const claim = isDepth ? coinFlipClaim() : null;
   )}
 
   <section class="wrap section tight">
-    <nav class="chips" aria-label="Other breakdowns"><span class="chips-h">Other breakdowns</span>{others.map((x) => <a href={urls.axis(x.key)}>{x.label}</a>)}</nav>
+    <nav class="chips" aria-label="Other breakdowns"><span class="chips-h">Other breakdowns</span>{others.map((x) => <a href={urls.group(x.slug)}>{x.label}</a>)}</nav>
     <nav class="chips" aria-label="Models"><span class="chips-h">Models</span>{models.map((m) => <a href={urls.model(m.id)}>{m.label}</a>)}</nav>
   </section>
   <AnthusNote />

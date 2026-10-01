@@ -1,14 +1,23 @@
 ---
+// A rival model's page, written as its comparison with Jev: everything about the rival (its depth,
+// answer-class and breakdown results, consistency, calibration, size and speed, predictions) beside
+// the paired differences against Jev on the same items.
 import Base from "../../../layouts/Base.astro";
 import DepthChart from "../../../components/DepthChart.astro";
 import Legend from "../../../components/Legend.astro";
 import AccTable from "../../../components/AccTable.astro";
 import DiffRows from "../../../components/DiffRows.astro";
 import EngineName from "../../../components/EngineName.astro";
+import ModelErrors from "../../../components/ModelErrors.astro";
+import ModelConsistency from "../../../components/ModelConsistency.astro";
+import ModelFacts from "../../../components/ModelFacts.astro";
+import BreakdownSpread from "../../../components/BreakdownSpread.astro";
+import PredLine from "../../../components/PredLine.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
-import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, fmt, gb, overall, axisTable, pair, isComplete, statusWords, latency, memoryOf,
+import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
 import { liveComparisons } from "../../../lib/content.js";
+import { predictionLines } from "../../../lib/predictions.js";
 
 export function getStaticPaths() {
   return liveComparisons.map((c) => ({ params: { pair: c.slug }, props: { c } }));
@@ -18,7 +27,12 @@ const a = modelById[c.a];
 const bs = c.b.map((id) => modelById[id]).filter((m) => m && m.measured);
 const waiting = c.b.map((id) => modelById[id]).filter((m) => m && !m.measured);
 const ids = [a.id, ...bs.map((m) => m.id)];
+const bIds = bs.map((m) => m.id);
+const bNames = listOf(bs.map((m) => m.label));
 const LUNA = "openai-gpt-6-luna-effort-none";
+const isKev = c.b.some((id) => /^kev-/.test(id));
+// Kev sizes, smallest first, for "Does a bigger Kev help?".
+const kevs = isKev ? [...bs].sort((x, y) => (x.size || 0) - (y.size || 0)) : [];
 // Slices where the paired interval lies wholly on one side of zero.
 function sides(slug, b) {
   const rows = pair(slug, a.id, b) || [];
@@ -27,15 +41,16 @@ function sides(slug, b) {
   return { aWins: slice.filter((r) => r.ci_low > 0).map(label), bWins: slice.filter((r) => r.ci_high < 0).map((r) => ({ r, label: label(r) })),
     even: slice.filter((r) => r.ci_low <= 0 && r.ci_high >= 0).map(label) };
 }
-const facts = (m) => m.facts || {};
+const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.test(l.text));
 ---
-<Base title={c.title} description={c.intro} path={urls.comparison(c.slug)} current={{ page: "compare" }}
-  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Compare", href: urls.compare() }, { label: c.title.split(":")[0] }]}>
+<Base title={c.title} description={c.intro} path={urls.comparison(c.slug)} current={{ page: "models", rival: c.slug }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: c.title.split(":")[0] }]}>
   <section class="wrap hero">
     <p class="kicker">Comparison · {c.query}</p>
     <h1 class="display xl">{c.title}</h1>
     <p class="deck">{c.intro}</p>
     {c.b.includes(LUNA) && <p class="footnote">GPT-6 Luna ran with reasoning effort set to none, its lowest setting, under the same one-request protocol as every model here: the same question, the same options, one answer per item. A different reasoning setting would be a different model, scored separately.</p>}
+    {bs.some((m) => taskOrder.some((s) => statusWords(m.id, s))) && <p class="footnote">{bs.flatMap((m) => taskOrder.filter((s) => statusWords(m.id, s)).map((s) => `${m.label}, ${TASK_INFO[s].short.toLowerCase()}: ${statusWords(m.id, s)}.`)).join(" ")} Partial numbers change when scoring finishes.</p>}
     {waiting.length > 0 && <p class="note">Not yet scored: {listOf(waiting.map((m) => m.label))}. {waiting.length === 1 ? "It appears" : "They appear"} here once scored, never as zero.</p>}
   </section>
 
@@ -46,20 +61,19 @@ const facts = (m) => m.facts || {};
         <h3>{TASK_INFO[s].long}</h3>
         <ul class="around-list">
           {ids.map((id) => { const o = overall(id, s); return (
-            <li><EngineName engine={modelById[id]} href={urls.model(id)} /><span>{o ? `${pct(o.lo)} to ${pct(o.hi)} (95%), ${int(o.n)} items${isComplete(id, s) ? "" : ", partial"}` : statusWords(id, s)}</span><span class="av">{o ? `${pct(o.accuracy)}%` : "—"}</span></li>
+            <li><EngineName engine={modelById[id]} href={id === a.id ? urls.model(id) : undefined} /><span>{o ? `${pct(o.lo)} to ${pct(o.hi)} (95%), ${int(o.n)} items${isComplete(id, s) ? "" : ", partial"}` : statusWords(id, s)}</span><span class="av">{o ? `${pct(o.accuracy)}%` : "—"}</span></li>
           ); })}
         </ul>
-        {bs.map((b) => { const p = pair(s, a.id, b.id); const ov = p && p.find((r) => r.axis === "overall"); return ov ? (
-          <p class="lead-sentence">{a.label} minus {b.label}: <strong>{pts(ov.diff)} points</strong> on the same {int(ov.n)} items, 95% interval {pts(ov.ci_low)} to {pts(ov.ci_high)}{ov.ci_low > 0 ? `: ${a.label} is clearly ahead` : ov.ci_high < 0 ? `: ${b.label} is clearly ahead` : ": the interval includes zero"}.{!isComplete(b.id, s) && ` ${b.label} is ${statusWords(b.id, s)}.`}</p>
-        ) : overall(a.id, s) && overall(b.id, s) ? (
-          <p class="note">{a.label} {pct(overall(a.id, s).accuracy)}% against {b.label} {pct(overall(b.id, s).accuracy)}%: {pts(overall(a.id, s).accuracy - overall(b.id, s).accuracy)} points. The harness has not computed a paired interval for this pair, so read the two separate intervals above with care.</p>
-        ) : null; })}
+        {bs.map((b) => { const p = pair(s, a.id, b.id); const ov = p && p.find((r) => r.axis === "overall"); return ov && (
+          <p class="lead-sentence">{a.label} minus {b.label}: <strong>{pts(ov.diff)} points</strong> on the same {int(ov.n)} items, 95% interval {pts(ov.ci_low)} to {pts(ov.ci_high)}{ov.ci_low > 0 ? `: ${a.label} is clearly ahead` : ov.ci_high < 0 ? `: ${b.label} is clearly ahead` : ": the interval includes zero"}.</p>
+        ); })}
       </Fragment>
     ))}
   </section>
 
   <section class="wrap section" aria-labelledby="depth-h">
-    <h2 class="display" id="depth-h">{a.label} vs {listOf(bs.map((m) => m.label))} by proof depth</h2>
+    <h2 class="display" id="depth-h">{a.label} vs {bNames} by proof depth</h2>
+    <p class="lede">Each point is about 300 problems that need that many inference steps, with its 95% interval.</p>
     <div class="two-up">
       {taskOrder.map((s) => (
         <figure class="hero-fig">
@@ -75,8 +89,36 @@ const facts = (m) => m.facts || {};
         <DiffRows rows={p.filter((r) => r.axis === "depth")} labelOf={(r) => `depth ${r.value}`} label={`${a.label} minus ${b.label} by depth, ${TASK_INFO[s].short}`} />
       </Fragment>
     ); }))}
+    <p class="note">Paired differences: positive means {a.label} was more accurate on the same items.</p>
     {taskOrder.map((s) => <Fragment><h3>Accuracy by depth, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "depth", ids)} ids={ids} slug={s} valueHead="Proof depth" caption={`By depth, ${TASK_INFO[s].short}`} /></Fragment>)}
   </section>
+
+  {isKev && (
+    <section class="wrap section" aria-labelledby="size-help-h">
+      <h2 class="display" id="size-help-h">Does a bigger Kev help?</h2>
+      <p class="lede">The Kev sizes are built the same way on bigger base models. Every size we have scored is listed, smallest first; a size that is not scored yet appears here when it is.</p>
+      <div class="table-scroll">
+        <table class="cell-table">
+          <thead><tr><th scope="col">Size</th><th scope="col">Parameters</th>{taskOrder.map((s) => <th scope="col" class="num">{TASK_INFO[s].short}</th>)}<th scope="col" class="num">Depth 0, open world</th><th scope="col" class="num">Depth 5, open world</th><th scope="col" class="num">Memory peak</th></tr></thead>
+          <tbody>{kevs.map((m) => { const mem = memoryOf(m.id); return (
+            <tr><th scope="row"><EngineName engine={m} /></th><td class="sub">{m.facts ? String(m.facts.parameters).split(" (")[0] : "—"}</td>
+              {taskOrder.map((s) => { const o = overall(m.id, s); return <td class="num">{o ? `${pct(o.accuracy)}%${isComplete(m.id, s) ? "" : " (partial)"}` : "—"}</td>; })}
+              <td class="num">{axisRow(m.id, OWA, "depth", "0") ? `${pct(axisRow(m.id, OWA, "depth", "0").accuracy)}%` : "—"}</td>
+              <td class="num">{axisRow(m.id, OWA, "depth", "5") ? `${pct(axisRow(m.id, OWA, "depth", "5").accuracy)}%` : "—"}</td>
+              <td class="num">{mem && mem.phys_footprint_peak_mb ? gb(mem.phys_footprint_peak_mb) : "pending"}</td></tr>
+          ); })}</tbody>
+        </table>
+      </div>
+      {kevs.length >= 2 && (() => {
+        const [small, big] = [kevs[0], kevs[kevs.length - 1]];
+        const d = (m, v) => axisRow(m.id, OWA, "depth", v);
+        const parts = taskOrder.filter((s) => overall(small.id, s) && overall(big.id, s)).map((s) => `${pts(overall(big.id, s).accuracy - overall(small.id, s).accuracy)} points on the ${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task`);
+        return <p>{big.label} against {small.label}: {listOf(parts)} overall. By depth on the open-world task the change is {pts(d(big, "0").accuracy - d(small, "0").accuracy)} points at depth 0 and {pts(d(big, "5").accuracy - d(small, "5").accuracy)} points at depth 5{d(big, "0").accuracy > d(small, "0").accuracy && d(big, "5").accuracy < d(small, "5").accuracy ? `: the bigger model is better on easy problems and worse on the deepest ones` : ""}. The harness compares each Kev with Jev on the same items, not the sizes with each other, so read the two sizes' separate intervals with care.</p>;
+      })()}
+      {waiting.filter((m) => m.family === "kev").length > 0 && <p class="note">{listOf(waiting.filter((m) => m.family === "kev").map((m) => m.label))}: no answers recorded yet. It joins this table when scored.</p>}
+      {sizePred.map((l) => <p class="pred-line">{l.text}. <a href={urls.predictions(l.section)}>See How we measured</a>.</p>)}
+    </section>
+  )}
 
   <section class="wrap section" aria-labelledby="where-h">
     <h2 class="display" id="where-h">Where each one is better</h2>
@@ -88,28 +130,47 @@ const facts = (m) => m.facts || {};
     <p class="note">A slice counts as clearly ahead when its paired 95% interval excludes zero.</p>
     {taskOrder.map((s) => <Fragment><h3>True, false and unknown, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "reference_label", ids)} ids={ids} slug={s} valueHead="Correct answer" caption={`By correct answer, ${TASK_INFO[s].short}`} /></Fragment>)}
     {taskOrder.map((s) => <Fragment><h3>Paraphrased vs templated rules, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "paraphrased", ids)} ids={ids} slug={s} valueHead="Wording" caption={`By wording, ${TASK_INFO[s].short}`} /></Fragment>)}
-    <p class="more-link"><a href={urls.breakdowns()}>Every other breakdown</a></p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="errs-h">
+    <h2 class="display" id="errs-h">Where {bNames} {bs.length === 1 ? "errs" : "err"}</h2>
+    <p class="lede">Accuracy alone hides which answers a model gets wrong. Rows are the correct answer; columns are what the model said.</p>
+    {bs.map((b) => <ModelErrors id={b.id} named />)}
+  </section>
+
+  <section class="wrap section" aria-labelledby="axes-h">
+    <h2 class="display" id="axes-h">{bNames} across every breakdown</h2>
+    <p class="lede">For each property of the problems, the weakest and strongest value on the open-world task (slices of at least 50 items). Only depth was controlled; the rest are descriptive.</p>
+    <BreakdownSpread ids={bIds} />
+  </section>
+
+  <section class="wrap section" aria-labelledby="cons-h">
+    <h2 class="display" id="cons-h">Consistency and calibration</h2>
+    {bs.map((b) => <Fragment>{bs.length > 1 && <h3>{b.label}</h3>}<ModelConsistency id={b.id} /></Fragment>)}
+    <p class="more-link"><a href={urls.page("repeatability")}>Consistency and calibration for every model, Jev included</a></p>
   </section>
 
   <section class="wrap section" aria-labelledby="run-h">
-    <h2 class="display" id="run-h">Size, cost and speed</h2>
+    <h2 class="display" id="run-h">Size, hardware and speed</h2>
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Kind</th><th scope="col">Parameters</th><th scope="col">Ran on</th><th scope="col">Median time per decision</th><th scope="col">Memory peak</th></tr></thead>
         <tbody>{ids.map((id) => { const m = modelById[id]; const l = latency(id, OWA); const mem = memoryOf(id); return (
-          <tr><th scope="row"><EngineName engine={m} href={urls.model(id)} /></th><td>{kindOf(id)}</td><td>{facts(m).parameters || "—"}</td><td>{whereRun(id)}</td>
-            <td>{l && l.complete ? `${Math.round(l.p50)} ms` : l ? `in progress (${int(l.n)} of ${int(l.of)})` : "not yet timed"}</td>
+          <tr><th scope="row"><EngineName engine={m} /></th><td>{kindOf(id)}</td><td>{(m.facts || {}).parameters || "—"}</td><td>{whereRun(id)}</td>
+            <td>{l && l.complete ? `${int(Math.round(l.p50))} ms` : l ? `in progress (${int(l.n)} of ${int(l.of)})` : "not yet timed"}</td>
             <td>{m.hosted ? "not applicable (hosted)" : mem && mem.phys_footprint_peak_mb ? gb(mem.phys_footprint_peak_mb) : "pending"}</td></tr>
         ); })}</tbody>
       </table>
     </div>
-    <p class="note">Times are open-world, one request at a time. Hosted models were timed over the network against the vendor's servers and open models on one laptop, so speed is not like for like across the two. <a href={urls.page("latency")}>Latency</a> · <a href={urls.page("model-sizes")}>Sizes and memory</a>.</p>
+    <p class="note">Times are open-world, one request at a time. Hosted models were timed over the network against the vendor's servers and open models on one laptop, so speed is not like for like across the two. <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
+    {bs.map((b) => <ModelFacts id={b.id} heading={b.label} />)}
   </section>
 
   <section class="wrap section" aria-labelledby="about-h">
-    <h2 class="display sm" id="about-h">The models</h2>
-    {ids.map((id) => <p><EngineName engine={modelById[id]} href={urls.model(id)} /> {aboutModel(id)}</p>)}
-    <p class="more-link">Other comparisons: {liveComparisons.filter((x) => x.slug !== c.slug).map((x, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(x.slug)}>{x.title.split(":")[0]}</a></Fragment>)}</p>
+    <h2 class="display sm" id="about-h">The models, and what we predicted</h2>
+    {ids.map((id) => <p><EngineName engine={modelById[id]} href={id === a.id ? urls.model(id) : undefined} /> {aboutModel(id)}</p>)}
+    <PredLine ids={bIds} />
+    <p class="more-link">Other comparisons: {liveComparisons.filter((x) => x.slug !== c.slug).map((x, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(x.slug)}>{x.title.split(":")[0]}</a></Fragment>)} · <a href={urls.models()}>Every model</a></p>
   </section>
 
   <AnthusNote />

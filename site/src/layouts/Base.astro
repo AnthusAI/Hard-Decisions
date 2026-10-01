@@ -3,7 +3,7 @@
 // panel and the colophon. The page body is static HTML; the only script opens #fragments.
 import "../styles/site.css";
 import steps from "../assets/steps.svg?raw";
-import { data, models, urls, absolute, axes, SITE_NAME, ANTHUS, REPO } from "../lib/site.js";
+import { data, models, urls, absolute, groups, SITE_NAME, ANTHUS, REPO } from "../lib/site.js";
 import { honesty, intro, liveComparisons } from "../lib/content.js";
 import { cardFor } from "../lib/cards.js";
 
@@ -35,9 +35,9 @@ gtag('config', '${GA_ID}');`;
 const optOut = String.raw`(function(){try{var k='anthus-no-analytics',q=location.search.match(/[?&]notrack=(\w+)/);if(q){if(q[1]==='1')localStorage.setItem(k,'1');else localStorage.removeItem(k)}if(localStorage.getItem(k)==='1')window['ga-disable-G-31SC26SDGX']=true}catch(e){}})();`;
 const on = (k) => (current.page === k ? "on" : null);
 const cur = (k) => (current.page === k ? "page" : undefined);
-const topics = [["methodology", "How we measured"], ["preregistration", "Predictions"], ["repeatability", "Consistency"], ["latency", "Latency"],
-  ["model-sizes", "Sizes and memory"], ["evaluating-decision-models", "Evaluating decision models"], ["fine-tuning-decision-models", "Fine-tuning"],
-  ["aligning-decision-models", "Aligning"], ["about", "About"]];
+const topics = [[urls.measured(), "How we measured"], [urls.predictions(), "Predictions"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"],
+  [urls.page("evaluating-decision-models"), "Evaluating decision models"], [urls.page("fine-tuning-decision-models"), "Fine-tuning"],
+  [urls.page("aligning-decision-models"), "Aligning"], [urls.page("about"), "About"]];
 ---
 <!doctype html>
 <html lang="en">
@@ -94,9 +94,8 @@ const topics = [["methodology", "How we measured"], ["preregistration", "Predict
       </a>
       <nav class="topnav" aria-label="Site">
         <a href={urls.models()} class={on("models")} aria-current={cur("models")}>Models</a>
-        <a href={urls.compare()} class={on("compare")} aria-current={cur("compare")}>Compare</a>
-        <a href={urls.page("methodology")} class={on("methodology")} aria-current={cur("methodology")}>How we measured</a>
-        <a href={urls.page("preregistration")} class={on("preregistration")} aria-current={cur("preregistration")}>Predictions</a>
+        <a href={urls.breakdowns()} class={on("breakdowns") || (current.page === "axis" ? "on" : null)} aria-current={cur("breakdowns")}>Breakdowns</a>
+        <a href={urls.measured()} class={on("measured")} aria-current={cur("measured")}>How we measured</a>
         <a href={urls.page("about")} class={on("about")} aria-current={cur("about")}>About</a>
       </nav>
     </div>
@@ -104,8 +103,8 @@ const topics = [["methodology", "How we measured"], ["preregistration", "Predict
       <nav class="rail" aria-label="Results by">
         <a href={urls.breakdowns()} class={on("breakdowns")} aria-current={cur("breakdowns")}>All breakdowns</a>
         <span class="rail-sep" aria-hidden="true"></span>
-        {axes.map((a) => (
-          <a href={urls.axis(a.key)} class={current.axis === a.key ? "on" : null} aria-current={current.axis === a.key ? "page" : undefined}>{a.label}</a>
+        {groups.map((g) => (
+          <a href={urls.group(g.slug)} class={current.group === g.slug ? "on" : null} aria-current={current.group === g.slug ? "page" : undefined}>{g.label}</a>
         ))}
       </nav>
     </div>
@@ -134,9 +133,9 @@ const topics = [["methodology", "How we measured"], ["preregistration", "Predict
 <footer class="colophon">
   <div class="wrap colo">
     <nav class="foot-nav" aria-label="Every page">
-      <div><span class="chips-h">Models</span>{models.map((m) => <a href={urls.model(m.id)}>{m.label}</a>)}</div>
-      <div><span class="chips-h">Compare</span>{liveComparisons.map((c) => <a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a>)}</div>
-      <div><span class="chips-h">Topics</span>{topics.map(([s, l]) => <a href={urls.page(s)}>{l}</a>)}</div>
+      <div><span class="chips-h">Models</span><a href={urls.models()}>Every model</a><a href={urls.model("jev")}>Jev</a>{liveComparisons.map((c) => <a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a>)}</div>
+      <div><span class="chips-h">Breakdowns</span>{groups.map((g) => <a href={urls.group(g.slug)}>{g.label}</a>)}</div>
+      <div><span class="chips-h">Topics</span>{topics.map(([h, l]) => <a href={h}>{l}</a>)}</div>
     </nav>
     <p class="release" data-release={p.version}>Version <strong>v{p.version}</strong>, <strong>unreleased</strong>.</p>
     <p>Every number on this site is worked out from the models' saved answers, on <strong>{p.generated}</strong>, from the harness's working tree at commit <code>{p.record_commit_short || "unknown"}</code>{p.branch && <Fragment> on <code>{p.branch}</code></Fragment>}; results scored since that commit are included. You can download <a href={urls.data()}>every number in one data file</a>. <a href={urls.page("about")}>About this site</a>.</p>

@@ -13,17 +13,14 @@ function pngSize(buf) {
 const localPath = (url) => decodeURIComponent(new URL(url, SITE).pathname);
 const scored = new Set(Object.values(DATA.results).flatMap((r) => Object.keys(r.studies.engines)));
 
-test("the build produced the pages the data implies", () => {
-  const axes = DATA.axes.length;
-  // home, models hub, compare hub, breakdowns hub, 9 topic pages (methodology, preregistration,
-  // repeatability, latency, model sizes, evaluating, fine-tuning, aligning, about)
-  const fixed = 4 + 9;
-  const comparisons = content.filter((p) => /^\/compare\/[^/]+\/$/.test(p.path)).length;
-  assert.ok(comparisons >= 1, "no comparison pages");
-  assert.equal(content.length, fixed + scored.size + axes + comparisons);
-  for (const want of ["/", "/models/", "/models/jev/", "/compare/", "/compare/jev-vs-gpt-6-luna/", "/breakdowns/", "/breakdowns/proof-depth/",
-    "/methodology/", "/preregistration/", "/repeatability/", "/latency/", "/model-sizes/", "/evaluating-decision-models/",
-    "/fine-tuning-decision-models/", "/aligning-decision-models/", "/about/"]) assert.ok(content.some((p) => p.path === want), want);
+// The page set after the merge: one page per rival (its comparison with Jev), five breakdown pages.
+export const EXPECTED = ["/", "/models/", "/models/jev/", "/compare/jev-vs-gpt-6-luna/", "/compare/jev-vs-kev/", "/compare/jev-vs-laya/",
+  "/breakdowns/", "/breakdowns/proof-depth/", "/breakdowns/true-false-unknown/", "/breakdowns/negation/", "/breakdowns/paraphrased-rules/",
+  "/breakdowns/problem-size/", "/how-we-measured/", "/repeatability/", "/speed-size-and-memory/", "/evaluating-decision-models/",
+  "/fine-tuning-decision-models/", "/aligning-decision-models/", "/about/"];
+
+test("the build produced exactly the merged page set", () => {
+  assert.deepEqual(content.map((p) => p.path).sort(), [...EXPECTED].sort());
 });
 
 test("every page has a social card: a 1200 x 630 PNG under 300 KB, fingerprinted by content", () => {

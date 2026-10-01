@@ -243,3 +243,30 @@ export function tally() {
   return t;
 }
 export const predictionsFor = (modelId) => predictions().filter((s) => s.model === modelId || (modelId === "kev-9b" && s.model === "kev-4b"));
+
+// One line per preregistration section about these models, for the model pages: "2 of 3
+// predictions about Kev-0.8B held", linking to the section on How we measured. A model with no
+// section of its own gets a line for each other prediction that names it.
+export function predictionLines(ids) {
+  const secs = predictions();
+  const own = secs.filter((s) => ids.includes(s.model) || (ids.includes("kev-9b") && s.model === "kev-4b"));
+  const lines = own.map((s) => {
+    const counted = s.predictions.filter((p) => p.status !== "no claim");
+    const held = counted.filter((p) => /held/.test(p.status) && p.status !== "partly held").length;
+    const rest = Object.entries(counted.reduce((t, p) => { if (!(/held/.test(p.status) && p.status !== "partly held")) t[p.status] = (t[p.status] || 0) + 1; return t; }, {}))
+      .map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`);
+    return { section: s.id, text: `${held} of ${counted.length} predictions about ${s.title} held${rest.length ? ` (${rest.join(", ")})` : ""}` };
+  });
+  const names = ids.map((id) => (modelById[id] ? modelById[id].label : id));
+  const family = ids.some((id) => /^kev-/.test(id)) ? ["Kev"] : [];
+  if (ids.includes("jev")) return lines;
+  for (const s of secs.filter((x) => !own.includes(x))) for (const p of s.predictions) {
+    if ([...names, ...family].some((n) => new RegExp(`\\b${n.replace(/[.]/g, "\\.")}\\b`).test(p.text)))
+      lines.push({ section: s.id, text: `${s.title} prediction ${p.n}, which names ${listNames(names, family, p.text)}: ${STATUS_WORDS[p.status].toLowerCase()}` });
+  }
+  return lines;
+}
+function listNames(names, family, text) {
+  const hit = [...names, ...family].filter((n) => text.includes(n));
+  return hit.length > 1 ? `${hit.slice(0, -1).join(", ")} and ${hit.at(-1)}` : hit[0];
+}

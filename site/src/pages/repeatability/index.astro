@@ -57,7 +57,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
     <section class="wrap section" aria-labelledby="a4-h">
       <h2 class="display sm" id="a4-h">What we predicted</h2>
       <ul class="how-list">{a4.predictions.map((p) => <li><span class={`verdict ${STATUS_CLASS[p.status]}`}>{STATUS_WORDS[p.status]}</span> “{p.text}” {p.checks.slice(1).join(" ")}</li>)}</ul>
-      <p class="more-link"><a href={`${urls.page("preregistration")}#repeatability`}>Every prediction and its rule</a></p>
+      <p class="more-link"><a href={urls.predictions("repeatability")}>Every prediction and its rule</a></p>
     </section>
   )}
 

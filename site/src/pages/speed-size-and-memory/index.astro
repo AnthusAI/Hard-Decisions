@@ -1,0 +1,73 @@
+---
+import Base from "../../layouts/Base.astro";
+import EngineName from "../../components/EngineName.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { data, models, allModels, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, int, fmt, gb, latency, whereRun, listOf, overall, isComplete, memoryOf } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+const timed = models.filter((m) => taskOrder.some((s) => latency(m.id, s)));
+const untimed = models.filter((m) => !taskOrder.some((s) => latency(m.id, s)));
+const l = latency("jev", OWA);
+const mach = data.machine || {};
+const rows = allModels.filter((m) => m.facts);
+const measuredMem = Object.keys(data.memory).length;
+---
+
+<Base title={intro.speed.title} description={intro.speed.intro} path={urls.speed()} current={{ page: "speed" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Speed, size and memory" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Latency · model size · memory</p>
+    <h1 class="display xl">{intro.speed.title}</h1>
+    <p class="deck">{intro.speed.intro}</p>
+    <p class="footnote"><strong>Speed is not like for like.</strong> Hosted models were timed over the network against the vendor's servers; open models on one laptop. A hosted model's time includes the network round trip and whatever the vendor's servers were doing; an open model's time is one Apple M1 Max laptop, which also ran other work. Read each number within its setting. A laptop number says nothing about the same model on a server GPU, and a hosted number says nothing about the model's raw speed.</p>
+    {l && l.complete && <p class="finding"><span class="finding-num">{Math.round(l.p50)} ms</span><span class="finding-txt">Jev's median time per decision on the open-world task, over the network against TypeSafe's servers; 90% of decisions took under {Math.round(l.p90)} ms.</span></p>}
+  </section>
+
+  <section class="wrap section" aria-labelledby="t-h">
+    <h2 class="display" id="t-h">Time per decision</h2>
+    <p class="lede">Wall time around each request as the harness measured it, from the reruns made one request at a time. Only finished timing runs are summarised; a run still in progress shows how far it has got.</p>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Where</th><th scope="col" class="num">Median</th><th scope="col" class="num">90th percentile</th><th scope="col" class="num">Slowest</th><th scope="col" class="num">Items</th><th scope="col">Load average, start / end</th></tr></thead>
+        <tbody>{timed.map((m) => taskOrder.map((s) => { const x = latency(m.id, s); return x && (
+          <tr class={x.complete ? null : "row-miss"}><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th><td>{TASK_INFO[s].short}</td><td>{whereRun(m.id)}</td>
+            {x.complete ? <Fragment><td class="num strong">{int(Math.round(x.p50))} ms</td><td class="num">{int(Math.round(x.p90))} ms</td><td class="num">{int(Math.round(x.max))} ms</td></Fragment> : <td colspan="3" class="muted">in progress: summarised when the run finishes</td>}
+            <td class="num">{int(x.n)} of {int(x.of)}</td><td>{x.load_start ? `${x.load_start[0]} / ${x.load_end ? x.load_end[0] : "—"}` : "—"}</td></tr>
+        ); }))}</tbody>
+      </table>
+    </div>
+    <p class="note">{untimed.length > 0 && `Not yet timed: ${listOf(untimed.map((m) => (m.setting ? `${m.label} (${m.setting})` : m.label)))}. `}Load average is the machine's one-minute load when the run started and ended, from the run's manifest; it shows how busy the laptop was, which matters for local models.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="read-h">
+    <h2 class="display sm" id="read-h">How to read decision model latency</h2>
+    <ul class="how-list">
+      <li><strong>Measure where you will deploy.</strong> The same open weights run at very different speeds on a laptop, a workstation GPU and a data-centre GPU; Kev's maker states hardware from "Any Apple Silicon Mac" for its smallest size up to an H100 for larger ones (<a href="#sizes">sizes and hardware below</a>).</li>
+      <li><strong>One request at a time is a floor, not throughput.</strong> These runs sent one request and waited for it. Batched or concurrent serving changes throughput, and for hosted models depends on rate limits.</li>
+      <li><strong>Tails matter for interactive use.</strong> The 90th percentile and the slowest request are listed beside the median for that reason.</li>
+    </ul>
+  </section>
+  <section class="wrap section" id="sizes" aria-labelledby="sizes-h">
+    <h2 class="display" id="sizes-h">Every model's size, weights and stated hardware</h2>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Parameters</th><th scope="col">Weights on disk</th><th scope="col">Maker's stated hardware</th><th scope="col">Memory used here</th><th scope="col" class="num">Open-world accuracy</th></tr></thead>
+        <tbody>{rows.map((m) => { const f = m.facts; const mem = memoryOf(m.id); const o = overall(m.id, OWA); return (
+          <tr class={m.notRun ? "row-miss" : null}>
+            <th scope="row">{m.measured ? <EngineName engine={m} href={urls.model(m.id)} /> : <span class="eng">{m.label}</span>}<span class="hl">{f.kind}</span></th>
+            <td class="sub">{f.parameters || "—"}</td><td class="sub">{f.weights || "—"}</td><td class="sub">{f.hardware || "—"}</td>
+            <td class="sub">{m.hosted ? "not applicable (hosted)" : m.notRun ? "not run" : mem && mem.phys_footprint_peak_mb ? `${gb(mem.phys_footprint_mb)} in use, ${gb(mem.phys_footprint_peak_mb)} peak` : "pending"}</td>
+            <td class="num">{o ? `${pct(o.accuracy)}%${isComplete(m.id, OWA) ? "" : " (partial)"}` : m.notRun ? "not run" : "pending"}</td>
+          </tr>
+        ); })}</tbody>
+      </table>
+    </div>
+    <p class="note">Sizes and weight files are the makers' published figures and the pinned revisions on the Hugging Face Hub. Jev and GPT-6 Luna do not publish their size.</p>
+  </section>
+  <section class="wrap section" aria-labelledby="m-h">
+    <h2 class="display" id="m-h">Memory on the test laptop</h2>
+    <p class="lede">Every open model ran on {mach.model ? `one ${mach.model.replace(/\s*\(.*\)/, "")}` : "one laptop"} ({mach.memory || "32 GB unified memory"}, Apple M1 Max).</p>
+    <p>{measuredMem ? "Memory below is the physical footprint of the process holding the model (the Kev server, or the harness for Laya), in use after answering and at its peak, which includes loading." : "Memory measurements are in progress: no run manifest has recorded one yet, so every open model shows pending above. They are filled in from the manifests on the next build."} {mach.note && `On Apple silicon, model weights live in GPU memory, which a process's resident memory (RSS) does not count, so we use macOS's physical footprint.`}</p>
+    <p>Two sizes set the limits here. Kev-9B's base weights alone are {modelById["kev-9b"] && modelById["kev-9b"].facts ? modelById["kev-9b"].facts.weights.split(" (")[0] : "about 19 GB"}, most of the laptop's memory. Kev-27B ({modelById["kev-27b"] && modelById["kev-27b"].facts ? modelById["kev-27b"].facts.weights.split(" (")[0] : "51 GB"}) does not fit at all and was not run: it would need a rented 80 GB GPU.</p>
+  </section>
+  <AnthusNote />
+</Base>

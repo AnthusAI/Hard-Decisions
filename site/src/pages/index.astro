@@ -6,7 +6,7 @@ import Legend from "../components/Legend.astro";
 import OverallTable from "../components/OverallTable.astro";
 import EngineName from "../components/EngineName.astro";
 import AnthusNote from "../components/AnthusNote.astro";
-import { models, pendingModels, notRunModels, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, ranked, leader, pairRow, retest, latency,
+import { models, pendingModels, notRunModels, modelById, urls, axes, groups, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, ranked, leader, pairRow, retest, latency,
   axisRow, L, listOf } from "../lib/site.js";
 import { intro, liveComparisons } from "../lib/content.js";
 import { axisLead, depthDrop } from "../lib/cards.js";
@@ -22,6 +22,7 @@ const gapC0 = topC ? pairRow(CWA, topC.m.id, LUNA, "depth", "0") : null;
 const gapC5 = topC ? pairRow(CWA, topC.m.id, LUNA, "depth", "5") : null;
 const t = tally();
 const rt = retest("jev", OWA), rtc = retest("jev", CWA);
+const retested = models.map((m) => ({ m, r: retest(m.id, OWA) })).filter((x) => x.r);
 const lat = latency("jev", CWA), latO = latency("jev", OWA);
 const description = intro.home.intro;
 ---
@@ -97,38 +98,33 @@ const description = intro.home.intro;
     <h2 class="display" id="where-h">Where they fail</h2>
     <p class="lede">Accuracy by every property ProofWriter records. Only proof depth was controlled when the problems were sampled; the others move with depth and with each other, so they describe where errors fall rather than what causes them.</p>
     <div class="dim-grid">
-      {axes.map((a) => { const l = axisLead(a.key); return (
-        <a class="dim-card" href={urls.axis(a.key)}>
-          <div class="dim-card-h">{a.h1}</div>
-          <p>{a.what.split(". ")[0]}.</p>
-          <div class="dim-card-f">{l ? `${L(l.id)}: ${pct(l.lo.accuracy)}% to ${pct(l.hi.accuracy)}%` : a.label}</div>
+      {groups.map((g) => { const l = axisLead(g.axes[0].key); return (
+        <a class="dim-card" href={urls.group(g.slug)}>
+          <div class="dim-card-h">{g.h1}</div>
+          <p>{g.what.split(". ")[0]}.</p>
+          <div class="dim-card-f">{g.single && l ? `${L(l.id)}: ${pct(l.lo.accuracy)}% to ${pct(l.hi.accuracy)}%` : g.axes.map((a) => a.label).join(" · ")}</div>
         </a>
       ); })}
     </div>
   </section>
 
   <section class="wrap section" aria-labelledby="more-h">
-    <h2 class="display" id="more-h">Predictions, consistency, speed and size</h2>
+    <h2 class="display" id="more-h">How we measured, consistency, speed and size</h2>
     <div class="dim-grid">
-      <a class="dim-card" href={urls.page("preregistration")}>
-        <div class="dim-card-h">{intro.preregistration.title}</div>
-        <p>Written before any model answered. {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}.</p>
-        <div class="dim-card-f">Preregistration</div>
+      <a class="dim-card" href={urls.measured()}>
+        <div class="dim-card-h">{intro.measured.title}</div>
+        <p>The sample, the protocol and the scoring, and the predictions written before any model answered: {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}.</p>
+        <div class="dim-card-f">Methodology · preregistration</div>
       </a>
       <a class="dim-card" href={urls.page("repeatability")}>
         <div class="dim-card-h">{intro.repeatability.title}</div>
-        <p>{rt ? `Asked twice, Jev gave the same answer on ${pct(rt.agreement)}% of open-world items${rtc ? ` and ${pct(rtc.agreement)}% of closed-world ones` : ""}. Other models' reruns are in progress.` : "Reruns in progress."}</p>
+        <p>{retested.length ? `Asked every question twice: ${listOf(retested.map((x) => `${x.m.label} ${pct(x.r.agreement)}%`))} the same on the open-world task.` : "Reruns in progress."}</p>
         <div class="dim-card-f">Test-retest · calibration</div>
       </a>
-      <a class="dim-card" href={urls.page("latency")}>
-        <div class="dim-card-h">{intro.latency.title}</div>
-        <p>{latO ? `Jev: a median ${Math.round(latO.p50)} ms per open-world decision${lat ? ` and ${Math.round(lat.p50)} ms per closed-world one` : ""}, over the network. Open models were timed on a laptop: not like for like.` : "Timing runs in progress."}</p>
-        <div class="dim-card-f">Latency</div>
-      </a>
-      <a class="dim-card" href={urls.page("model-sizes")}>
-        <div class="dim-card-h">{intro.sizes.title}</div>
-        <p>From Laya's 421M parameters to Kev-9B's 9B base; what each needs to run, and the memory measured.</p>
-        <div class="dim-card-f">Parameters · weights · memory</div>
+      <a class="dim-card" href={urls.speed()}>
+        <div class="dim-card-h">{intro.speed.title}</div>
+        <p>{latO ? `Jev: a median ${Math.round(latO.p50)} ms per open-world decision${lat ? ` and ${Math.round(lat.p50)} ms per closed-world one` : ""}, over the network; open models were timed on a laptop, so not like for like. ` : ""}Parameters, weights on disk and the memory each open model used.</p>
+        <div class="dim-card-f">Latency · parameters · memory</div>
       </a>
     </div>
   </section>

@@ -3,18 +3,38 @@ import Base from "../../layouts/Base.astro";
 import EngineName from "../../components/EngineName.astro";
 import OverallTable from "../../components/OverallTable.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
-import { models, pendingModels, notRunModels, urls, OWA, CWA, taskOrder, TASK_INFO, pct, int, overall, aboutModel, kindOf, whereRun, isComplete, statusWords } from "../../lib/site.js";
-import { intro } from "../../lib/content.js";
+import { models, pendingModels, notRunModels, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, overall, pair, aboutModel, kindOf, whereRun,
+  isComplete, statusWords, L } from "../../lib/site.js";
+import { intro, liveComparisons } from "../../lib/content.js";
 ---
 <Base title={intro.models.title} description={intro.models.intro} path={urls.models()} current={{ page: "models" }}
   crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models" }]}>
   <section class="wrap hero">
-    <p class="kicker">Models</p>
+    <p class="kicker">Models · comparisons</p>
     <h1 class="display xl">{intro.models.title}</h1>
     <p class="deck">{intro.models.intro}</p>
   </section>
-  <section class="wrap section tight" aria-labelledby="list-h">
-    <h2 class="display sm" id="list-h">The models</h2>
+
+  <section class="wrap section tight" aria-labelledby="cmp-h">
+    <h2 class="display sm" id="cmp-h">Jev and its rivals, one page each</h2>
+    <div class="dim-grid">
+      <a class="dim-card" href={urls.model("jev")}>
+        <div class="dim-card-h">Jev accuracy on multi-hop reasoning</div>
+        <p>The reference model: every rival is compared with it on the same items.</p>
+        <div class="dim-card-f">Jev</div>
+      </a>
+      {liveComparisons.map((c) => (
+        <a class="dim-card" href={urls.comparison(c.slug)}>
+          <div class="dim-card-h">{c.title}</div>
+          <p>{c.intro}</p>
+          <div class="dim-card-f">{[c.a, ...c.b].filter((id) => modelById[id] && modelById[id].measured).map(L).join(" · ")}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="list-h">
+    <h2 class="display" id="list-h">The models</h2>
     <ol class="overall">
       {models.map((m) => { const o = overall(m.id, OWA), c = overall(m.id, CWA); return (
         <li class="ov-row ov-simple">
@@ -27,17 +47,34 @@ import { intro } from "../../lib/content.js";
         </li>
       ); })}
       {[...pendingModels, ...notRunModels].map((m) => (
-        <li class="ov-row ov-simple">
+        <li class="ov-row ov-simple" id={m.slug}>
           <div class="ov-name"><span class="eng">{m.label}</span><div class="flag">{m.notRun ? "Not run" : "Not yet scored"}</div></div>
           <p class="ov-about">{aboutModel(m.id)} {m.notRun ? "" : `${m.id === "kev-9b" ? "It is preregistered in Amendment 3. " : ""}No answers are recorded yet, and it is never shown as zero.`}</p>
         </li>
       ))}
     </ol>
   </section>
+
   <section class="wrap section" aria-labelledby="acc-h">
     <h2 class="display" id="acc-h">Accuracy side by side</h2>
     {taskOrder.map((slug) => <Fragment><h3>{TASK_INFO[slug].long}</h3><OverallTable slug={slug} caption={`Overall accuracy, ${TASK_INFO[slug].long}`} /></Fragment>)}
-    <p class="more-link"><a href={urls.compare()}>Paired comparisons</a> · <a href={urls.page("model-sizes")}>Sizes and memory</a> · <a href={urls.page("latency")}>Latency</a></p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="pairs-h">
+    <h2 class="display" id="pairs-h">Jev against every model, on the same items</h2>
+    <p class="lede">Jev minus each model, in points, with the 95% interval of the paired difference. Positive means Jev was more accurate. Because both answered exactly the same items, the interval is narrower than comparing two separate scores.</p>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th>{taskOrder.map((s) => <Fragment><th scope="col" class="num">{TASK_INFO[s].short}: overall</th><th scope="col" class="num">depth 0</th><th scope="col" class="num">depth 5</th></Fragment>)}</tr></thead>
+        <tbody>{models.filter((m) => m.id !== "jev").map((m) => (
+          <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th>
+            {taskOrder.map((s) => { const p = pair(s, "jev", m.id); const r = (axis, v) => p && p.find((x) => x.axis === axis && x.value === v);
+              return ["all", "0", "5"].map((v) => { const x = r(v === "all" ? "overall" : "depth", v); return <td class="num">{x ? <Fragment><span class="strong">{pts(x.diff)}</span> <span class="ci-t">{pts(x.ci_low)} to {pts(x.ci_high)}</span>{!isComplete(m.id, s) && <span class="ci-t"> (partial)</span>}</Fragment> : "—"}</td>; }); })}
+          </tr>
+        ))}</tbody>
+      </table>
+    </div>
+    <p class="more-link"><a href={urls.speed()}>Speed, size and memory</a> · <a href={urls.page("repeatability")}>Consistency</a></p>
   </section>
   <AnthusNote />
 </Base>

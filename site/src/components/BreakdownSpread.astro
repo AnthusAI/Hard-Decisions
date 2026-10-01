@@ -1,0 +1,16 @@
+---
+// For each breakdown, each model's weakest and strongest slice on the open-world task (slices of at
+// least 50 items), with the spread between them.
+import EngineName from "./EngineName.astro";
+import { axes, modelById, urls, OWA, pct, axisSpread, valueLabel } from "../lib/site.js";
+const { ids } = Astro.props;
+---
+<div class="table-scroll">
+  <table class="cell-table">
+    <thead><tr><th scope="col">Breakdown</th>{ids.map((id) => <th scope="col">{ids.length > 1 ? <EngineName engine={modelById[id]} /> : "Weakest · strongest"}</th>)}</tr></thead>
+    <tbody>{axes.map((a) => (
+      <tr><th scope="row"><a href={urls.axis(a.key)}>{a.label}</a></th>
+        {ids.map((id) => { const s = axisSpread(id, OWA, a.key); return <td class="sub">{s ? `${valueLabel(a.key, s.lo.value)} ${pct(s.lo.accuracy)}% · ${valueLabel(a.key, s.hi.value)} ${pct(s.hi.accuracy)}% (${pct(s.spread)} points)` : "fewer than two slices of 50 items"}</td>; })}</tr>
+    ))}</tbody>
+  </table>
+</div>

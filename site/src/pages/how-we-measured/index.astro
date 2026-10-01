@@ -1,22 +1,29 @@
 ---
 import Base from "../../layouts/Base.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
+import Predictions from "../../components/Predictions.astro";
 import { data, models, urls, axes, tasks, taskOrder, taskBySlug, TASK_INFO, OWA, int, L, aboutModel, modelById } from "../../lib/site.js";
 import { intro, honesty } from "../../lib/content.js";
+import { predictions, tally, STATUS_WORDS, STATUS_CLASS } from "../../lib/predictions.js";
 
 const owa = taskBySlug[OWA];
 const pool = Object.values(owa.pool.depth).reduce((a, b) => a + b, 0);
 const strata = (t) => { const out = {}; for (const s of t.strata) (out[s.depth] ||= {})[s.label] = s; return out; };
 const invalid = taskOrder.reduce((n, s) => n + models.reduce((k, m) => k + ((data.results[s].studies.engines[m.id] || { overall: { invalid: 0 } }).overall.invalid || 0), 0), 0);
+const secs = predictions();
+const t = tally();
+const total = Object.values(t).reduce((a, b) => a + b, 0) - (t["no claim"] || 0);
+const held = (t.held || 0) + (t["held so far"] || 0);
+const extra = data.prereg.sections.filter((s) => !s.predictions.length);
 const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
 ---
-<Base title={intro.methodology.title} description={intro.methodology.intro} path={urls.page("methodology")} current={{ page: "methodology" }}
+<Base title={intro.measured.title} description={intro.measured.intro} path={urls.measured()} current={{ page: "measured" }}
   crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "How we measured" }]}>
   <section class="wrap hero">
-    <p class="kicker">Methodology</p>
-    <h1 class="display xl">{intro.methodology.title}</h1>
-    <p class="deck">{intro.methodology.intro}</p>
-    <nav class="reg-links" aria-label="On this page"><a href="#dataset">The dataset</a><a href="#sample">The sample</a><a href="#tasks">The two tasks</a><a href="#protocol">One request per problem</a><a href="#scoring">Scoring</a><a href="#limits">Limits</a><a href="#runs">Run records</a><a href="#check">Check it yourself</a></nav>
+    <p class="kicker">How we measured · methodology and preregistration</p>
+    <h1 class="display xl">{intro.measured.title}</h1>
+    <p class="deck">{intro.measured.intro}</p>
+    <nav class="reg-links" aria-label="On this page"><a href="#dataset">The dataset</a><a href="#sample">The sample</a><a href="#tasks">The two tasks</a><a href="#protocol">One request per problem</a><a href="#scoring">Scoring</a><a href="#limits">Limits</a><a href="#runs">Run records</a><a href="#check">Check it yourself</a><a href="#predictions">Predictions</a></nav>
   </section>
 
   <section class="wrap section" id="dataset" aria-labelledby="dataset-h">
@@ -110,6 +117,24 @@ hd replay          # rescore every saved answer: studies/*.jsonl
 hd report          # write RESULTS.md
 cd site && npm run build    # rebuild this site from studies/, engines.yaml and the run manifests`}</code></pre>
     <p>Every number is also in <a href={urls.data()}>one data file</a>.</p>
+  </section>
+  <section class="wrap section" id="predictions" aria-labelledby="predictions-h">
+    <h2 class="display" id="predictions-h">{intro.predictions.title}</h2>
+    <p class="lede">{intro.predictions.intro}</p>
+    <p class="finding"><span class="finding-num">{held} of {total}</span><span class="finding-txt">predictions held so far. {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}{t["no claim"] ? `; ${t["no claim"]} made no claim` : ""}. A pending prediction waits for results that are still being run or scored; it is never guessed.</span></p>
+    <h3 id="predictions-verdicts">How to read a verdict</h3>
+    <dl class="defs compact">
+      <div><dt><span class={`verdict ${STATUS_CLASS.held}`}>Held</span></dt><dd>The data meets the stated rule.</dd></div>
+      <div><dt><span class={`verdict ${STATUS_CLASS.failed}`}>Failed</span></dt><dd>The data does not.</dd></div>
+      <div><dt><span class={`verdict ${STATUS_CLASS["partly held"]}`}>Partly held / mixed</span></dt><dd>One part or one task held and another failed.</dd></div>
+      <div><dt><span class={`verdict ${STATUS_CLASS.pending}`}>Pending</span></dt><dd>The results it needs are not scored yet.</dd></div>
+    </dl>
+    <p class="note">The preregistration states the predictions in words. Where it does not say how a word like "falls" is tested, the rule we applied is written beside the verdict, and it is the same for every model.</p>
+    <Predictions sections={secs} idPrefix="predictions-" />
+    <h3 id="predictions-design">The frozen design</h3>
+    <p class="note">Fixed before any model answered.</p>
+    <ul class="how-list">{data.prereg.design.map((d) => <li>{d.replace(/\*\*/g, "").replace(/`/g, "")}</li>)}</ul>
+    {extra.map((s) => <Fragment><h3>{s.heading}</h3><p>{s.text.replace(/`/g, "")}</p></Fragment>)}
   </section>
   <AnthusNote />
 </Base>

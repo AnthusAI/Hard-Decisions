@@ -1,11 +1,11 @@
 ---
 // Preregistered predictions, quoted word for word, each with its verdict and the check behind it.
 import { STATUS_WORDS, STATUS_CLASS } from "../lib/predictions.js";
-const { sections, headings = true } = Astro.props;
+const { sections, headings = true, idPrefix = "" } = Astro.props;
 ---
 {sections.map((s) => (
-  <div class="prereg-sec" id={headings ? s.id : undefined}>
-    {headings && <h3>{s.heading}</h3>}
+  <div class="prereg-sec" id={headings ? `${idPrefix}${s.id}` : undefined}>
+    {headings && <h3>{s.title}: {s.heading.replace(/\s*\(.*\)$/, "")}</h3>}
     <ol class="pred-list">
       {s.predictions.map((p) => (
         <li class="pr">

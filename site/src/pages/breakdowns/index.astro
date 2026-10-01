@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
 import EngineName from "../../components/EngineName.astro";
-import { models, urls, axes, OWA, pct, axisSpread, valueLabel, isComplete, axisRow, L } from "../../lib/site.js";
+import { models, urls, axes, groups, OWA, pct, axisSpread, valueLabel, isComplete, axisRow, L } from "../../lib/site.js";
 import { intro } from "../../lib/content.js";
 const live = models.filter((m) => isComplete(m.id, OWA));
 ---
@@ -33,11 +33,11 @@ const live = models.filter((m) => isComplete(m.id, OWA));
       </table>
     </div>
     <div class="dim-grid">
-      {axes.map((a) => (
-        <a class="dim-card" href={urls.axis(a.key)}>
-          <div class="dim-card-h">{a.h1}</div>
-          <p>{a.what}</p>
-          <div class="dim-card-f">{a.key === "depth" ? "controlled" : "descriptive"}</div>
+      {groups.map((g) => (
+        <a class="dim-card" href={urls.group(g.slug)}>
+          <div class="dim-card-h">{g.h1}</div>
+          <p>{g.what}</p>
+          <div class="dim-card-f">{g.axes.some((a) => a.key === "depth") ? "controlled" : "descriptive"}{g.axes.length > 1 ? ` · ${g.axes.length} breakdowns` : ""}</div>
         </a>
       ))}
     </div>

@@ -73,23 +73,31 @@ export const L = (id) => (modelById[id] ? modelById[id].label : id);
 
 // ---------------------------------------------------------------------------------------------
 // URLs. Every path is lowercase, hyphenated and ends in a slash.
-//   /                         the overview
-//   /models/  /models/<m>/    every model; one model
-//   /compare/ /compare/<c>/   head-to-head comparisons
-//   /breakdowns/ /breakdowns/<axis>/   accuracy by one property of the problems
-//   /<topic>/                 methodology, preregistration, repeatability, latency, model sizes,
-//                             evaluating / fine-tuning / aligning decision models, about
+//   /                          the overview
+//   /models/                   every model, and every comparison with Jev
+//   /models/jev/               Jev, the reference model
+//   /compare/jev-vs-<rival>/   each rival model's page, written as its comparison with Jev
+//   /breakdowns/ /breakdowns/<group>/   accuracy by the properties of the problems
+//   /<topic>/                  how-we-measured, repeatability, speed-size-and-memory,
+//                              evaluating / fine-tuning / aligning decision models, about
 // ---------------------------------------------------------------------------------------------
 const BASE = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const join = (...segs) => BASE + segs.filter(Boolean).map((s) => `${s}/`).join("");
+// Each non-Jev model's page is its comparison with Jev.
+export const RIVAL_PAGE = { "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
+export const rivalPageOf = (id) => RIVAL_PAGE[id] || (modelById[id] && modelById[id].family === "kev" ? "jev-vs-kev" : null);
 export const urls = {
   home: () => BASE,
   models: () => join("models"),
-  model: (id) => join("models", modelById[id] ? modelById[id].slug : id),
-  compare: () => join("compare"),
+  model: (id) => (id === "jev" ? join("models", "jev") : rivalPageOf(id) ? join("compare", rivalPageOf(id)) : `${join("models")}#${modelById[id] ? modelById[id].slug : id}`),
   comparison: (slug) => join("compare", slug),
   breakdowns: () => join("breakdowns"),
-  axis: (key) => join("breakdowns", axisByKey[key].slug),
+  group: (slug) => join("breakdowns", slug),
+  // An axis lives on its group's page; on a page with several axes, at its own section.
+  axis: (key) => { const g = groupOfAxis(key); return join("breakdowns", g.slug) + (g.axes.length > 1 ? `#${axisByKey[key].slug}` : ""); },
+  measured: () => join("how-we-measured"),
+  predictions: (section = null) => `${join("how-we-measured")}#${section ? `predictions-${section}` : "predictions"}`,
+  speed: () => join("speed-size-and-memory"),
   page: (slug) => join(slug),
   data: () => `${BASE}data/results.json`,
 };
@@ -204,6 +212,31 @@ export const axes = data.axes.map((a) => ({ key: a.key, heading: a.heading, ...(
   { slug: a.key.replace(/_/g, "-"), label: cap(a.heading), h1: `Accuracy by ${a.heading}`, query: a.heading, unit: a.key, what: `Accuracy broken down by ${a.heading}.` }) }));
 export const axisByKey = Object.fromEntries(axes.map((a) => [a.key, a]));
 export const axisBySlug = Object.fromEntries(axes.map((a) => [a.slug, a]));
+// The breakdown pages: a few axes get a page each; negation's two axes share one; every other axis,
+// including any the harness adds later, goes on the problem-size page as its own section.
+const GROUP_DEFS = [
+  { slug: "proof-depth", axes: ["depth"], label: "Proof depth" },
+  { slug: "true-false-unknown", axes: ["reference_label"], label: "True, false, unknown" },
+  { slug: "negation", axes: ["theory_negation", "statement_negated"], label: "Negation",
+    h1: "Negation: in the rules and in the statement", query: "negation reasoning decision models",
+    what: "Two kinds of \"not\": in the theory's facts and rules, and in the statement to judge. The preregistration predicted that negation in the rules would lower accuracy." },
+  { slug: "paraphrased-rules", axes: ["paraphrased"], label: "Paraphrased rules" },
+  { slug: "problem-size", axes: null, label: "Problem size and more",
+    h1: "Problem size and other parameters: length, rules, facts and proof size", query: "ProofWriter results by problem size",
+    what: "Every other property ProofWriter records about a problem: how long the theory is, how many rules and facts it has, how big the proof is, how deep the theory goes, whether it states attributes or relations, and how the question was generated. None of them was controlled when the problems were sampled." },
+];
+const claimed = new Set(GROUP_DEFS.flatMap((g) => g.axes || []));
+export const groups = GROUP_DEFS.map((g) => {
+  const SIZE_ORDER = ["words_bin", "rules_bin", "facts_bin", "proof_size_bin", "theory_max_depth", "theory_kind", "strategy"];
+  const rest = axes.map((a) => a.key).filter((k) => !claimed.has(k));
+  const keys = g.axes || [...SIZE_ORDER.filter((k) => rest.includes(k)), ...rest.filter((k) => !SIZE_ORDER.includes(k))];
+  const list = keys.filter((k) => axisByKey[k]).map((k) => axisByKey[k]);
+  const one = list.length === 1 ? list[0] : null;
+  return { ...g, axes: list, h1: g.h1 || one.h1, query: g.query || one.query, what: g.what || one.what, single: !!one };
+}).filter((g) => g.axes.length);
+export const groupBySlug = Object.fromEntries(groups.map((g) => [g.slug, g]));
+export function groupOfAxis(key) { return groups.find((g) => g.axes.some((a) => a.key === key)); }
+
 
 const VALUE_LABEL = {
   theory_negation: { negation: "with negation", "no-negation": "without negation" },
