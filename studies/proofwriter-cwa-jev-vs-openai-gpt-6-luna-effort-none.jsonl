@@ -1,0 +1,9 @@
+{"axis": "overall", "ci_high": 0.26555555555555554, "ci_low": 0.21944444444444444, "diff": 0.2427777777777778, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 1800, "task": "proofwriter-cwa", "value": "all"}
+{"axis": "depth", "ci_high": 0.03, "ci_low": 0.0, "diff": 0.013333333333333334, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "0"}
+{"axis": "depth", "ci_high": 0.21666666666666667, "ci_low": 0.12333333333333334, "diff": 0.17, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "1"}
+{"axis": "depth", "ci_high": 0.32, "ci_low": 0.21666666666666667, "diff": 0.26666666666666666, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "2"}
+{"axis": "depth", "ci_high": 0.34, "ci_low": 0.22333333333333333, "diff": 0.28, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "3"}
+{"axis": "depth", "ci_high": 0.3433333333333333, "ci_low": 0.22, "diff": 0.28, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "4"}
+{"axis": "depth", "ci_high": 0.5133333333333333, "ci_low": 0.38, "diff": 0.44666666666666666, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-cwa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.2833333333333333, "ci_low": 0.22, "diff": 0.2511111111111111, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 900, "task": "proofwriter-cwa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.2677777777777778, "ci_low": 0.20333333333333334, "diff": 0.23444444444444446, "engine_a": "jev", "engine_b": "openai-gpt-6-luna-effort-none", "n": 900, "task": "proofwriter-cwa", "value": "true"}
