@@ -1,0 +1,51 @@
+{
+  "base_revision": "68c46c4b3498877f3ef123c856ecfde50c39f404",
+  "engine": "kev-9b",
+  "launcher": "PYTHONPATH=var/kev-patched var/start_kev_size.py jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0 24 (MLX memory and wired 24 GiB, cache 256 MiB)",
+  "models": {
+    "models": [
+      {
+        "backend": "mlx",
+        "base": "Qwen/Qwen3.5-9B-Base",
+        "cuda_graphs": null,
+        "description": "Kev pointer head on Qwen/Qwen3.5-9B-Base, serving jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0 at temperature 2.19",
+        "device": "mps",
+        "dtype": "bfloat16",
+        "lora": 16,
+        "name": "kev-latest",
+        "prefix_cache": {
+          "cached_states": 0,
+          "hits": 0,
+          "min_state_tokens": 0,
+          "misses": 0,
+          "size": 0
+        },
+        "release_date": "2026-10-01",
+        "run": "jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0",
+        "temperature": 2.193649959389252
+      },
+      {
+        "backend": "mlx",
+        "base": "Qwen/Qwen3.5-9B-Base",
+        "cuda_graphs": null,
+        "description": "Kev pointer head on Qwen/Qwen3.5-9B-Base, serving jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0 at temperature 2.19",
+        "device": "mps",
+        "dtype": "bfloat16",
+        "lora": 16,
+        "name": "jev-latest",
+        "prefix_cache": {
+          "cached_states": 0,
+          "hits": 0,
+          "min_state_tokens": 0,
+          "misses": 0,
+          "size": 0
+        },
+        "release_date": "2026-10-01",
+        "run": "jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0",
+        "temperature": 2.193649959389252
+      }
+    ]
+  },
+  "runtime_patch": "tools/kev-merge-one-at-a-time.patch (merge_lora one matrix at a time; verified identical on Kev-4B, tools/README.md)",
+  "server_revision": "c9c1f855505336ac32092a5f68305d397f7fcc3e"
+}
