@@ -1,0 +1,47 @@
+--- a/kev/mlx_model.py	2026-09-23 20:30:22
++++ b/kev/mlx_model.py	2026-10-01 10:39:22
+@@ -34,24 +34,28 @@
+         raise ValueError("the MLX backend does not carry trained token embeddings (special_embeddings checkpoints); use backend=torch")
+     alpha = cfg["lora_alpha"] / (cfg["r"] ** 0.5 if cfg.get("use_rslora") else cfg["r"])
+     weights = mx.load(str(adapter_dir / "adapter_model.safetensors"))
++    # Hard-Decisions patch (2026-10-01): merge and load one weight matrix at a time instead of building every merged
++    # matrix before loading any. Each matrix gets the same fp32 CPU arithmetic and the same single rounding as the
++    # original, so the loaded weights are identical; only the order of work changes. The original kept every merged
++    # matrix and every original alive at once (about two model copies at peak); this keeps about one, plus one matrix.
+     params = dict(tree_flatten(lm.parameters()))
+-    merged = {}
+-    with mx.stream(mx.cpu):   # the GPU's fp32 matmul is a reduced-precision fast path (~1e-3 relative on an M5); the merge is one-time and must be exact
+-        for name, a in weights.items():
+-            if not name.endswith(".lora_A.weight"):
+-                continue
+-            stem = name[: -len(".lora_A.weight")]
+-            # peft names the wrapped text model `base_model.model.<layers...>`; mlx-lm nests it as `language_model.model.<layers...>`
+-            target = stem.replace("base_model.model.", "language_model.model.", 1) + ".weight"
+-            if target not in params:
+-                raise ValueError(f"adapter tensor {stem} has no weight in the mlx-lm model (looked for {target})")
+-            base = params[target]
+-            delta = (weights[stem + ".lora_B.weight"].astype(mx.float32) @ a.astype(mx.float32)) * (alpha * scale)
+-            merged[target] = (base.astype(mx.float32) + delta).astype(base.dtype)
+-        mx.eval(list(merged.values()))
+-    lm.load_weights(list(merged.items()), strict=False)
++    count = 0
++    for name in [n for n in weights if n.endswith(".lora_A.weight")]:
++        stem = name[: -len(".lora_A.weight")]
++        target = stem.replace("base_model.model.", "language_model.model.", 1) + ".weight"
++        if target not in params:
++            raise ValueError(f"adapter tensor {stem} has no weight in the mlx-lm model (looked for {target})")
++        base = params.pop(target)
++        with mx.stream(mx.cpu):
++            delta = (weights[stem + ".lora_B.weight"].astype(mx.float32) @ weights[name].astype(mx.float32)) * (alpha * scale)
++            merged = (base.astype(mx.float32) + delta).astype(base.dtype)
++            mx.eval(merged)
++        lm.load_weights([(target, merged)], strict=False)
++        del base, delta, merged
++        count += 1
++    del params
+     mx.eval(lm.parameters())
+-    return len(merged)
++    return count
+ 
+ 
+ class MLXDecisionModel:
