@@ -398,6 +398,10 @@ const depthExamples = existsSync(depthExamplesPath)
   ? { file: rel(depthExamplesPath), modified: mtime(depthExamplesPath), ...JSON.parse(readFileSync(depthExamplesPath, "utf8")) } : null;
 // Right and wrong examples per model and depth (tools/model_examples.py): seeded, blind to anything
 // but correctness, with the right/wrong mix set by the model's accuracy at that depth.
+const lunaMissesPath = join(ROOT, "studies", "luna-misses.json");
+const lunaMisses = existsSync(lunaMissesPath)
+  ? { file: rel(lunaMissesPath), modified: mtime(lunaMissesPath), ...JSON.parse(readFileSync(lunaMissesPath, "utf8")) } : null;
+
 const modelExamplesPath = join(ROOT, "studies", "model-examples.json");
 const modelExamples = existsSync(modelExamplesPath)
   ? (({ engines, selection }) => ({ file: rel(modelExamplesPath), modified: mtime(modelExamplesPath), selection, engines }))(JSON.parse(readFileSync(modelExamplesPath, "utf8"))) : null;
@@ -433,6 +437,7 @@ const data = {
   probe,
   depthExamples,
   modelExamples,
+  lunaMisses,
 };
 
 mkdirSync(dirname(OUT), { recursive: true });

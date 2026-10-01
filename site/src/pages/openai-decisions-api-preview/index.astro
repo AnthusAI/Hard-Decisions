@@ -12,6 +12,7 @@ import DiffRows from "../../components/DiffRows.astro";
 import EngineName from "../../components/EngineName.astro";
 import Predictions from "../../components/Predictions.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
+import ExampleCard from "../../components/ExampleCard.astro";
 import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, overall, axisTable, pair, L, listOf } from "../../lib/site.js";
 import { intro, DECISIONS_API } from "../../lib/content.js";
 import { predictions } from "../../lib/predictions.js";
@@ -77,6 +78,17 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
     <AccTable rows={axisTable(OWA, "depth", ids)} ids={ids} slug={OWA} valueHead="Proof depth" caption="By depth, open world" />
     <p class="more-link"><a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna in full</a>: every breakdown, answer class and paired difference.</p>
   </section>
+
+  {data.lunaMisses && (
+    <section class="wrap section" aria-labelledby="miss-h">
+      <h2 class="display" id="miss-h">One step of reasoning: problems GPT-6 Luna got wrong and Jev got right</h2>
+      <p class="lede">At proof depth 1 the answer takes one rule applied to facts stated in the text. {taskOrder.map((s, k) => { const t = data.lunaMisses.tasks[s]; return t && `${k ? " On the " : "On the "}${TASK_INFO[s].short.toLowerCase()} task, GPT-6 Luna (reasoning off) got ${int(t.luna_wrong)} of ${int(t.n)} such problems wrong, and Jev got ${int(t.luna_wrong_jev_right)} of those right.`; })}</p>
+      <p class="note">How these four are chosen: {data.lunaMisses.selection} Each card shows GPT-6 Luna's answer; Jev answered every one correctly. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
+      <div class="mde-grid">
+        {taskOrder.flatMap((s) => ((data.lunaMisses.tasks[s] || {}).examples || []).map((ex) => <ExampleCard ex={ex} task={s} depth={data.lunaMisses.depth} />))}
+      </div>
+    </section>
+  )}
 
   <section class="wrap section" aria-labelledby="lp-h">
     <h2 class="display" id="lp-h">Can Luna give you a confidence?</h2>
