@@ -3,7 +3,7 @@
 // panel and the colophon. The page body is static HTML; the only script opens #fragments.
 import "../styles/site.css";
 import steps from "../assets/steps.svg?raw";
-import { data, models, urls, absolute, groups, SITE_NAME, ANTHUS, REPO } from "../lib/site.js";
+import { data, models, allModels, urls, absolute, groups, SITE_NAME, ANTHUS, REPO } from "../lib/site.js";
 import { honesty, intro, liveComparisons } from "../lib/content.js";
 import { cardFor } from "../lib/cards.js";
 
@@ -19,8 +19,8 @@ const p = data.provenance;
 // home page and folded to one line everywhere else.
 const caveatCount = { 4: "Four", 6: "Six" }[honesty.length];
 if (!caveatCount) throw new Error(`the caveats panel needs four or six cards, not ${honesty.length}`);
-const light = models.map((e) => `--eng-${e.slug}: ${e.color};`).join(" ");
-const dark = models.map((e) => `--eng-${e.slug}: ${e.color_dark || e.color};`).join(" ");
+const light = allModels.map((e) => `--eng-${e.slug}: ${e.color};`).join(" ");
+const dark = allModels.map((e) => `--eng-${e.slug}: ${e.color_dark || e.color};`).join(" ");
 const engineCss = `:root { ${light} }
 @media (prefers-color-scheme: dark) { :root { ${dark} } }
 @media print { :root { ${light} } }`;
@@ -35,7 +35,7 @@ gtag('config', '${GA_ID}');`;
 const optOut = String.raw`(function(){try{var k='anthus-no-analytics',q=location.search.match(/[?&]notrack=(\w+)/);if(q){if(q[1]==='1')localStorage.setItem(k,'1');else localStorage.removeItem(k)}if(localStorage.getItem(k)==='1')window['ga-disable-G-31SC26SDGX']=true}catch(e){}})();`;
 const on = (k) => (current.page === k ? "on" : null);
 const cur = (k) => (current.page === k ? "page" : undefined);
-const topics = [[urls.measured(), "How we measured"], [urls.predictions(), "Predictions"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"], [urls.preview(), "OpenAI Decisions API preview"],
+const topics = [[urls.measured(), "How we measured"], [urls.depthMeans(), "What proof depth means"], [urls.predictions(), "Predictions"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"], [urls.preview(), "OpenAI Decisions API preview"],
   [urls.page("evaluating-decision-models"), "Evaluating decision models"], [urls.page("fine-tuning-decision-models"), "Fine-tuning"],
   [urls.page("aligning-decision-models"), "Aligning"], [urls.page("about"), "About"]];
 ---
@@ -102,6 +102,7 @@ const topics = [[urls.measured(), "How we measured"], [urls.predictions(), "Pred
     <div class="wrap">
       <nav class="rail" aria-label="Results by">
         <a href={urls.breakdowns()} class={on("breakdowns")} aria-current={cur("breakdowns")}>All breakdowns</a>
+        <a href={urls.depthMeans()} class={on("depth-means")} aria-current={cur("depth-means")}>What depth means</a>
         <span class="rail-sep" aria-hidden="true"></span>
         {groups.map((g) => (
           <a href={urls.group(g.slug)} class={current.group === g.slug ? "on" : null} aria-current={current.group === g.slug ? "page" : undefined}>{g.label}</a>

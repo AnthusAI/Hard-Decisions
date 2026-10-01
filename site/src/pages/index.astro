@@ -2,6 +2,9 @@
 import Base from "../layouts/Base.astro";
 import DepthChart from "../components/DepthChart.astro";
 import { coinFlipClaim } from "../lib/insights.js";
+import StepChain from "../components/StepChain.astro";
+import { depthExamples, used } from "../lib/depth.js";
+import { axisRow as depthRowOf } from "../lib/site.js";
 import Legend from "../components/Legend.astro";
 import OverallTable from "../components/OverallTable.astro";
 import EngineName from "../components/EngineName.astro";
@@ -15,6 +18,10 @@ import { tally, STATUS_WORDS } from "../lib/predictions.js";
 const LUNA = "openai-gpt-6-luna-effort-none";
 const top = leader(OWA), topC = leader(CWA);
 const claim = coinFlipClaim();
+const shallow = depthExamples(OWA).find((e) => e.depth === 0), deep = depthExamples(OWA).find((e) => e.depth === 5);
+// Accuracy range across fully scored models on all open-world problems at a depth, for the home depth examples.
+const depthRange = (d) => { const v = models.filter((m) => m.complete).map((m) => depthRowOf(m.id, OWA, "depth", String(d))).filter(Boolean).map((r) => r.accuracy); return v.length ? [Math.min(...v), Math.max(...v)] : null; };
+const range0 = depthRange(0), range5 = depthRange(5);
 const ids = models.map((m) => m.id);
 const gap0 = top ? pairRow(OWA, top.m.id, LUNA, "depth", "0") : null;
 const gap5 = top ? pairRow(OWA, top.m.id, LUNA, "depth", "5") : null;
@@ -45,6 +52,7 @@ const description = intro.home.intro;
         <span class="fig-t">Accuracy by proof depth, both tasks</span>
         <span class="fig-d">Each line is one model; each point is about 300 problems that need that many inference steps, with its 95% interval. The dashed line is chance: one in three on the open-world task, one in two on the closed-world task. <a href={urls.axis("depth")}>Every number, both tasks</a>.</span>
       </figcaption>
+      <p class="depth-explain">Depth 0: the answer is written in the text. Depth 5: five rules must be chained to reach it. <a href={urls.depthMeans()}>What proof depth means, with an example at every depth</a>.</p>
       <Legend ids={ids} slug={OWA} />
       <div class="depth-pair">
         {[OWA, CWA].map((slug) => (
@@ -56,6 +64,32 @@ const description = intro.home.intro;
       </div>
     </figure>
   </section>
+
+  {shallow && deep && (
+    <section class="wrap section" aria-labelledby="depth-means-h">
+      <h2 class="display" id="depth-means-h">What proof depth means</h2>
+      <p class="lede">Every problem is a short text of facts and if-then rules, plus a statement to judge as true, false or unknown. Proof depth counts how many rules you have to chain together to reach the answer. Two real problems from the benchmark:</p>
+      <div class="home-depth">
+        {[shallow, deep].map((e) => { const u = used(e); return (
+          <div class="home-depth-card">
+            <p class="ex-l">Depth {e.depth}{e.depth === 0 ? ": the answer is written down" : `: ${e.steps.length} rules in a chain`}</p>
+            <ul class="dx-lines">
+              {e.facts.map((f) => <li class:list={[{ used: e.depth === 0 ? (e.stated_fact && f === e.stated_fact.text) : u.facts.has(f) }]}><span class="dx-kind">fact</span> {f}</li>)}
+              {e.rules.map((r) => <li class:list={[{ used: u.rules.has(r) }]}><span class="dx-kind">rule</span> {r}</li>)}
+            </ul>
+            <p class="home-depth-q">Statement: <strong>{e.statement}</strong> Answer: <strong>{e.label}</strong>.</p>
+            {e.depth === 0
+              ? <p class="dx-why">The text states it outright, so no rule is needed.{range0 && ` Across all open-world problems at depth 0, the models we tested score from ${pct(range0[0])}% to ${pct(range0[1])}%.`}</p>
+              : <Fragment>
+                  <StepChain ex={e} compact />
+                  <p class="dx-why">Each rule produces a new fact that the next rule needs, from "{e.steps[0].uses[0].text.replace(/\.$/, "")}" to "{e.proves.replace(/\.$/, "")}". Miss one link and the answer is out of reach.{range5 && ` Across all open-world problems at depth 5, the models score from ${pct(range5[0])}% to ${pct(range5[1])}%`}{range5 && (claim ? ", and every model except Jev is at coin-flip level." : ".")}</p>
+                </Fragment>}
+          </div>
+        ); })}
+      </div>
+      <p class="note">Highlighted lines are the ones the proof uses; the rest are distractors. These are the shortest problems at their depth, so easier than typical. <a href={urls.depthMeans()}>What proof depth means, with a worked example at every depth</a>.</p>
+    </section>
+  )}
 
   <section class="wrap section" aria-labelledby="overall-h">
     <h2 class="display" id="overall-h">Overall accuracy on both tasks</h2>

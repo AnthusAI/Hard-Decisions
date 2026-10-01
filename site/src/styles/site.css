@@ -23,6 +23,8 @@
   --max: 1160px;
   /* The alarm red: used only for regulated-decision warnings. */
   --alarm: #c8102e; --alarm-on: #ffffff; --alarm-ink: #b3122e; --alarm-soft: #fdecef;
+  /* Right answers: green behind a white mark (light), bright green behind a dark mark (dark). */
+  --ok: #1a7f37; --ok-on: #ffffff; --ok-ink: #17692f;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -33,6 +35,7 @@
     --link: #6cc3f7; --focus: #6cc3f7; --det: #e8f2f8; --chip-nd: #22343f; --hatch-a: #33495a;
     --shadow: 0 1px 0 rgba(0,0,0,.2), 0 10px 30px -18px rgba(0,0,0,.7);
     --alarm: #f5475e; --alarm-on: #0f1a22; --alarm-ink: #ff8a98; --alarm-soft: #2a1a22;
+    --ok: #3fb950; --ok-on: #0f1a22; --ok-ink: #56d364;
     color-scheme: dark;
   }
 }
@@ -747,3 +750,124 @@ details.cell { scroll-margin-top: 140px; }
 @media (min-width: 720px) { .claim { font-size: 22px; } }
 #decisions-api, #predictions, [id^="predictions-"], .breakdown-sec, section[id] { scroll-margin-top: 120px; }
 .code.verbatim { max-height: 520px; overflow: auto; font-size: 12.5px; white-space: pre; word-break: normal; }
+
+/* Proof depth explainer: the problem's lines, the proof as steps and as a chain of chips. */
+.depth-ex-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 18px 16px; box-shadow: var(--shadow); }
+@media (min-width: 720px) { .depth-ex-card { padding: 24px 28px; } }
+.dx-grid { display: grid; gap: 8px 32px; }
+@media (min-width: 900px) { .dx-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); } }
+.dx-lines { list-style: none; margin: 6px 0 0; padding: 0; font-size: 14.5px; }
+.dx-lines li { padding: 3px 8px; border-left: 3px solid transparent; color: var(--muted); opacity: .7; }
+.dx-lines li.used { color: var(--ink); opacity: 1; font-weight: 600; border-left-color: var(--ink); background: var(--surface-2); }
+.dx-kind { display: inline-block; min-width: 2.6em; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.dx-statement { font-size: 18px; font-weight: 700; margin: 4px 0 12px; }
+.dx-steps { margin: 6px 0 10px; padding-left: 1.4em; font-size: 14.5px; }
+.dx-step { margin: 0 0 10px; line-height: 2; }
+.dx-with, .dx-gives { color: var(--muted); font-size: 13px; }
+.dx-answer { margin: 6px 0 0; }
+.dx-why { margin: 14px 0 8px; font-size: 15px; max-width: 60em; }
+.chip-fact, .chip-rule, .chip-derived { display: inline; padding: 2px 8px; border-radius: 6px; font-size: 13.5px; line-height: 1.9; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.chip-fact { background: var(--surface-2); border: 1px solid var(--rule); color: var(--ink); }
+.chip-rule { background: transparent; border: 1px dashed var(--floor); color: var(--ink-2); font-style: italic; }
+.chip-derived { background: color-mix(in srgb, var(--eng-jev, var(--link)) 14%, var(--surface)); border: 1px solid color-mix(in srgb, var(--eng-jev, var(--link)) 40%, var(--rule)); color: var(--ink); }
+.chip-goal { font-weight: 700; border-width: 2px; }
+.chain { list-style: none; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
+.chain-node { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 6px; }
+.chain-arrow { color: var(--muted); font-weight: 700; }
+.chain-note { font-size: 12.5px; color: var(--muted); }
+.chain.compact { border-top: 0; padding-top: 0; margin-top: 6px; }
+.dx-answers { list-style: none; margin: 8px 0 0; padding: 10px 0 0; border-top: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13.5px; }
+.dx-answers li { display: inline-flex; align-items: center; gap: 6px; }
+.dx-answers a { color: var(--ink); font-weight: 600; }
+.dx-verdict { color: var(--muted); }
+.dx-answers li.no .dx-verdict { color: var(--alarm-ink); font-weight: 600; }
+.cw-ex { margin: 18px; }
+.depth-compact { display: grid; gap: 14px; }
+.depth-compact > div { border-top: 2px solid var(--ink); padding-top: 8px; }
+.depth-explain { font-size: 14px; color: var(--ink-2); margin: 8px 0 0; }
+
+/* Home: two worked depth examples side by side (depth 0 and depth 5), stacked on narrow screens. */
+.home-depth { display: grid; gap: 18px; margin-top: 8px; }
+@media (min-width: 900px) { .home-depth { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); align-items: start; } }
+.home-depth-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 16px 18px; }
+.home-depth-q { margin: 10px 0 8px; }
+
+/* Right and wrong, depth by depth: the accuracy meter, the two-colour result icon and the cards. */
+/* Right share in green, wrong share in red, across the full width; a surface-coloured gap separates them. */
+.meter { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; width: 100%; }
+.meter-track { position: relative; height: 16px; border-radius: 8px; background: var(--alarm); overflow: hidden; }
+.meter-fill { position: absolute; inset: 0 auto 0 0; background: var(--ok); box-shadow: 2px 0 0 var(--surface); }
+.meter-chance { position: absolute; top: 0; bottom: 0; border-left: 2px dashed var(--surface); }
+.meter-v { font-family: var(--display); font-size: 26px; line-height: 1; }
+.meter-sub { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.meter-mix { display: inline-flex; gap: 3px; }
+.meter-mix i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.meter-mix i.ok { background: var(--ok); }
+.meter-mix i.no { background: var(--alarm); }
+.ri { flex: none; display: inline-block; vertical-align: middle; }
+.ri .ri-bg.ok { fill: var(--ok); }
+.ri .ri-bg.no { fill: var(--alarm); }
+.ri .ri-mark.ok { stroke: var(--ok-on); }
+.ri .ri-mark.no { stroke: var(--alarm-on); }
+.mde-row { border-top: 2px solid var(--ink); padding: 12px 0 22px; }
+.mde-row h3, .mde-row h4 { margin: 0 0 8px; }
+.mde-grid { display: grid; gap: 12px; grid-template-columns: 1fr; margin-top: 12px; }
+@media (min-width: 600px) { .mde-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .mde-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.xc { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.xc.ok { border-top: 4px solid var(--ok); }
+.xc.no { border-top: 4px solid var(--alarm); }
+.xc-head { display: flex; gap: 10px; align-items: flex-start; }
+.xc-st { font-weight: 700; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.xc-ans { color: var(--ink-2); font-size: 13px; }
+.xc-ans strong { color: var(--ink); }
+.xc-tag { align-self: flex-start; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--floor); color: var(--muted); }
+.xc details { font-size: 13px; }
+.xc details summary { cursor: pointer; color: var(--link); }
+.xc-theory { margin: 6px 0; color: var(--ink-2); line-height: 1.55; overflow-wrap: anywhere; }
+.xc .chain { margin-top: 8px; padding-top: 8px; }
+.xc .chip-fact, .xc .chip-rule, .xc .chip-derived { font-size: 12.5px; }
+.mde-cw { margin-top: 18px; }
+.mde-cw > summary { cursor: pointer; font-weight: 700; padding: 10px 0; }
+.meter-key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px -1px 0; }
+.meter-key.ok { background: var(--ok); }
+.meter-key.no { background: var(--alarm); margin-left: 6px; }
+/* Depth row header: the heading on the left, the model's accuracy at that depth on the right. */
+.mde-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.mde-head h3 { margin-bottom: 6px; }
+.mde-pct { font-family: var(--display); font-size: 26px; line-height: 1; white-space: nowrap; }
+.meter.meter-novalue { grid-template-columns: minmax(0, 1fr); }
+
+/* Confusion matrices: a real table, each cell shaded by its share of the row. Green (--ok) on the
+   diagonal, red (--alarm) off it, mixed toward the surface; ink text except at full strength, where
+   the token's own "on" colour keeps contrast (test/confusion.test.mjs checks every pairing). */
+.cm { border-collapse: separate; border-spacing: 3px; font-size: 14px; }
+.cm caption { caption-side: top; text-align: left; font-weight: 700; font-size: 13px; padding: 0 0 4px; }
+.cm th { font-weight: 700; text-align: left; padding: 4px 8px; font-size: 12.5px; color: var(--ink-2); }
+.cm thead th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.cm .cm-corner { font-weight: 600; text-transform: none; letter-spacing: 0; }
+.cm td { padding: 6px 10px; border-radius: 6px; min-width: 3.4em; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); }
+.cm.compact { font-size: 12.5px; border-spacing: 2px; }
+.cm.compact td { padding: 4px 7px; min-width: 2.8em; }
+.cm-c.lv0 { background: var(--surface); }
+.cm-ok.lv12 { background: color-mix(in srgb, var(--ok) 12%, var(--surface)); }
+.cm-ok.lv25 { background: color-mix(in srgb, var(--ok) 25%, var(--surface)); }
+.cm-ok.lv45 { background: color-mix(in srgb, var(--ok) 45%, var(--surface)); }
+.cm-ok.lv100 { background: var(--ok); color: var(--ok-on); font-weight: 700; border-color: var(--ok); }
+.cm-no.lv12 { background: color-mix(in srgb, var(--alarm) 12%, var(--surface)); }
+.cm-no.lv25 { background: color-mix(in srgb, var(--alarm) 25%, var(--surface)); }
+.cm-no.lv45 { background: color-mix(in srgb, var(--alarm) 45%, var(--surface)); }
+.cm-no.lv100 { background: var(--alarm); color: var(--alarm-on); font-weight: 700; border-color: var(--alarm); }
+.cm-key { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 6px 0 10px; }
+.cm-key span { display: inline-flex; align-items: center; gap: 4px; }
+.cm-sw { display: inline-block; width: 16px; height: 12px; border-radius: 3px; border: 1px solid var(--rule); }
+.cm-sw.cm-ok.lv25 { background: color-mix(in srgb, var(--ok) 25%, var(--surface)); }
+.cm-sw.cm-no.lv25 { background: color-mix(in srgb, var(--alarm) 25%, var(--surface)); }
+.cm-sw.lv100.cm-ok { background: var(--ok); }
+.cm-sw.lv100.cm-no { background: var(--alarm); }
+.cm-grid { display: grid; gap: 14px 24px; grid-template-columns: 1fr; margin: 8px 0 12px; }
+@media (min-width: 900px) { .cm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cm-grid.three { }
+@media (min-width: 1100px) { .cm-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cm-pair { display: grid; gap: 10px 24px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .cm-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

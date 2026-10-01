@@ -1,0 +1,17 @@
+---
+// One model's accuracy at one depth on one task: a 0-100% bar, the chance line, the number, and
+// Green for the share right, red for the share wrong. Optionally the right/wrong mix of the examples shown beside it.
+import { pct, int } from "../lib/site.js";
+const { accuracy, chance, n = null, right = null, wrong = null, label = "Accuracy", showValue = true } = Astro.props;
+---
+<div class:list={["meter", { "meter-novalue": !showValue }]} role="group" aria-label={`${label}: ${pct(accuracy)}% (chance ${pct(chance, 0)}%)`}>
+  <div class="meter-track" aria-hidden="true">
+    <span class="meter-fill" style={`width:${(100 * accuracy).toFixed(2)}%`}></span>
+    <span class="meter-chance" style={`left:${(100 * chance).toFixed(2)}%`}></span>
+  </div>
+  {showValue && <span class="meter-v">{pct(accuracy)}%</span>}
+  <span class="meter-sub">
+    <span><span class="meter-key ok"></span>{n ? `right on ${int(Math.round(accuracy * n))} of ${int(n)} problems` : "right"} <span class="meter-key no"></span>wrong; chance {pct(chance, 0)}% (dashed line)</span>
+    {right != null && wrong != null && <span class="meter-mix" aria-label={`examples shown: ${right} right, ${wrong} wrong`}>{Array.from({ length: right }, () => <i class="ok"></i>)}{Array.from({ length: wrong }, () => <i class="no"></i>)}</span>}
+  </span>
+</div>

@@ -170,6 +170,12 @@ function previewCard() {
     rows: [jo ? { engine: "jev", text: `Jev at 99% or more: right ${pct(jo.accuracy)}%` } : null, { text: "Luna-based preview; the Decisions API itself is untested" }].filter(Boolean) };
 }
 
+function depthMeansCard() {
+  return { template: "topic", headline: intro.depthMeans.title,
+    description: fit(`${intro.depthMeans.intro} The examples are the shortest problems at each depth, so easier than typical; the accuracy tables show the real picture.`),
+    rows: [{ text: "Depth 0: the answer is written in the text" }, { text: "Depth 5: five rules must be chained to reach it" }] };
+}
+
 function aboutCard() {
   return { template: "topic", headline: intro.about.title, description: intro.about.intro,
     rows: [{ text: "Anthus AI Solutions made this. It's self-funded." }, { text: `Models: ${listOf(models.map((m) => m.label))}` }] };
@@ -211,6 +217,7 @@ export function allCards() {
   out.push(finish(urls.page("repeatability"), repeatCard()));
   out.push(finish(urls.speed(), latencyCard()));
   out.push(finish(urls.preview(), previewCard()));
+  out.push(finish(urls.depthMeans(), depthMeansCard()));
   out.push(finish(urls.page("evaluating-decision-models"), depth5Card("evaluating")));
   out.push(finish(urls.page("fine-tuning-decision-models"), depth5Card("finetuning")));
   out.push(finish(urls.page("aligning-decision-models"), { ...hubCard("aligning"), template: "topic" }));

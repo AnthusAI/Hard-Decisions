@@ -1,0 +1,31 @@
+---
+// One model's confusion at depth 0 and depth 5, side by side, with a sentence on what changes:
+// open world first, closed world in a fold-out.
+import ConfusionMatrix from "./ConfusionMatrix.astro";
+import { modelById, OWA, CWA, TASK_INFO } from "../lib/site.js";
+import { matrixOf, depthChangeSentence } from "../lib/confusion.js";
+const { id, heading = true } = Astro.props;
+const m = modelById[id];
+const pairOf = (slug) => { const a = matrixOf(id, slug, 0), b = matrixOf(id, slug, 5); return a && b ? { a, b } : null; };
+const owa = pairOf(OWA), cwa = pairOf(CWA);
+---
+{owa && (
+  <div class="cm-depths" data-engine={id}>
+    {heading && <h3>{m.label} at depth 0 and depth 5</h3>}
+    <div class="cm-pair">
+      <ConfusionMatrix id={id} slug={OWA} depth={0} compact />
+      <ConfusionMatrix id={id} slug={OWA} depth={5} compact />
+    </div>
+    <p class="note">{TASK_INFO[OWA].short.replace(" w", "-w")} task. {depthChangeSentence(owa.a, owa.b)}</p>
+    {cwa && (
+      <details class="cell">
+        <summary>The closed-world task at depth 0 and depth 5</summary>
+        <div class="cm-pair">
+          <ConfusionMatrix id={id} slug={CWA} depth={0} compact />
+          <ConfusionMatrix id={id} slug={CWA} depth={5} compact />
+        </div>
+        <p class="note">{TASK_INFO[CWA].short.replace(" w", "-w")} task. {depthChangeSentence(cwa.a, cwa.b)}</p>
+      </details>
+    )}
+  </div>
+)}

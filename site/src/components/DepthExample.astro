@@ -1,0 +1,46 @@
+---
+// One worked example: the problem with the lines its proof uses highlighted, the proof as numbered
+// steps and as a chain, the answer, why it is this depth, and each model's answer on it.
+import StepChain from "./StepChain.astro";
+import Marker from "./Marker.astro";
+import { urls, pct } from "../lib/site.js";
+import { used, whyThisDepth, answersOf } from "../lib/depth.js";
+const { ex, prev = null, idPrefix = "depth-" } = Astro.props;
+const u = used(ex);
+---
+<div class="depth-ex-card" data-depth={ex.depth} data-steps={ex.steps.length}>
+  <div class="dx-grid">
+    <div>
+      <p class="ex-l">The text ({ex.facts.length} facts, {ex.rules.length} rules, {ex.theory_words} words)</p>
+      <ul class="dx-lines">
+        {ex.facts.map((f) => <li class:list={[{ used: u.facts.has(f) }]}><span class="dx-kind">fact</span> {f}</li>)}
+        {ex.rules.map((r) => <li class:list={[{ used: u.rules.has(r) }]}><span class="dx-kind">rule</span> {r}</li>)}
+      </ul>
+      <p class="note">Highlighted lines are the ones the proof uses; the muted ones are distractors.</p>
+    </div>
+    <div>
+      <p class="ex-l">Statement</p>
+      <p class="dx-statement">{ex.statement}</p>
+      <p class="ex-l">Proof, {ex.steps.length === 0 ? "no steps" : `${ex.steps.length} step${ex.steps.length === 1 ? "" : "s"}`}</p>
+      {ex.depth === 0 ? <p class="dx-step-none">"{ex.stated_fact ? ex.stated_fact.text : ex.statement}" is one of the facts.</p> : (
+        <ol class="dx-steps">
+          {ex.steps.map((s) => (
+            <li class="dx-step"><span class="dx-premises">{s.uses.map((x, i) => <Fragment>{i > 0 && " and "}<span class={x.kind === "fact" ? "chip-fact" : "chip-derived"}>{x.text.replace(/\.$/, "")}</span></Fragment>)}</span> <span class="dx-with">with</span> <span class="chip-rule">{s.rule_text}</span> <span class="dx-gives">gives</span> <span class="chip-derived">{s.conclusion_text}</span></li>
+          ))}
+        </ol>
+      )}
+      <p class="dx-answer">Answer: <strong>{ex.label}</strong>.</p>
+    </div>
+  </div>
+  {ex.depth > 0 && <StepChain ex={ex} />}
+  <p class="dx-why">{whyThisDepth(ex, prev)}</p>
+  <ul class="dx-answers" aria-label="Each model's answer on this example">
+    {answersOf(ex).map((a) => (
+      <li class:list={[a.correct ? "ok" : "no"]}>
+        {a.m ? <Fragment><Marker engine={a.m} size={11} />{a.m.measured ? <a href={urls.model(a.id)}>{a.m.label}</a> : a.m.label}{a.m.setting && <span class="dx-verdict">({a.m.setting})</span>}</Fragment> : a.id}
+        <span class="dx-verdict">{a.correct ? "right" : "wrong"}: {a.choice}{a.probability != null ? `, ${pct(a.probability)}% sure` : ""}{a.probability == null && a.probe_probability != null && a.probe_choice === a.choice && <Fragment>, {pct(a.probe_probability)}% sure (<a href={urls.preview()} title="From the separate log-probability probe, which asked this problem again with log-probabilities on and gave the same answer">probe</a>)</Fragment>}</span>
+      </li>
+    ))}
+  </ul>
+  {ex.depth === 0 && <p class="note dx-note">Percentages are each model's own stated confidence in its answer to this one problem, not its accuracy. GPT-6 Luna's scored run returned no probability, so its figure comes from the <a href={urls.preview()}>log-probability probe</a>, which asked the same problem again and gave the same answer.</p>}
+</div>

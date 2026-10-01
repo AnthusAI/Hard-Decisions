@@ -17,7 +17,7 @@ const scored = new Set(Object.values(DATA.results).flatMap((r) => Object.keys(r.
 export const EXPECTED = ["/", "/models/", "/models/jev/", "/compare/jev-vs-gpt-6-luna/", "/compare/jev-vs-kev/", "/compare/jev-vs-laya/",
   "/breakdowns/", "/breakdowns/proof-depth/", "/breakdowns/true-false-unknown/", "/breakdowns/negation/", "/breakdowns/paraphrased-rules/",
   "/breakdowns/problem-size/", "/how-we-measured/", "/repeatability/", "/speed-size-and-memory/", "/evaluating-decision-models/",
-  "/fine-tuning-decision-models/", "/aligning-decision-models/", "/about/", "/openai-decisions-api-preview/"];
+  "/fine-tuning-decision-models/", "/aligning-decision-models/", "/about/", "/openai-decisions-api-preview/", "/what-proof-depth-means/"];
 
 test("the build produced exactly the merged page set", () => {
   assert.deepEqual(content.map((p) => p.path).sort(), [...EXPECTED].sort());

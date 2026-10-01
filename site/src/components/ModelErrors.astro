@@ -1,6 +1,8 @@
 ---
 // Where one model errs: its confusion matrix on each task and its answer mix against the true mix.
-import Confusion from "./Confusion.astro";
+import ConfusionMatrix from "./ConfusionMatrix.astro";
+import ConfusionLegend from "./ConfusionLegend.astro";
+import DepthConfusionPair from "./DepthConfusionPair.astro";
 import { overall, taskOrder, taskBySlug, TASK_INFO, modelById, pct } from "../lib/site.js";
 const { id, named = false } = Astro.props;
 const m = modelById[id];
@@ -12,10 +14,12 @@ const answerMix = (slug) => {
   return Object.entries(said).filter(([, v]) => v > 0).map(([k, v]) => ({ k, share: v / o.n }));
 };
 ---
+<ConfusionLegend />
 {taskOrder.filter((s) => overall(id, s)).map((s) => { const mix = answerMix(s); return (
   <Fragment>
     <h3>{named ? `${m.label}, ${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task` : TASK_INFO[s].long}</h3>
-    <Confusion id={id} slug={s} />
+    <ConfusionMatrix id={id} slug={s} />
     {mix && <p class="note">{m.label} answered {mix.map((x) => `${x.k} ${pct(x.share)}%`).join(", ")} of the time; the correct answers are {Object.entries(taskBySlug[s].selected.reference_label).map(([k, v]) => `${k} ${pct(v / taskBySlug[s].n)}%`).join(", ")}.</p>}
   </Fragment>
 ); })}
+<DepthConfusionPair id={id} />

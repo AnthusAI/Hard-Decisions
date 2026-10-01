@@ -9,6 +9,7 @@ import ModelConsistency from "../../../components/ModelConsistency.astro";
 import ModelFacts from "../../../components/ModelFacts.astro";
 import BreakdownSpread from "../../../components/BreakdownSpread.astro";
 import PredLine from "../../../components/PredLine.astro";
+import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
 import EngineName from "../../../components/EngineName.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
 import { models, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, gb, overall, axisTable, axisSpread, valueLabel,
@@ -70,6 +71,8 @@ const answerMix = (slug) => {
       <Fragment><h3>{TASK_INFO[s].long}</h3><AccTable rows={axisTable(s, "depth", chartIds)} ids={chartIds} slug={s} valueHead="Proof depth" caption={`${m.label} by depth, ${TASK_INFO[s].short}`} /></Fragment>
     ))}
   </section>
+
+  <ModelDepthExamples id={id} />
 
   <section class="wrap section" aria-labelledby="class-h">
     <h2 class="display" id="class-h">True, false and unknown: where {m.label} errs</h2>

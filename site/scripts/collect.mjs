@@ -392,6 +392,15 @@ function readProbe(tasks) {
 }
 
 const probe = readProbe(tasks);
+// Worked examples of proof depth (tools/depth_examples.py): fixed, answer-blind selection.
+const depthExamplesPath = join(ROOT, "studies", "depth-examples.json");
+const depthExamples = existsSync(depthExamplesPath)
+  ? { file: rel(depthExamplesPath), modified: mtime(depthExamplesPath), ...JSON.parse(readFileSync(depthExamplesPath, "utf8")) } : null;
+// Right and wrong examples per model and depth (tools/model_examples.py): seeded, blind to anything
+// but correctness, with the right/wrong mix set by the model's accuracy at that depth.
+const modelExamplesPath = join(ROOT, "studies", "model-examples.json");
+const modelExamples = existsSync(modelExamplesPath)
+  ? (({ engines, selection }) => ({ file: rel(modelExamplesPath), modified: mtime(modelExamplesPath), selection, engines }))(JSON.parse(readFileSync(modelExamplesPath, "utf8"))) : null;
 const memory = {};
 for (const m of manifests) {
   if (!m.memory) continue;
@@ -422,6 +431,8 @@ const data = {
     busy_processes: load && load.start ? (load.start.busy_processes || []).length : null })),
   prereg,
   probe,
+  depthExamples,
+  modelExamples,
 };
 
 mkdirSync(dirname(OUT), { recursive: true });

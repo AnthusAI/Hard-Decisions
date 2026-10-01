@@ -1,0 +1,18 @@
+---
+// A proof as a chain of chips: the starting fact, then each rule and the new fact it gives.
+const { ex, compact = false } = Astro.props;
+---
+<ol class:list={["chain", { compact }]} aria-label={`Proof of "${ex.statement}" in ${ex.steps.length} step${ex.steps.length === 1 ? "" : "s"}`}>
+  {ex.depth === 0 ? (
+    <li class="chain-node"><span class="chip-fact">{ex.stated_fact ? ex.stated_fact.text : ex.statement}</span><span class="chain-note">stated in the text</span></li>
+  ) : ex.steps.map((s, i) => (
+    <li class="chain-node">
+      {i === 0 && <span class="chip-fact">{s.uses.filter((u) => u.kind === "fact").map((u) => u.text).join(" + ")}</span>}
+      {i > 0 && s.uses.some((u) => u.kind === "fact") && <span class="chip-fact chip-extra">+ {s.uses.filter((u) => u.kind === "fact").map((u) => u.text).join(" + ")}</span>}
+      <span class="chain-arrow" aria-hidden="true">→</span>
+      {!compact && <span class="chip-rule">{s.rule_text}</span>}
+      {!compact && <span class="chain-arrow" aria-hidden="true">→</span>}
+      <span class:list={["chip-derived", { "chip-goal": i === ex.steps.length - 1 }]}>{s.conclusion_text}</span>
+    </li>
+  ))}
+</ol>

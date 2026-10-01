@@ -7,8 +7,13 @@ import AccTable from "../../../components/AccTable.astro";
 import DiffRows from "../../../components/DiffRows.astro";
 import EngineName from "../../../components/EngineName.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
+import StepChain from "../../../components/StepChain.astro";
+import ConfusionMatrix from "../../../components/ConfusionMatrix.astro";
+import ConfusionLegend from "../../../components/ConfusionLegend.astro";
+import { matrixOf, weakestSentence, leanSentence } from "../../../lib/confusion.js";
+import { depthExamples } from "../../../lib/depth.js";
 import { models, modelById, urls, axes, groups, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, int, axisTable, axisRow, pair, recallAt, derived, overall,
-  isComplete, valueLabel, L, listOf } from "../../../lib/site.js";
+  isComplete, valueLabel, L, listOf, ranked } from "../../../lib/site.js";
 import { axisLead, axisLeadText } from "../../../lib/cards.js";
 
 export function getStaticPaths() {
@@ -45,6 +50,21 @@ const claim = isDepth ? coinFlipClaim() : null;
     {multi && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not these properties. Several of them grow with depth and with each other, so each section gives the average proof depth of its slices; the answer mix and mean depth of every slice are in the tables.</p>}
     {!isDepth && !multi && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not {a.label.toLowerCase()}.{depthRange && ` Across these slices the average proof depth runs from ${depthRange[0].toFixed(1)} to ${depthRange[1].toFixed(1)}, so depth differs between slices and can add to or mask any gap.`} The answer mix and mean depth of every slice are in the tables.</p>}
   </section>
+
+  {g.axes.some((x) => x.key === "reference_label") && (
+    <section class="wrap section" id="confusion" aria-labelledby="confusion-h">
+      <h2 class="display" id="confusion-h">Every model's answers as a confusion matrix</h2>
+      <p class="lede">A confusion matrix sorts every problem by its correct answer (the rows) and what the model said (the columns). Right answers sit on the diagonal; everything off it is an error, and where the errors land shows which answer a model reaches for when it is wrong. Fully scored models, most accurate first, on the same 1,800 open-world problems.</p>
+      <ConfusionLegend />
+      <div class="cm-grid three">{ranked(OWA).filter((x) => x.complete).map((x) => <ConfusionMatrix id={x.m.id} slug={OWA} compact />)}</div>
+      <p class="note">{ranked(OWA).filter((x) => x.complete).map((x) => weakestSentence(matrixOf(x.m.id, OWA))).join(". ")}.</p>
+      <details class="cell">
+        <summary>The closed-world task (true or false)</summary>
+        <div class="cm-grid three">{ranked(CWA).filter((x) => x.complete).map((x) => <ConfusionMatrix id={x.m.id} slug={CWA} compact />)}</div>
+        <p class="note">{ranked(CWA).filter((x) => x.complete).map((x) => leanSentence(matrixOf(x.m.id, CWA))).join(". ")}.</p>
+      </details>
+    </section>
+  )}
 
   {!multi && <Fragment>
   {taskOrder.map((s) => { const rows = axisTable(s, a.key, ids); const t = taskBySlug[s]; return (
@@ -83,10 +103,10 @@ const claim = isDepth ? coinFlipClaim() : null;
     <Fragment>
       <section class="wrap section" aria-labelledby="ex-h">
         <h2 class="display" id="ex-h">What a deeper proof looks like</h2>
-        <p class="lede">The shortest templated item in the open-world sample at each depth whose answer is true. Each needs one more rule application than the last.</p>
-        <div class="ex-grid depth-ex">
-          {Object.values(taskBySlug[OWA].examples).map((e) => (
-            <div class="ex-v"><span class="ex-l">Depth {e.depth} · answer: {e.label}</span><p class="ex-text">{e.text.split("\n\nStatement: ")[0]}<br /><strong>Statement: {e.text.split("\n\nStatement: ")[1]}</strong></p></div>
+        <p class="lede">Three real open-world problems, each proof drawn as a chain from a stated fact to the answer. They are the shortest problems at their depth, so easier than typical. <a href={urls.depthMeans()}>What proof depth means, with a worked example at every depth</a>.</p>
+        <div class="depth-compact">
+          {depthExamples(OWA).filter((e) => [0, 2, 5].includes(e.depth)).map((e) => (
+            <div><p class="ex-l">Depth {e.depth} · statement: {e.statement}</p><StepChain ex={e} compact={e.depth > 2} /></div>
           ))}
         </div>
       </section>

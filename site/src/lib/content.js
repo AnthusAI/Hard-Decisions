@@ -46,6 +46,9 @@ export const intro = {
   preview: { title: "Previewing the OpenAI Decisions API through GPT-6 Luna: accuracy and confidence on deep reasoning",
     seoTitle: "OpenAI Decisions API preview: GPT-6 Luna's accuracy and confidence", query: "OpenAI Decisions API",
     intro: "OpenAI's new Decisions API is built on a version of GPT-6 Luna. We have not tested the API itself. We tested GPT-6 Luna the way such a decision model works: one request, a fixed list of answers, reasoning off. Here is how accurate it is on multi-step reasoning, and whether its own probabilities can tell you when to trust an answer." },
+  depthMeans: { title: "What proof depth means: multi-hop reasoning, step by step, with examples",
+    seoTitle: "What proof depth means: multi-hop reasoning examples from ProofWriter", query: "multi-hop reasoning examples",
+    intro: "Proof depth is how many rules must be chained to reach an answer. Here is what that means, from a statement written in the text (depth 0) to one that needs five chained inferences (depth 5), with a real ProofWriter problem and its proof at every depth." },
   about: { title: "Who makes this and how we tested each model", query: "Hard-Decisions benchmark",
     intro: "Who makes this site, how it is funded, and how each model was reached." },
 };
