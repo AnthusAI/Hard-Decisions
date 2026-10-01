@@ -1,4 +1,4 @@
-.PHONY: install test replay report check verify
+.PHONY: install test replay report check verify deploy
 install:
 	python3 -m pip install -e '.[dev,jev]'
 test:
@@ -10,3 +10,5 @@ replay:      ## rescore every committed record, offline
 report:
 	hd report
 check: test replay report
+deploy:      ## build, test and upload site/dist to Amplify (hard-decisions.anth.us; AWS profile legacy)
+	tools/deploy_site.sh
