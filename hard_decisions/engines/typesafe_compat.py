@@ -12,9 +12,10 @@ from hard_decisions.engines.base import EngineAnswer
 
 
 class TypesafeCompatibleEngine:
-    def __init__(self, name: str, base_url: str, client_factory=None):
+    def __init__(self, name: str, base_url: str, client_factory=None, model: str = "kev-latest"):
         self.name = name
         self._base_url = base_url
+        self._model = model
         self._client_factory = client_factory
         self._client = None
 
@@ -31,7 +32,8 @@ class TypesafeCompatibleEngine:
     async def answer(self, text: str, questions: Mapping[str, Mapping[str, Any]]) -> EngineAnswer:
         if self._client is None:
             self._client = self._build_client()
-        response = await self._client.system_one(state={"text": text}, questions=dict(questions))
+        # Name the model explicitly: the SDK's default is Jev's alias, which a Kev server also answers to.
+        response = await self._client.system_one(state={"text": text}, questions=dict(questions), model=self._model)
         dump = lambda v: v.model_dump() if hasattr(v, "model_dump") else dict(v)  # noqa: E731
         usage = dump(response.usage) if getattr(response, "usage", None) else None
         answers: Dict[str, dict] = {n: dump(a) for n, a in (response.answers or {}).items()}

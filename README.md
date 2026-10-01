@@ -6,13 +6,26 @@ broken down by **proof depth** (the difficulty axis) and by the dataset's other 
 kind, negation, question strategy, paraphrase, theory length, rule count, fact count and proof size.
 
 It reuses the Biased-Decisions design: an `Engine` protocol, committed answer records, offline scoring with
-bootstrap intervals, preregistration, and a floor to read each number against. First engine: Jev. Next: Laya and
-other open decision models, then hosted LLMs from several vendors.
+bootstrap intervals, preregistration, and a floor to read each number against.
+
+## Engines
+
+| engine | kind | how it is called | cost |
+|---|---|---|---|
+| `jev` | hosted decision model | `typesafe-sdk`, `TYPESAFE_API_KEY` | $42 per billion input tokens |
+| `laya` | open decision model | upstream `laya` package, MPS or CPU | local |
+| `kev-0.8b` | open decision model | pinned local Kev server on `HD_KEV_URL` (default `127.0.0.1:8009`) | local |
+| `openai:gpt-6-luna` | LLM classifier, reasoning off | `openai` SDK, `OPENAI_API_KEY` | $0.10 / $0.50 per M tokens |
+| `anthropic:claude-*` | LLM classifier, lowest reasoning | `anthropic` SDK, `ANTHROPIC_API_KEY` | implemented, not run |
+
+LLM engines are recorded under `<vendor>-<model>-<setting>` (e.g. `openai-gpt-6-luna-effort-none`); a different
+model or reasoning setting is a new engine. Only models listed in `hard_decisions/engines/llm.py` and priced in
+`hard_decisions/pricing.py` can run.
 
 ## Quickstart
 
 ```
-make install
+make install                  # add '.[llm]' for the LLM engines
 hd fetch --confirm            # one-time: download and checksum the 214 MB ProofWriter archive into .data/
 hd verify                     # recompute every gold label with the independent solver (216,820 questions)
 hd build --n 1800 --seed 0    # sample 1,800 items per semantics (OWA, CWA), difficulty-diverse

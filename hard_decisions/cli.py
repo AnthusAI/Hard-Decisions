@@ -108,18 +108,29 @@ def _engine(name: str):
     if name.startswith("kev"):
         from hard_decisions.engines.typesafe_compat import TypesafeCompatibleEngine
         return TypesafeCompatibleEngine(name, KEV_URL)
-    raise SystemExit(f"unknown engine {name!r}; available: jev, laya, kev-<size>")
+    if ":" in name:
+        from hard_decisions.engines.llm import ChatClassifierEngine, spec_for
+        vendor, model = name.split(":", 1)
+        return ChatClassifierEngine(spec_for(vendor, model))
+    raise SystemExit(f"unknown engine {name!r}; available: jev, laya, kev-<size>, <vendor>:<model>")
 
 
 def cmd_answer(args) -> int:
     task = Task.load(args.task)
     items = task.load_items()
-    path = record_path(args.engine, task.slug)
+    engine = _engine(args.engine)
+    path = record_path(engine.name, task.slug)
     todo = answering.pending(items, path, args.limit)
     texts = {i["id"]: i["text"] for i in items}
-    print(f"{args.engine} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
+    print(f"{engine.name} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
     if args.engine == "jev":
         print(f"price: {answering.estimate(task, todo, read_record(path), texts)}")
+    elif ":" in args.engine:
+        price = answering.estimate_llm(engine.spec, task, todo, read_record(path), texts)
+        print(f"price: {price if price else 'unknown: add ' + engine.spec.model + ' to hard_decisions/pricing.py'}")
+        if price is None and args.confirm:
+            print("refusing: a paid engine must be priced before it runs", file=sys.stderr)
+            return 2
     else:
         print("price: $0 (open weights, runs locally)")
     if not args.confirm:
@@ -128,7 +139,7 @@ def cmd_answer(args) -> int:
     if args.max_requests is None or len(todo) > args.max_requests:
         print(f"refusing: --max-requests must be given and at least {len(todo)}", file=sys.stderr)
         return 2
-    stats = asyncio.run(answering.run(_engine(args.engine), task, todo, path, concurrency=args.concurrency))
+    stats = asyncio.run(answering.run(engine, task, todo, path, concurrency=args.concurrency))
     print(f"answered {stats['answered']}, failed {stats['failed']} (rerun to retry failures)")
     return 0 if not stats["failed"] else 1
 

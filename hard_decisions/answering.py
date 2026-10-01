@@ -63,6 +63,48 @@ def estimate(task: Task, items: Sequence[dict], recorded: Sequence[dict],
     return Price(requests=len(items), input_tokens=total, usd=total * JEV_USD_PER_INPUT_TOKEN, basis=basis)
 
 
+@dataclass
+class LLMPrice:
+    requests: int
+    input_tokens: float
+    output_tokens: float
+    usd: float
+    basis: str
+
+    def __str__(self) -> str:
+        return (f"{self.requests} requests, ~{self.input_tokens:,.0f} input and ~{self.output_tokens:,.0f} output "
+                f"tokens, ~${self.usd:.2f} at list price ({self.basis})")
+
+
+ASSUMED_OUTPUT_TOKENS = {False: 15, True: 600}   # without / with a reasoning setting, until measured
+
+
+def estimate_llm(spec, task: Task, items: Sequence[dict], recorded: Sequence[dict],
+                 texts: Dict[str, str]) -> Optional[LLMPrice]:
+    """Price a hosted LLM run from measured usage when a record exists, else from text length and a
+    conservative output allowance. None when the model has no list price on file."""
+    from hard_decisions import pricing
+    from hard_decisions.engines.llm import render_prompt
+    rates = pricing.per_token(spec.model)
+    if rates is None:
+        return None
+    question = next(iter(task.wire_questions().values()))
+    chars = [len(render_prompt(i["text"], question)) for i in items]
+    measured = [r for r in recorded if r.get("usage") and r["usage"].get("input_tokens") and r["id"] in texts]
+    if measured:
+        per_char = sum(r["usage"]["input_tokens"] for r in measured) / sum(
+            len(render_prompt(texts[r["id"]], question)) for r in measured)
+        out_each = sum(r["usage"].get("output_tokens") or 0 for r in measured) / len(measured)
+        basis = f"measured from {len(measured)} recorded requests"
+    else:
+        per_char = 1 / DEFAULT_CHARS_PER_TOKEN
+        out_each = ASSUMED_OUTPUT_TOKENS[spec.setting not in ("t0", "no-thinking", "effort-none")]
+        basis = f"estimated; assumes {out_each} output tokens per request"
+    inp = sum(chars) * per_char
+    out = out_each * len(items)
+    return LLMPrice(len(items), inp, out, inp * rates[0] + out * rates[1], basis)
+
+
 async def run(engine: Engine, task: Task, items: Sequence[dict], path: Path, *, concurrency: int = 8,
               max_failures: int = 10) -> Dict[str, int]:
     """Answer ``items`` and append each row as it arrives. Returns counts."""

@@ -53,3 +53,23 @@ resolvable at the depth-by-label level. Breakdowns are descriptive, not causal.
   1. Kev's accuracy falls with proof depth on both tasks.
   2. Kev is below Jev overall on both tasks (paired interval excludes zero).
   3. On OWA, Kev's `unknown` recall is its lowest class recall.
+
+## Amendment 2: LLM classifiers (written before any LLM answered an item)
+
+- **Engine:** `openai-gpt-6-luna-effort-none`: OpenAI `gpt-6-luna` through Chat Completions with
+  `reasoning_effort: none`, its lowest setting, so it answers directly as a classifier. The vendor's returned
+  model id is recorded per row.
+- **Protocol:** one request per item. The prompt is the item text, then the task's question and each option with
+  its description (the same wire question every engine gets), asking for `{"answer": <option>}`. The reply is
+  constrained by a strict JSON schema with the options as an enum. Any reply that is not exactly one option is
+  scored as invalid and kept raw in the record; it is never re-asked. Same sample, metrics and floors as above;
+  paired differences are Jev minus Luna on the same items.
+- **Spend:** list price $0.10 input and $0.50 output per million tokens; the dry run prices both tasks at about
+  $0.15 in total.
+- **Claude engines** (`hard_decisions/engines/llm.py`) are implemented but not run: there is no Anthropic key.
+- **Predictions:**
+  1. Luna's accuracy falls with proof depth on both tasks.
+  2. On OWA, Luna's `unknown` recall is its lowest class recall.
+  3. With reasoning off, Luna does not beat Jev at depth 5 on OWA (the paired interval does not exclude zero in
+     Luna's favour).
+  4. Paraphrased rules lower Luna's accuracy less than they lower Jev's.
