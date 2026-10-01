@@ -1,0 +1,46 @@
+---
+import Base from "../../layouts/Base.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import EngineName from "../../components/EngineName.astro";
+import { models, urls, axes, OWA, pct, axisSpread, valueLabel, isComplete, axisRow, L } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+const live = models.filter((m) => isComplete(m.id, OWA));
+---
+<Base title={intro.breakdowns.title} description={intro.breakdowns.intro} path={urls.breakdowns()} current={{ page: "breakdowns" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Breakdowns" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Breakdowns · ProofWriter results</p>
+    <h1 class="display xl">{intro.breakdowns.title}</h1>
+    <p class="deck">{intro.breakdowns.intro}</p>
+  </section>
+  <section class="wrap section tight" aria-labelledby="d5-h">
+    <h2 class="display sm" id="d5-h">At the deep end: accuracy at proof depth 5</h2>
+    <ul class="around-list">
+      {live.map((m) => { const r = axisRow(m.id, OWA, "depth", "5"); return r && <li><EngineName engine={m} href={urls.model(m.id)} /><span>{pct(r.lo)} to {pct(r.hi)} (95%), open world</span><span class="av">{pct(r.accuracy)}%</span></li>; })}
+    </ul>
+    <p class="note">Fully scored models only. GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model.</p>
+  </section>
+  <section class="wrap section" aria-labelledby="all-h">
+    <h2 class="display" id="all-h">Every breakdown, with each model's weakest slice</h2>
+    <p class="lede">Open-world task; weakest and strongest slices of at least 50 items.</p>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Breakdown</th>{live.map((m) => <th scope="col"><EngineName engine={m} /></th>)}</tr></thead>
+        <tbody>{axes.map((a) => (
+          <tr><th scope="row"><a href={urls.axis(a.key)}>{a.label}</a></th>
+            {live.map((m) => { const s = axisSpread(m.id, OWA, a.key); return <td class="sub">{s ? `${valueLabel(a.key, s.lo.value)} ${pct(s.lo.accuracy)}% · ${valueLabel(a.key, s.hi.value)} ${pct(s.hi.accuracy)}%` : "—"}</td>; })}</tr>
+        ))}</tbody>
+      </table>
+    </div>
+    <div class="dim-grid">
+      {axes.map((a) => (
+        <a class="dim-card" href={urls.axis(a.key)}>
+          <div class="dim-card-h">{a.h1}</div>
+          <p>{a.what}</p>
+          <div class="dim-card-f">{a.key === "depth" ? "controlled" : "descriptive"}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+  <AnthusNote />
+</Base>

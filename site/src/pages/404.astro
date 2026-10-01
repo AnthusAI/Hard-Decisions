@@ -1,0 +1,14 @@
+---
+import Base from "../layouts/Base.astro";
+import { models, axes, urls } from "../lib/site.js";
+---
+<Base title="Not found" description="This address is not a page on the Hard-Decisions benchmark." path={`${urls.home()}404/`} noindex
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Not found" }]}>
+  <section class="wrap hero">
+    <p class="kicker">404</p>
+    <h1 class="display xl">No page at this address</h1>
+    <p class="deck">We measure how accurately decision models and LLM classifiers reason through multi-step problems. This address does not lead to a result, but you can start from these:</p>
+    <nav class="chips" aria-label="Models"><span class="chips-h">Models</span>{models.map((m) => <a href={urls.model(m.id)}>{m.label}</a>)}</nav>
+    <nav class="chips" aria-label="Breakdowns"><span class="chips-h">Breakdowns</span>{axes.map((a) => <a href={urls.axis(a.key)}>{a.label}</a>)}</nav>
+  </section>
+</Base>

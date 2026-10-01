@@ -1,0 +1,29 @@
+{
+  "name": "hard-decisions-results",
+  "private": true,
+  "type": "module",
+  "description": "The Hard-Decisions results site: a static site generated at build time from studies/, engines.yaml and the run manifests.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "collect": "node scripts/collect.mjs",
+    "predev": "node scripts/collect.mjs",
+    "dev": "astro dev --port 4331",
+    "prebuild": "node scripts/collect.mjs",
+    "build": "astro build",
+    "preview": "astro preview --port 4331",
+    "serve": "node scripts/serve.mjs 4331",
+    "logo": "node scripts/generate-logo.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@fontsource/jersey-25": "5.3.0",
+    "@fontsource/montserrat": "5.3.0",
+    "@resvg/resvg-wasm": "2.6.2",
+    "astro": "7.3.4",
+    "satori": "0.33.5",
+    "yaml": "2.8.1"
+  }
+}

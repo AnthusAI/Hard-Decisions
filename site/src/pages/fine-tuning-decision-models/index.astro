@@ -1,0 +1,104 @@
+---
+import Base from "../../layouts/Base.astro";
+import EngineName from "../../components/EngineName.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { models, modelById, urls, OWA, CWA, TASK_INFO, taskBySlug, pct, pts, int, overall, axisRow, isComplete, statusWords, L, listOf } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+import { lean, deepEnd, paraphraseGap, negationGap } from "../../lib/insights.js";
+import { predictions, STATUS_WORDS } from "../../lib/predictions.js";
+
+const owaDone = models.filter((m) => isComplete(m.id, OWA));
+const cwaDone = models.filter((m) => isComplete(m.id, CWA));
+const open = models.filter((m) => !m.hosted);
+const kevs = models.filter((m) => m.family === "kev");
+const a3 = predictions().find((s) => s.title === "Kev-4B and Kev-9B");
+const neg = negationGap("jev", OWA);
+const negUp = !!(neg && neg.diff > 0);
+const prof = taskBySlug[OWA].profile.paraphrased || {};
+const paraDepthDiff = prof.True && prof.False ? Math.abs(prof.True.mean_depth - prof.False.mean_depth) : 0;
+const leaning = cwaDone.map((m) => ({ m, l: lean(m.id, CWA) })).filter((x) => x.l.share - x.l.gold >= 0.1);
+---
+<Base title={intro.finetuning.title} description={intro.finetuning.intro} path={urls.page("fine-tuning-decision-models")} current={{ page: "finetuning" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Fine-tuning decision models" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Guide · fine-tuning decision models</p>
+    <h1 class="display xl">{intro.finetuning.title}</h1>
+    <p class="deck">{intro.finetuning.intro}</p>
+    <p class="note">This page describes failures we measured on ProofWriter, a synthetic dataset. It shows what to look for and test, not what any model will do on your decisions.</p>
+  </section>
+
+  <section class="wrap section tight" aria-labelledby="f1-h">
+    <h2 class="display" id="f1-h">Failure 1: accuracy collapses past a few inference steps</h2>
+    <p class="lede">On the open-world task, chance is a third. Here is each model at depth 3 and depth 5:</p>
+    <ul class="around-list">
+      {owaDone.map((m) => { const d = deepEnd(m.id, OWA); return (
+        <li><EngineName engine={m} href={urls.model(m.id)} /><span>depth 3: {pct(d.d3.accuracy)}% · depth 5: {pct(d.d5.accuracy)}%{d.atChance ? ` · interval reaches chance from depth ${d.atChance.value}` : ""}</span><span class="av">{pct(d.d5.accuracy)}%</span></li>
+      ); })}
+    </ul>
+    <p>A model that has only seen shallow examples has no reason to chain five rules. A training set for this failure needs items at every depth the decision can require, balanced so the deep ones are not a rounding error, and an evaluation split by depth so you can see whether tuning moved the deep end or only the easy one.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="f2-h">
+    <h2 class="display" id="f2-h">Failure 2: never saying "unknown"</h2>
+    <ul class="around-list">
+      {owaDone.map((m) => { const o = overall(m.id, OWA); return (
+        <li><EngineName engine={m} href={urls.model(m.id)} /><span>recall on unknown, open world</span><span class="av">{pct(o.recall.unknown)}%</span></li>
+      ); })}
+    </ul>
+    <p>{listOf(owaDone.filter((m) => overall(m.id, OWA).recall.unknown < 0.2).map((m) => m.label)) || "No model"} {owaDone.filter((m) => overall(m.id, OWA).recall.unknown < 0.2).length === 1 ? "almost never gets" : "almost never get"} an unknown item right, even though the question defines unknown and offers it as an option. Abstaining is a decision too: if your process needs "not enough information" as an answer, the training data has to contain it, labelled, in realistic proportion.</p>
+  </section>
+
+  {leaning.length > 0 && (
+    <section class="wrap section" aria-labelledby="f3-h">
+      <h2 class="display" id="f3-h">Failure 3: a lean toward one answer</h2>
+      <p>On the closed-world task, true and false are exactly balanced, yet {listOf(leaning.map(({ m, l }) => `${m.label} answered ${l.answer} ${pct(l.share)}% of the time`))}. A lean like this shows up as a large gap between per-answer recalls: {listOf(leaning.map(({ m }) => { const o = overall(m.id, CWA); return `${m.label} ${pct(o.recall.true)}% on true against ${pct(o.recall.false)}% on false`; }))}. Rebalancing or reweighting the training data, and checking recall per answer after every run, catches it.</p>
+    </section>
+  )}
+
+  <section class="wrap section" aria-labelledby="f4-h">
+    <h2 class="display" id="f4-h">Failure 4: reworded rules</h2>
+    <p>The same logic written by people instead of templates (ProofWriter's NatLang set):</p>
+    <ul class="around-list">
+      {owaDone.map((m) => { const g = paraphraseGap(m.id, OWA); return g && (
+        <li><EngineName engine={m} href={urls.model(m.id)} /><span>templated {pct(g.templated.accuracy)}%, paraphrased {pct(g.paraphrased.accuracy)}%</span><span class="av">{pts(-g.drop)}</span></li>
+      ); })}
+    </ul>
+    <p>{paraDepthDiff > 0.2 ? (prof.True.mean_depth < prof.False.mean_depth
+      ? `Paraphrased items are shallower on average (depth ${prof.True.mean_depth.toFixed(1)} against ${prof.False.mean_depth.toFixed(1)}), so depth does not explain the gap; if anything it hides some of it. `
+      : `Paraphrased items are deeper on average (depth ${prof.True.mean_depth.toFixed(1)} against ${prof.False.mean_depth.toFixed(1)}), so part of each gap may be depth. `)
+      : "Paraphrased and templated items have about the same average depth here. "}A model tuned only on clean templates should be tested on the wording your users actually write. <a href={urls.axis("paraphrased")}>Paraphrased vs templated rules</a>.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="neg-h">
+    <h2 class="display" id="neg-h">{negUp ? "A surprise: negation did not hurt" : "Negation in the rules"}</h2>
+    <p>We preregistered that negation in the rules would lower accuracy. For Jev {negUp ? "it did the opposite" : "it did"}: {neg ? `${pct(neg.with.accuracy)}% with negation against ${pct(neg.without.accuracy)}% without, on the open-world task` : "see the negation page"}. Theories with negation differ in other ways too, so this is descriptive, but it is a reminder to measure a suspected weakness before spending training data on it. <a href={urls.axis("theory_negation")}>Negation</a>.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="size-h">
+    <h2 class="display" id="size-h">Bigger is not automatically better</h2>
+    <ul class="around-list">
+      {kevs.map((m) => taskBySlug[OWA] && overall(m.id, OWA) && (
+        <li><EngineName engine={m} href={urls.model(m.id)} /><span>open world{statusWords(m.id, OWA) ? ` (${statusWords(m.id, OWA)})` : ""}; depth 0 {pct(axisRow(m.id, OWA, "depth", "0").accuracy)}%, depth 5 {pct(axisRow(m.id, OWA, "depth", "5").accuracy)}%</span><span class="av">{pct(overall(m.id, OWA).accuracy)}%</span></li>
+      ))}
+    </ul>
+    {a3 && <p>We preregistered that a bigger Kev would be more accurate overall. Verdict so far: <strong>{STATUS_WORDS[a3.predictions[0].status].toLowerCase()}</strong>. {a3.predictions[0].checks.slice(1).join(" ")} A larger base model changes where a model is strong, not only how strong it is. <a href={urls.comparison("kev-sizes")}>Kev model sizes</a>.</p>}
+  </section>
+
+  <section class="wrap section" aria-labelledby="jev-h">
+    <h2 class="display" id="jev-h">Fine-tuning Jev, Kev or Laya</h2>
+    <p>{listOf(open.map((m) => m.label))} publish their weights ({listOf(open.map((m) => `${m.label}: ${m.facts && m.facts.weights ? m.facts.weights.split(" (")[0] : "published"}`))}), so they can be tuned and re-evaluated on your own hardware. Jev is hosted and its weights are not available; whether it can be adapted to a specific decision is a question for its maker, TypeSafe. Whichever you tune, the same evaluation applies before and after: by depth, by answer, paired on the same items.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="plan-h">
+    <h2 class="display" id="plan-h">What a fine-tuning set for this would need</h2>
+    <ol class="checklist">
+      <li>Items at every depth your decision can require, balanced across depth, so the deep end is trained and measured.</li>
+      <li>Every answer the decision allows, including "not enough information", in realistic proportion and with recall checked per answer.</li>
+      <li>The wording your users write, not only clean templates.</li>
+      <li>A held-out set split the same way, scored before and after tuning with paired intervals, so an improvement is measured, not assumed.</li>
+      <li>A rerun of the held-out set, to check the tuned model answers consistently.</li>
+    </ol>
+  </section>
+
+  <AnthusNote lead="Anthus AI Solutions made this benchmark. The same measurements, run on your own decisions before and after tuning, show whether a fine-tuned decision model improved where it matters." />
+</Base>

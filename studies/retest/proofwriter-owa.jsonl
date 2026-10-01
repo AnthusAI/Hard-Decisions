@@ -5,3 +5,17 @@
 {"axis": "depth", "change_rate": 0.0429042904290429, "changed": 13, "engine": "jev", "n": 303, "task": "proofwriter-owa", "value": "3"}
 {"axis": "depth", "change_rate": 0.056105610561056105, "changed": 17, "engine": "jev", "n": 303, "task": "proofwriter-owa", "value": "4"}
 {"axis": "depth", "change_rate": 0.03460207612456748, "changed": 10, "engine": "jev", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.5355555555555556, "accuracy_run2": 0.5355555555555556, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "kev-4b", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.42444444444444446, "accuracy_run2": 0.42444444444444446, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "laya", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 289, "task": "proofwriter-owa", "value": "5"}

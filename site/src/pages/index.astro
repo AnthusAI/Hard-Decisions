@@ -1,0 +1,157 @@
+---
+import Base from "../layouts/Base.astro";
+import DepthChart from "../components/DepthChart.astro";
+import { coinFlipClaim } from "../lib/insights.js";
+import Legend from "../components/Legend.astro";
+import OverallTable from "../components/OverallTable.astro";
+import EngineName from "../components/EngineName.astro";
+import AnthusNote from "../components/AnthusNote.astro";
+import { models, pendingModels, notRunModels, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, ranked, leader, pairRow, retest, latency,
+  axisRow, L, listOf } from "../lib/site.js";
+import { intro, liveComparisons } from "../lib/content.js";
+import { axisLead, depthDrop } from "../lib/cards.js";
+import { tally, STATUS_WORDS } from "../lib/predictions.js";
+
+const LUNA = "openai-gpt-6-luna-effort-none";
+const top = leader(OWA), topC = leader(CWA);
+const claim = coinFlipClaim();
+const ids = models.map((m) => m.id);
+const gap0 = top ? pairRow(OWA, top.m.id, LUNA, "depth", "0") : null;
+const gap5 = top ? pairRow(OWA, top.m.id, LUNA, "depth", "5") : null;
+const gapC0 = topC ? pairRow(CWA, topC.m.id, LUNA, "depth", "0") : null;
+const gapC5 = topC ? pairRow(CWA, topC.m.id, LUNA, "depth", "5") : null;
+const t = tally();
+const rt = retest("jev", OWA), rtc = retest("jev", CWA);
+const lat = latency("jev", CWA), latO = latency("jev", OWA);
+const description = intro.home.intro;
+---
+<Base title={null} description={description} path={urls.home()} current={{ page: "overview" }}>
+  <section class="wrap hero">
+    <div class="hero-top"><div>
+      <p class="kicker">Benchmark for decision models and LLM classifiers · ProofWriter</p>
+      <h1 class="display xl">{intro.home.title}</h1>
+      <p class="deck">{intro.home.intro}</p>
+      <p class="deck">{models.length} models so far: hosted and open decision models, and a general LLM used as a classifier. Every result below links to the problems and the numbers behind it.</p>
+    </div>
+    {top && (
+      <p class="finding">
+        <span class="finding-num">{pct(top.r.accuracy)}%</span>
+        <span class="finding-txt"><EngineName engine={top.m} href={urls.model(top.m.id)} /> answered {pct(top.r.accuracy)}% of open-world problems correctly{topC && topC.m.id === top.m.id ? <Fragment> and {pct(topC.r.accuracy)}% of closed-world ones</Fragment> : ""}, the highest of the models tested.{gap0 && gap5 && <Fragment> Its lead over <a href={urls.model(LUNA)}>GPT-6 Luna</a> (reasoning off) is <strong>{pts(gap0.diff)} points at depth 0 and {pts(gap5.diff)} points at depth 5</strong> on the same problems{gapC0 && gapC5 && <Fragment> ({pts(gapC0.diff)} and {pts(gapC5.diff)} on the closed-world task)</Fragment>}.</Fragment>}</span>
+      </p>
+    )}</div>
+    <figure class="hero-fig">
+      <figcaption>
+        <span class="fig-t">Accuracy by proof depth, both tasks</span>
+        <span class="fig-d">Each line is one model; each point is about 300 problems that need that many inference steps, with its 95% interval. The dashed line is chance: one in three on the open-world task, one in two on the closed-world task. <a href={urls.axis("depth")}>Every number, both tasks</a>.</span>
+      </figcaption>
+      <Legend ids={ids} slug={OWA} />
+      <div class="depth-pair">
+        {[OWA, CWA].map((slug) => (
+          <div class="depth-panel">
+            <p class="depth-panel-t">{TASK_INFO[slug].long}</p>
+            <DepthChart slug={slug} ids={ids} label={`Accuracy by proof depth on the ${TASK_INFO[slug].long.toLowerCase()}`} />
+          </div>
+        ))}
+      </div>
+    </figure>
+  </section>
+
+  <section class="wrap section" aria-labelledby="overall-h">
+    <h2 class="display" id="overall-h">Overall accuracy on both tasks</h2>
+    <p class="lede">The same 1,800 problems per task for every model. Models are ordered by accuracy; a model still being scored is listed last and marked partial.</p>
+    {taskOrder.map((slug) => (
+      <Fragment>
+        <h3>{TASK_INFO[slug].long}</h3>
+        <p class="note">{TASK_INFO[slug].about}</p>
+        <OverallTable slug={slug} caption={`Overall accuracy, ${TASK_INFO[slug].long}`} />
+      </Fragment>
+    ))}
+  </section>
+
+  <section class="wrap section" aria-labelledby="depth-h">
+    <h2 class="display" id="depth-h">Every model gets worse as proofs get deeper</h2>
+    {claim && <p class="claim">{claim.sentence}</p>}
+    <p class="lede">Proof depth is the number of rules that must be chained to reach the answer. It is the one difficulty axis the sample controls.</p>
+    <ul class="around-list">
+      {models.filter((m) => m.complete).map((m) => { const d = depthDrop(m.id, OWA); return d && (
+        <li><EngineName engine={m} href={urls.model(m.id)} /><span>{pct(d.d0.accuracy)}% at depth 0, {pct(d.d5.accuracy)}% at depth 5</span><span class="av">{pts(-d.drop)}</span></li>
+      ); })}
+    </ul>
+    <p class="note">Open-world task, change from depth 0 to depth 5 in points. <a href={urls.axis("depth")}>Accuracy by proof depth</a> has every depth, both tasks and the paired gaps.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="cmp-h">
+    <h2 class="display" id="cmp-h">Head-to-head</h2>
+    <div class="dim-grid">
+      {liveComparisons.map((c) => (
+        <a class="dim-card" href={urls.comparison(c.slug)}>
+          <div class="dim-card-h">{c.title.split(":")[0]}</div>
+          <p>{c.title.split(":")[1] ? c.title.split(":")[1].trim() : c.intro}</p>
+          <div class="dim-card-f">{[c.a, ...c.b].filter((id) => modelById[id] && modelById[id].measured).map(L).join(" · ")}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="where-h">
+    <h2 class="display" id="where-h">Where they fail</h2>
+    <p class="lede">Accuracy by every property ProofWriter records. Only proof depth was controlled when the problems were sampled; the others move with depth and with each other, so they describe where errors fall rather than what causes them.</p>
+    <div class="dim-grid">
+      {axes.map((a) => { const l = axisLead(a.key); return (
+        <a class="dim-card" href={urls.axis(a.key)}>
+          <div class="dim-card-h">{a.h1}</div>
+          <p>{a.what.split(". ")[0]}.</p>
+          <div class="dim-card-f">{l ? `${L(l.id)}: ${pct(l.lo.accuracy)}% to ${pct(l.hi.accuracy)}%` : a.label}</div>
+        </a>
+      ); })}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="more-h">
+    <h2 class="display" id="more-h">Predictions, consistency, speed and size</h2>
+    <div class="dim-grid">
+      <a class="dim-card" href={urls.page("preregistration")}>
+        <div class="dim-card-h">{intro.preregistration.title}</div>
+        <p>Written before any model answered. {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}.</p>
+        <div class="dim-card-f">Preregistration</div>
+      </a>
+      <a class="dim-card" href={urls.page("repeatability")}>
+        <div class="dim-card-h">{intro.repeatability.title}</div>
+        <p>{rt ? `Asked twice, Jev gave the same answer on ${pct(rt.agreement)}% of open-world items${rtc ? ` and ${pct(rtc.agreement)}% of closed-world ones` : ""}. Other models' reruns are in progress.` : "Reruns in progress."}</p>
+        <div class="dim-card-f">Test-retest · calibration</div>
+      </a>
+      <a class="dim-card" href={urls.page("latency")}>
+        <div class="dim-card-h">{intro.latency.title}</div>
+        <p>{latO ? `Jev: a median ${Math.round(latO.p50)} ms per open-world decision${lat ? ` and ${Math.round(lat.p50)} ms per closed-world one` : ""}, over the network. Open models were timed on a laptop: not like for like.` : "Timing runs in progress."}</p>
+        <div class="dim-card-f">Latency</div>
+      </a>
+      <a class="dim-card" href={urls.page("model-sizes")}>
+        <div class="dim-card-h">{intro.sizes.title}</div>
+        <p>From Laya's 421M parameters to Kev-9B's 9B base; what each needs to run, and the memory measured.</p>
+        <div class="dim-card-f">Parameters · weights · memory</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="teams-h">
+    <h2 class="display" id="teams-h">For teams evaluating or tuning a decision model</h2>
+    <div class="dim-grid">
+      <a class="dim-card" href={urls.page("evaluating-decision-models")}><div class="dim-card-h">{intro.evaluating.title}</div><p>{intro.evaluating.intro}</p></a>
+      <a class="dim-card" href={urls.page("fine-tuning-decision-models")}><div class="dim-card-h">{intro.finetuning.title}</div><p>{intro.finetuning.intro}</p></a>
+      <a class="dim-card" href={urls.page("aligning-decision-models")}><div class="dim-card-h">{intro.aligning.title}</div><p>{intro.aligning.intro}</p></a>
+    </div>
+  </section>
+
+  {(pendingModels.length > 0 || notRunModels.length > 0) && (
+    <section class="wrap section tight" aria-labelledby="pending-h">
+      <h2 class="display sm" id="pending-h">Not on the board yet</h2>
+      <ul class="miss-list">
+        {pendingModels.map((m) => <li><span class="hatch"></span><span><strong>{m.label}</strong>: {m.status[OWA].answered ? `${int(m.status[OWA].answered)} of ${int(m.status[OWA].of)} open-world problems answered; scoring pending.` : "preregistered; no answers recorded yet."}</span></li>)}
+        {notRunModels.map((m) => <li><span class="hatch"></span><span><strong>{m.label}</strong>: not run. {m.facts.not_run}.</span></li>)}
+      </ul>
+      <p class="note">A model that has not been scored is never shown as zero. <a href={urls.models()}>Every model</a>.</p>
+    </section>
+  )}
+
+  <AnthusNote lead="If you are choosing, evaluating or tuning a decision model, this benchmark shows the kind of measurement that separates them." />
+</Base>

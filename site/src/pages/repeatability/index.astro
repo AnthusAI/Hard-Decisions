@@ -1,0 +1,84 @@
+---
+import Base from "../../layouts/Base.astro";
+import EngineName from "../../components/EngineName.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { data, models, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, fmt, int, retest, latency, derived, isComplete, statusWords, L, listOf } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+import { predictions, STATUS_WORDS, STATUS_CLASS } from "../../lib/predictions.js";
+
+const withRetest = models.filter((m) => taskOrder.some((s) => retest(m.id, s)));
+const without = models.filter((m) => !taskOrder.some((s) => retest(m.id, s)));
+const rt = retest("jev", OWA);
+const a4 = predictions().find((s) => s.title === "Repeatability");
+const calibrated = models.filter((m) => taskOrder.some((s) => derived(m.id, s) && derived(m.id, s).calibration));
+const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && !taskOrder.some((s) => derived(m.id, s) && derived(m.id, s).calibration));
+---
+<Base title={intro.repeatability.title} description={intro.repeatability.intro} path={urls.page("repeatability")} current={{ page: "repeatability" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Consistency" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Repeatability and calibration</p>
+    <h1 class="display xl">{intro.repeatability.title}</h1>
+    <p class="deck">{intro.repeatability.intro}</p>
+    {rt && <p class="finding"><span class="finding-num">{pct(rt.agreement)}%</span><span class="finding-txt">of Jev's open-world answers were the same when asked twice: {int(rt.n - rt.changed)} of {int(rt.n)}, with {rt.changed} changed. Gwet's AC1, which corrects for agreement by chance, is {fmt(rt.ac1, 3)} (interval {fmt(rt.ac1_lo, 3)} to {fmt(rt.ac1_hi, 3)}).</span></p>}
+  </section>
+
+  <section class="wrap section" aria-labelledby="rt-h">
+    <h2 class="display" id="rt-h">Test-retest agreement</h2>
+    <p class="lede">The second run is a full rerun of every item under the same protocol, one request at a time. Agreement is the share of items with the same answer both times. AC1 corrects for chance; Cohen's kappa is shown beside it but understates agreement when a model gives one answer to most items.</p>
+    {withRetest.length > 0 && (
+      <div class="table-scroll">
+        <table class="cell-table">
+          <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col" class="num">Agreement</th><th scope="col" class="num">AC1 (95%)</th><th scope="col" class="num">Kappa</th><th scope="col" class="num">Changed</th><th scope="col" class="num">Accuracy, run 1 / run 2</th><th scope="col" class="num">Probability shift, mean / max</th></tr></thead>
+          <tbody>{withRetest.map((m) => taskOrder.map((s) => { const r = retest(m.id, s); return r && (
+            <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th><td>{TASK_INFO[s].short}</td><td class="num strong">{pct(r.agreement)}%</td><td class="num">{fmt(r.ac1, 3)} <span class="ci-t">{fmt(r.ac1_lo, 3)}–{fmt(r.ac1_hi, 3)}</span></td>
+              <td class="num">{fmt(r.kappa, 3)}</td><td class="num">{r.changed} of {int(r.n)}</td><td class="num">{pct(r.accuracy_run1)}% / {pct(r.accuracy_run2)}%</td><td class="num">{fmt(r.prob_shift_mean, 3)} / {fmt(r.prob_shift_max, 2)}</td></tr>
+          ); }))}</tbody>
+        </table>
+      </div>
+    )}
+    <p class="note">Probability shift is how far the probability of run 1's answer moved in run 2. {without.length > 0 && `Reruns not yet scored: ${listOf(without.map((m) => { const l = latency(m.id, OWA); return l && !l.complete ? `${m.label} (in progress, ${int(l.n)} of ${int(l.of)} open-world items)` : m.setting ? `${m.label} (${m.setting})` : m.label; }))}.`}</p>
+    {withRetest.map((m) => (
+      <Fragment>
+        <h3>Where {m.label}'s answers changed, by proof depth</h3>
+        <div class="table-scroll">
+          <table class="cell-table">
+            <thead><tr><th scope="col">Task</th>{taskBySlug[OWA].depths.map((d) => <th scope="col" class="num">depth {d}</th>)}</tr></thead>
+            <tbody>{taskOrder.map((s) => { const r = retest(m.id, s); return r && (
+              <tr><th scope="row">{TASK_INFO[s].short}</th>{r.depth.map((d) => <td class="num">{pct(d.rate)}% <span class="ci-t">({d.changed})</span></td>)}</tr>
+            ); })}</tbody>
+          </table>
+        </div>
+      </Fragment>
+    ))}
+    {a4 && a4.predictions[2] && /held/.test(a4.predictions[2].status) && <p>So far, changes concentrate on deeper proofs: the problems a model finds hardest are also the ones it answers least consistently.</p>}
+  </section>
+
+  {a4 && (
+    <section class="wrap section" aria-labelledby="a4-h">
+      <h2 class="display sm" id="a4-h">What we predicted</h2>
+      <ul class="how-list">{a4.predictions.map((p) => <li><span class={`verdict ${STATUS_CLASS[p.status]}`}>{STATUS_WORDS[p.status]}</span> “{p.text}” {p.checks.slice(1).join(" ")}</li>)}</ul>
+      <p class="more-link"><a href={`${urls.page("preregistration")}#repeatability`}>Every prediction and its rule</a></p>
+    </section>
+  )}
+
+  <section class="wrap section" aria-labelledby="cal-h">
+    <h2 class="display" id="cal-h">Calibration: do the probabilities mean what they say?</h2>
+    <p class="lede">Several models return a probability with each answer. A well-calibrated model that says 80% is right about 80% of the time. We grouped each model's answers by the probability it gave its own answer and counted how often it was right.</p>
+    <p class="footnote">Not preregistered and not part of the harness's report: computed by this site from the saved answers, for fully scored models only. Expected calibration error (ECE) is the average gap between stated probability and accuracy, weighted by how many answers fall in each group.</p>
+    {calibrated.map((m) => taskOrder.map((s) => { const c = derived(m.id, s) && derived(m.id, s).calibration; return c && (
+      <Fragment>
+        <h3>{m.label}, {TASK_INFO[s].short.toLowerCase()}: stated {pct(c.mean_confidence)}%, right {pct(c.accuracy)}%, ECE {pct(c.ece)} points</h3>
+        <div class="table-scroll">
+          <table class="cell-table">
+            <thead><tr><th scope="col">Stated probability</th><th scope="col" class="num">Answers</th><th scope="col" class="num">Average stated</th><th scope="col" class="num">Actually right</th><th scope="col" class="num">Gap</th></tr></thead>
+            <tbody>{c.bins.filter((b) => b.n > 0).map((b) => (
+              <tr><th scope="row">{pct(b.lo, 0)}–{pct(b.hi, 0)}%</th><td class="num">{int(b.n)}</td><td class="num">{pct(b.confidence)}%</td><td class="num strong">{pct(b.accuracy)}%</td><td class="num">{((b.accuracy - b.confidence) * 100).toFixed(1)}</td></tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Fragment>
+    ); }))}
+    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))} returned answers without probabilities, so calibration cannot be measured for {noProbs.length === 1 ? "it" : "them"}.</p>}
+  </section>
+  <AnthusNote lead="Consistency and calibration decide whether a decision model's output can be audited and thresholded. They are worth measuring on your own decisions before you rely on them." />
+</Base>

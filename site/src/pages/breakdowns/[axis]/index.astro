@@ -1,0 +1,106 @@
+---
+import { coinFlipClaim } from "../../../lib/insights.js";
+import Base from "../../../layouts/Base.astro";
+import DotRows from "../../../components/DotRows.astro";
+import Legend from "../../../components/Legend.astro";
+import AccTable from "../../../components/AccTable.astro";
+import DiffRows from "../../../components/DiffRows.astro";
+import EngineName from "../../../components/EngineName.astro";
+import AnthusNote from "../../../components/AnthusNote.astro";
+import { models, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, int, axisTable, axisRow, pair, recallAt, derived, overall,
+  isComplete, valueLabel, L, listOf } from "../../../lib/site.js";
+import { axisLead, axisLeadText } from "../../../lib/cards.js";
+
+export function getStaticPaths() {
+  return axes.map((a) => ({ params: { axis: a.slug }, props: { a } }));
+}
+const { a } = Astro.props;
+const ids = models.map((m) => m.id);
+const lead = axisLead(a.key);
+const leadText = axisLeadText(a.key);
+const isDepth = a.key === "depth";
+const complete = models.filter((m) => isComplete(m.id, OWA));
+const others = axes.filter((x) => x.key !== a.key);
+// How strongly this axis moves with depth: the spread of mean depth across its values.
+const prof = taskBySlug[OWA].profile[a.key] || {};
+const depths = Object.values(prof).filter((p) => p.n >= 20).map((p) => p.mean_depth);
+const depthRange = depths.length ? [Math.min(...depths), Math.max(...depths)] : null;
+const claim = isDepth ? coinFlipClaim() : null;
+---
+<Base title={a.h1} description={a.what} path={urls.axis(a.key)} current={{ page: "axis", axis: a.key }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Breakdowns", href: urls.breakdowns() }, { label: a.label }]}>
+  <section class="wrap hero">
+    <p class="kicker">Breakdown · {isDepth ? "the controlled difficulty axis" : "descriptive"}</p>
+    <h1 class="display xl">{a.h1}</h1>
+    <p class="deck">{a.what}</p>
+    {claim && <p class="claim">{claim.sentence}</p>}
+    {lead && <p class="finding"><span class="finding-num">{pct(lead.spread)}</span><span class="finding-txt">{leadText}. <EngineName engine={modelById[lead.id]} href={urls.model(lead.id)} /> is the most accurate model overall; every model is below.</span></p>}
+    {!isDepth && <p class="footnote">Descriptive, not causal: the sample controls proof depth and the answer, not {a.label.toLowerCase()}.{depthRange && ` Across these slices the average proof depth runs from ${depthRange[0].toFixed(1)} to ${depthRange[1].toFixed(1)}, so depth differs between slices and can add to or mask any gap.`} The answer mix and mean depth of every slice are in the tables.</p>}
+  </section>
+
+  {taskOrder.map((s) => { const rows = axisTable(s, a.key, ids); const t = taskBySlug[s]; return (
+    <section class="wrap section" aria-labelledby={`${s}-h`}>
+      <h2 class="display" id={`${s}-h`}>{a.label}, {TASK_INFO[s].short.toLowerCase()} task</h2>
+      <p class="lede">{TASK_INFO[s].about} Each line is one model: its accuracy, with the 95% interval as a bar. The dashed line is chance ({pct(1 / t.options.length, 0)}%); the grey tick is the score of always giving the slice's most common answer.</p>
+      <figure class="hero-fig">
+        <Legend ids={ids} slug={s} />
+        <DotRows rows={rows} ids={ids} chance={1 / t.options.length} label={`${a.label} on the ${TASK_INFO[s].short.toLowerCase()} task`} />
+      </figure>
+      <AccTable rows={rows} ids={ids} slug={s} valueHead={a.label} caption={`${a.label}, ${TASK_INFO[s].short}`} showProfile={!isDepth} />
+    </section>
+  ); })}
+
+  {isDepth && (
+    <Fragment>
+      <section class="wrap section" aria-labelledby="ex-h">
+        <h2 class="display" id="ex-h">What a deeper proof looks like</h2>
+        <p class="lede">The shortest templated item in the open-world sample at each depth whose answer is true. Each needs one more rule application than the last.</p>
+        <div class="ex-grid depth-ex">
+          {Object.values(taskBySlug[OWA].examples).map((e) => (
+            <div class="ex-v"><span class="ex-l">Depth {e.depth} · answer: {e.label}</span><p class="ex-text">{e.text.split("\n\nStatement: ")[0]}<br /><strong>Statement: {e.text.split("\n\nStatement: ")[1]}</strong></p></div>
+          ))}
+        </div>
+      </section>
+      <section class="wrap section" aria-labelledby="gap-h">
+        <h2 class="display" id="gap-h">The gap to Jev grows with depth</h2>
+        <p class="lede">Paired differences on the same items: Jev minus each model, by depth. Positive means Jev was more accurate.</p>
+        {models.filter((m) => m.id !== "jev").map((m) => taskOrder.map((s) => { const p = pair(s, "jev", m.id); return p && (
+          <Fragment><h3>Jev minus {m.label}, {TASK_INFO[s].short.toLowerCase()}{!isComplete(m.id, s) && " (partial)"}</h3>
+          <DiffRows rows={p.filter((r) => r.axis === "depth")} labelOf={(r) => `depth ${r.value}`} label={`Jev minus ${m.label} by depth, ${TASK_INFO[s].short}`} /></Fragment>
+        ); }))}
+      </section>
+      <section class="wrap section" aria-labelledby="unk-h">
+        <h2 class="display" id="unk-h">The unknown answer at each depth</h2>
+        <p class="lede">Recall on each correct answer, by depth, on the open-world task: the share of items with that answer each model got right. Counted from the saved answers of every fully scored model.</p>
+        <div class="table-scroll">
+          <table class="cell-table">
+            <thead><tr><th scope="col">Model</th><th scope="col">Correct answer</th>{taskBySlug[OWA].depths.map((d) => <th scope="col" class="num">depth {d}</th>)}</tr></thead>
+            <tbody>{complete.filter((m) => derived(m.id, OWA)).map((m) => taskBySlug[OWA].options.map((o, k) => (
+              <tr><th scope="row">{k === 0 ? <EngineName engine={m} href={urls.model(m.id)} /> : ""}</th><td>{o}</td>
+                {taskBySlug[OWA].depths.map((d) => { const r = recallAt(m.id, OWA, d, o); return <td class={`num${o === "unknown" ? " strong" : ""}`}>{r ? `${pct(r.recall, 0)}%` : "—"}</td>; })}</tr>
+            )))}</tbody>
+          </table>
+        </div>
+        <p class="note">About 100 items per cell, so each number is uncertain by roughly ±10 points.</p>
+      </section>
+    </Fragment>
+  )}
+
+  {a.key === "reference_label" && (
+    <section class="wrap section" aria-labelledby="mix-h">
+      <h2 class="display" id="mix-h">How often each model says unknown</h2>
+      <p class="lede">On the open-world task, about a third of the correct answers are unknown. A model that rarely says unknown cannot get those items right.</p>
+      <ul class="around-list">
+        {models.filter((m) => overall(m.id, OWA)).map((m) => { const o = overall(m.id, OWA); const said = Object.values(o.confusion).reduce((n, r) => n + (r.unknown || 0), 0); return (
+          <li><EngineName engine={m} href={urls.model(m.id)} /><span>said unknown on {int(said)} of {int(o.n)} items{!isComplete(m.id, OWA) && " (partial)"}</span><span class="av">{pct(said / o.n)}%</span></li>
+        ); })}
+      </ul>
+    </section>
+  )}
+
+  <section class="wrap section tight">
+    <nav class="chips" aria-label="Other breakdowns"><span class="chips-h">Other breakdowns</span>{others.map((x) => <a href={urls.axis(x.key)}>{x.label}</a>)}</nav>
+    <nav class="chips" aria-label="Models"><span class="chips-h">Models</span>{models.map((m) => <a href={urls.model(m.id)}>{m.label}</a>)}</nav>
+  </section>
+  <AnthusNote />
+</Base>

@@ -1,0 +1,43 @@
+---
+import Base from "../../layouts/Base.astro";
+import EngineName from "../../components/EngineName.astro";
+import OverallTable from "../../components/OverallTable.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { models, pendingModels, notRunModels, urls, OWA, CWA, taskOrder, TASK_INFO, pct, int, overall, aboutModel, kindOf, whereRun, isComplete, statusWords } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+---
+<Base title={intro.models.title} description={intro.models.intro} path={urls.models()} current={{ page: "models" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Models</p>
+    <h1 class="display xl">{intro.models.title}</h1>
+    <p class="deck">{intro.models.intro}</p>
+  </section>
+  <section class="wrap section tight" aria-labelledby="list-h">
+    <h2 class="display sm" id="list-h">The models</h2>
+    <ol class="overall">
+      {models.map((m) => { const o = overall(m.id, OWA), c = overall(m.id, CWA); return (
+        <li class="ov-row ov-simple">
+          <div class="ov-name">
+            <EngineName engine={m} href={urls.model(m.id)} />
+            <div class="ov-mean">{kindOf(m.id)} · ran on {whereRun(m.id)}</div>
+            <div class="ov-mean">{o ? <Fragment>open world <strong>{pct(o.accuracy)}%</strong>{!isComplete(m.id, OWA) && " (partial)"}</Fragment> : "open world: pending"} · {c ? <Fragment>closed world <strong>{pct(c.accuracy)}%</strong>{!isComplete(m.id, CWA) && " (partial)"}</Fragment> : `closed world: ${statusWords(m.id, CWA)}`}</div>
+          </div>
+          <p class="ov-about">{aboutModel(m.id)}</p>
+        </li>
+      ); })}
+      {[...pendingModels, ...notRunModels].map((m) => (
+        <li class="ov-row ov-simple">
+          <div class="ov-name"><span class="eng">{m.label}</span><div class="flag">{m.notRun ? "Not run" : "Not yet scored"}</div></div>
+          <p class="ov-about">{aboutModel(m.id)} {m.notRun ? "" : `${m.id === "kev-9b" ? "It is preregistered in Amendment 3. " : ""}No answers are recorded yet, and it is never shown as zero.`}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+  <section class="wrap section" aria-labelledby="acc-h">
+    <h2 class="display" id="acc-h">Accuracy side by side</h2>
+    {taskOrder.map((slug) => <Fragment><h3>{TASK_INFO[slug].long}</h3><OverallTable slug={slug} caption={`Overall accuracy, ${TASK_INFO[slug].long}`} /></Fragment>)}
+    <p class="more-link"><a href={urls.compare()}>Paired comparisons</a> · <a href={urls.page("model-sizes")}>Sizes and memory</a> · <a href={urls.page("latency")}>Latency</a></p>
+  </section>
+  <AnthusNote />
+</Base>

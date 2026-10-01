@@ -1,0 +1,153 @@
+---
+import Base from "../../../layouts/Base.astro";
+import DepthChart from "../../../components/DepthChart.astro";
+import Legend from "../../../components/Legend.astro";
+import AccTable from "../../../components/AccTable.astro";
+import DiffRows from "../../../components/DiffRows.astro";
+import Confusion from "../../../components/Confusion.astro";
+import Predictions from "../../../components/Predictions.astro";
+import EngineName from "../../../components/EngineName.astro";
+import AnthusNote from "../../../components/AnthusNote.astro";
+import { models, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, gb, overall, axisTable, axisSpread, valueLabel,
+  pair, isComplete, statusWords, retest, latency, derived, memoryOf, aboutModel, kindOf, whereRun, ranked, data, L } from "../../../lib/site.js";
+import { modelTitle, modelQuery, comparisonsFor } from "../../../lib/content.js";
+import { predictionsFor } from "../../../lib/predictions.js";
+import { depthDrop } from "../../../lib/cards.js";
+
+export function getStaticPaths() {
+  return models.map((m) => ({ params: { model: m.slug }, props: { m } }));
+}
+const { m } = Astro.props;
+const id = m.id;
+const ref = id === "jev" ? null : modelById.jev && modelById.jev.measured ? "jev" : null;
+const chartIds = ref ? [id, ref] : [id];
+const facts = m.facts || {};
+const mem = memoryOf(id);
+const preds = predictionsFor(id);
+const cmps = comparisonsFor(id);
+const place = (slug) => { const r = ranked(slug).filter((x) => x.complete); const i = r.findIndex((x) => x.m.id === id); return i >= 0 ? `${i + 1} of ${r.length}` : null; };
+const dd = (slug) => (isComplete(id, slug) ? depthDrop(id, slug) : null);
+const title = modelTitle(m);
+const answerMix = (slug) => {
+  const o = overall(id, slug);
+  if (!o || !o.confusion) return null;
+  const said = {};
+  for (const row of Object.values(o.confusion)) for (const [k, v] of Object.entries(row)) said[k] = (said[k] || 0) + v;
+  return Object.entries(said).filter(([, v]) => v > 0).map(([k, v]) => ({ k, share: v / o.n }));
+};
+---
+<Base title={title} description={`${m.label}: accuracy on 3,600 ProofWriter reasoning problems.`} path={urls.model(id)} current={{ page: "model", engine: id }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: m.label }]}>
+  <section class="wrap hero eng-hero">
+    <p class="kicker">Model · {kindOf(id)}</p>
+    <h1 class="display xl eng-title">{title}</h1>
+    <p class="deck">{aboutModel(id)}</p>
+    {taskOrder.some((s) => statusWords(id, s)) && <p class="footnote">{taskOrder.filter((s) => statusWords(id, s)).map((s) => `${TASK_INFO[s].short}: ${statusWords(id, s)}.`).join(" ")} Numbers marked partial cover only the items scored so far, and change when scoring finishes.</p>}
+    <div class="eng-stats">
+      {taskOrder.map((s) => { const o = overall(id, s); return (
+        <div><span class="stat-k">{TASK_INFO[s].short}</span><span class="stat-v">{o ? `${pct(o.accuracy)}%` : "—"}</span>
+          <span class="stat-s">{o ? <Fragment>{pct(o.lo)} to {pct(o.hi)} (95%) on {int(o.n)} problems{isComplete(id, s) ? (place(s) ? `; place ${place(s)}` : "") : "; partial"}</Fragment> : statusWords(id, s)}</span></div>
+      ); })}
+      {dd(OWA) && <div><span class="stat-k">Depth 0 to depth 5</span><span class="stat-v">{pts(-dd(OWA).drop)}</span><span class="stat-s">points on the open-world task, {pct(dd(OWA).d0.accuracy)}% to {pct(dd(OWA).d5.accuracy)}%</span></div>}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="depth-h">
+    <h2 class="display" id="depth-h">{m.label} accuracy by proof depth</h2>
+    <p class="lede">Each point is about 300 problems that need that many inference steps.{ref && ` Jev is drawn for reference.`}</p>
+    <div class="two-up">
+      {taskOrder.filter((s) => overall(id, s)).map((s) => (
+        <figure class="hero-fig">
+          <figcaption><span class="fig-t">{TASK_INFO[s].long}</span></figcaption>
+          <Legend ids={chartIds} slug={s} />
+          <DepthChart slug={s} ids={chartIds} compact label={`${m.label} accuracy by proof depth, ${TASK_INFO[s].short}`} />
+        </figure>
+      ))}
+    </div>
+    {taskOrder.filter((s) => overall(id, s)).map((s) => (
+      <Fragment><h3>{TASK_INFO[s].long}</h3><AccTable rows={axisTable(s, "depth", chartIds)} ids={chartIds} slug={s} valueHead="Proof depth" caption={`${m.label} by depth, ${TASK_INFO[s].short}`} /></Fragment>
+    ))}
+  </section>
+
+  <section class="wrap section" aria-labelledby="class-h">
+    <h2 class="display" id="class-h">True, false and unknown: where {m.label} errs</h2>
+    <p class="lede">Accuracy alone hides which answers a model gets wrong. Rows are the correct answer; columns are what {m.label} said.</p>
+    {taskOrder.filter((s) => overall(id, s)).map((s) => { const mix = answerMix(s); return (
+      <Fragment>
+        <h3>{TASK_INFO[s].long}</h3>
+        <Confusion id={id} slug={s} />
+        {mix && <p class="note">{m.label} answered {mix.map((x) => `${x.k} ${pct(x.share)}%`).join(", ")} of the time; the correct answers are {Object.entries(taskBySlug[s].selected.reference_label).map(([k, v]) => `${k} ${pct(v / taskBySlug[s].n)}%`).join(", ")}.</p>}
+      </Fragment>
+    ); })}
+  </section>
+
+  <section class="wrap section" aria-labelledby="axes-h">
+    <h2 class="display" id="axes-h">{m.label} across every breakdown</h2>
+    <p class="lede">For each property of the problems, {m.label}'s weakest and strongest value on the open-world task (slices of at least 50 items). Only depth was controlled; the rest are descriptive.</p>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Breakdown</th><th scope="col">Weakest</th><th scope="col">Strongest</th><th scope="col" class="num">Spread</th></tr></thead>
+        <tbody>{axes.map((a) => { const s = axisSpread(id, OWA, a.key); return (
+          <tr><th scope="row"><a href={urls.axis(a.key)}>{a.label}</a></th>
+            {s ? <Fragment><td>{valueLabel(a.key, s.lo.value)}: {pct(s.lo.accuracy)}%</td><td>{valueLabel(a.key, s.hi.value)}: {pct(s.hi.accuracy)}%</td><td class="num">{pct(s.spread)} points</td></Fragment>
+              : <td colspan="3" class="muted">fewer than two slices of 50 items</td>}</tr>
+        ); })}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="pair-h">
+    <h2 class="display" id="pair-h">{id === "jev" ? "Jev against every other model" : `${m.label} against Jev, on the same problems`}</h2>
+    <p class="lede">Paired differences: both models answered exactly the same items, so the gap has its own 95% interval. Positive numbers mean Jev was more accurate.{(id === "jev" || id === "openai-gpt-6-luna-effort-none") && " GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model."}</p>
+    {taskOrder.map((s) => {
+      const others = id === "jev" ? models.filter((x) => x.id !== "jev" && pair(s, "jev", x.id)) : (pair(s, "jev", id) ? [m] : []);
+      return others.map((x) => { const rows = pair(s, "jev", x.id); const ov = rows.find((r) => r.axis === "overall"); return (
+        <Fragment>
+          <h3>Jev minus {x.label}, {TASK_INFO[s].short.toLowerCase()}: {pts(ov.diff)} points overall ({pts(ov.ci_low)} to {pts(ov.ci_high)}){!isComplete(x.id, s) && ", partial"}</h3>
+          <DiffRows rows={rows.filter((r) => r.axis === "depth")} labelOf={(r) => `depth ${r.value}`} label={`Jev minus ${x.label} by depth, ${TASK_INFO[s].short}`} />
+        </Fragment>
+      ); });
+    })}
+    {cmps.length > 0 && <p class="more-link">{cmps.map((c, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a></Fragment>)}</p>}
+  </section>
+
+  <section class="wrap section" aria-labelledby="cons-h">
+    <h2 class="display" id="cons-h">Consistency and calibration</h2>
+    {taskOrder.map((s) => { const r = retest(id, s); return r && (
+      <p>Asked every {TASK_INFO[s].short.toLowerCase()} question a second time, {m.label} gave the same answer on <strong>{pct(r.agreement)}%</strong> of {int(r.n)} items ({r.changed} changed; Gwet's AC1 {fmt(r.ac1, 3)}, interval {fmt(r.ac1_lo, 3)} to {fmt(r.ac1_hi, 3)}). Accuracy was {pct(r.accuracy_run1)}% the first time and {pct(r.accuracy_run2)}% the second.</p>
+    ); })}
+    {!taskOrder.some((s) => retest(id, s)) && <p>{m.label}'s rerun has not been scored yet{latency(id, OWA) && !latency(id, OWA).complete ? ` (in progress: ${int(latency(id, OWA).n)} of ${int(latency(id, OWA).of)} open-world items so far)` : ""}. It is preregistered to agree with itself on at least 99.5% of items{m.hosted ? "" : ", since its weights are fixed and it runs locally"}.</p>}
+    {taskOrder.map((s) => { const d = derived(id, s); return d && d.calibration && (
+      <p>Calibration on the {TASK_INFO[s].short.toLowerCase()} task: {m.label}'s probability for its own answer averaged <strong>{pct(d.calibration.mean_confidence)}%</strong> against <strong>{pct(d.calibration.accuracy)}%</strong> accuracy; expected calibration error {pct(d.calibration.ece)} points.</p>
+    ); })}
+    {!taskOrder.some((s) => derived(id, s) && derived(id, s).calibration) && (m.id === "openai-gpt-6-luna-effort-none" ? <p>GPT-6 Luna returned an answer without a probability, so its calibration cannot be measured here.</p> : <p>Calibration is computed once {m.label}'s scored results are complete.</p>)}
+    <p class="more-link"><a href={urls.page("repeatability")}>Consistency and calibration for every model</a></p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="size-h">
+    <h2 class="display" id="size-h">Size, hardware and speed</h2>
+    <dl class="defs compact">
+      <div><dt>Parameters</dt><dd>{facts.parameters || "—"}</dd></div>
+      {facts.architecture && <div><dt>Architecture</dt><dd>{facts.architecture}</dd></div>}
+      <div><dt>Weights</dt><dd>{facts.weights || "—"}</dd></div>
+      {facts.precision && <div><dt>Precision</dt><dd>{facts.precision}</dd></div>}
+      <div><dt>Where it ran</dt><dd>{facts.where_run || whereRun(id)}</dd></div>
+      <div><dt>Maker's stated hardware</dt><dd>{facts.hardware || "—"}</dd></div>
+      {!m.hosted && <div><dt>Memory measured</dt><dd>{mem && mem.phys_footprint_peak_mb ? `${gb(mem.phys_footprint_mb)} in use, ${gb(mem.phys_footprint_peak_mb)} peak` : "pending: not yet recorded in a run manifest"}</dd></div>}
+      {facts.price && <div><dt>Price</dt><dd>{facts.price}</dd></div>}
+      {taskOrder.map((s) => { const l = latency(id, s); return l && <div><dt>Time per decision, {TASK_INFO[s].short.toLowerCase()}</dt><dd>{l.complete ? `median ${Math.round(l.p50)} ms, 90th percentile ${Math.round(l.p90)} ms` : `in progress (${int(l.n)} of ${int(l.of)} items timed)`}{m.hosted ? ", over the network" : ", on a laptop"}</dd></div>; })}
+    </dl>
+    <p class="note">{m.hosted ? "Hosted: timed over the network against the vendor's servers, so its latency is not comparable with a model on a laptop." : "Run on one Apple M1 Max laptop with 32 GB of unified memory; memory is the physical footprint of the process holding the model."} {facts.source && <Fragment>Source: <a href={facts.source}>{facts.source.replace(/^https?:\/\//, "")}</a>.</Fragment>} <a href={urls.page("model-sizes")}>Every model's size and memory</a> · <a href={urls.page("latency")}>Latency</a>.</p>
+  </section>
+
+  {preds.length > 0 && (
+    <section class="wrap section" aria-labelledby="pred-h">
+      <h2 class="display" id="pred-h">What we predicted about {m.label}</h2>
+      <p class="lede">Written before {m.label} answered any item, quoted word for word.</p>
+      <Predictions sections={preds} />
+      <p class="more-link"><a href={urls.page("preregistration")}>Every prediction</a></p>
+    </section>
+  )}
+
+  <AnthusNote />
+</Base>

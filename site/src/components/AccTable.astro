@@ -1,0 +1,26 @@
+---
+// The numbers behind a breakdown chart: accuracy with its 95% interval for every model and value.
+import EngineName from "./EngineName.astro";
+import { modelById, pct, int, statusWords } from "../lib/site.js";
+const { rows, ids, slug, caption, valueHead = "Value", showProfile = false } = Astro.props;
+const live = ids.filter((id) => rows.some((r) => r.cells[id]));
+const labels = showProfile ? [...new Set(rows.flatMap((r) => Object.keys((r.profile || {}).labels || {})))].sort() : [];
+---
+<div class="table-scroll">
+  <table class="cell-table acc-table">
+    <caption class="sr">{caption}</caption>
+    <thead><tr><th scope="col">{valueHead}</th><th scope="col" class="num">Items</th>{live.map((id) => <th scope="col"><EngineName engine={modelById[id]} /></th>)}<th scope="col" class="num">Best constant</th>{showProfile && <th scope="col">Answer mix · mean depth</th>}</tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.label}</th>
+          <td class="num">{int(r.n)}</td>
+          {live.map((id) => { const c = r.cells[id]; return <td class="num">{c ? <Fragment><span class="strong">{pct(c.accuracy)}%</span> <span class="ci-t">{pct(c.lo)}–{pct(c.hi)}</span>{c.n !== r.n && <span class="ci-t"> (n {int(c.n)})</span>}</Fragment> : "—"}</td>; })}
+          <td class="num">{r.best_constant === null || r.best_constant === undefined ? "one answer" : `${pct(r.best_constant)}%`}</td>
+          {showProfile && <td class="sub">{labels.filter((l) => (r.profile.labels || {})[l]).map((l) => `${l} ${Math.round(100 * r.profile.labels[l] / r.profile.n)}%`).join(" · ")} · {r.profile.mean_depth.toFixed(1)}</td>}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+{live.some((id) => statusWords(id, slug)) && <p class="note">{live.filter((id) => statusWords(id, slug)).map((id) => `${modelById[id].label}: ${statusWords(id, slug)}.`).join(" ")}</p>}

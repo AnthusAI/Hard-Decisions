@@ -1,0 +1,7 @@
+---
+import Marker from "./Marker.astro";
+const { engine, href = null, size = 12 } = Astro.props;
+---
+{href
+  ? <a href={href} class="eng"><Marker engine={engine} size={size} />{engine.label}</a>
+  : <span class="eng"><Marker engine={engine} size={size} />{engine.label}</span>}

@@ -1,0 +1,26 @@
+---
+// Accuracy for each value of a breakdown, one line per model inside each row: a dot with its 95%
+// interval on a 0-100% scale, the chance line and the best-constant tick.
+import Marker from "./Marker.astro";
+import { modelById, pct, int } from "../lib/site.js";
+const { rows, ids, chance, label } = Astro.props;
+const live = ids.filter((id) => rows.some((r) => r.cells[id]));
+---
+<div class="dots" role="group" aria-label={label}>
+  <div class="dots-scale" aria-hidden="true"><span style="left:0%">0%</span><span style="left:50%">50%</span><span style="left:100%">100%</span></div>
+  {rows.map((r) => (
+    <div class="dots-row">
+      <div class="dots-label"><span class="dl-v">{r.label}</span><span class="dl-n">{int(r.n)} items</span></div>
+      <div class="dots-track" style={`--rows:${live.length}`}>
+        <span class="dots-chance" style={`left:${(100 * chance).toFixed(2)}%`} title={`chance ${pct(chance, 0)}%`}></span>
+        {r.best_constant !== null && r.best_constant !== undefined && <span class="dots-const" style={`left:${(100 * r.best_constant).toFixed(2)}%`} title={`best constant ${pct(r.best_constant)}%`}></span>}
+        {live.map((id, k) => { const c = r.cells[id]; const m = modelById[id]; return c ? (
+          <span class="dots-line" style={`top:${k * 14 + 4}px`}>
+            <span class="dots-ci" style={`left:${(100 * c.lo).toFixed(2)}%;width:${(100 * (c.hi - c.lo)).toFixed(2)}%;background:var(--eng-${m.slug})`}></span>
+            <span class="dots-dot" style={`left:${(100 * c.accuracy).toFixed(2)}%`} title={`${m.label}: ${pct(c.accuracy)}% (${pct(c.lo)} to ${pct(c.hi)})`}><Marker engine={m} size={12} /></span>
+          </span>
+        ) : null; })}
+      </div>
+    </div>
+  ))}
+</div>

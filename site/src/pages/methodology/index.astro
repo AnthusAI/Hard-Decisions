@@ -1,0 +1,115 @@
+---
+import Base from "../../layouts/Base.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { data, models, urls, axes, tasks, taskOrder, taskBySlug, TASK_INFO, OWA, int, L, aboutModel, modelById } from "../../lib/site.js";
+import { intro, honesty } from "../../lib/content.js";
+
+const owa = taskBySlug[OWA];
+const pool = Object.values(owa.pool.depth).reduce((a, b) => a + b, 0);
+const strata = (t) => { const out = {}; for (const s of t.strata) (out[s.depth] ||= {})[s.label] = s; return out; };
+const invalid = taskOrder.reduce((n, s) => n + models.reduce((k, m) => k + ((data.results[s].studies.engines[m.id] || { overall: { invalid: 0 } }).overall.invalid || 0), 0), 0);
+const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
+---
+<Base title={intro.methodology.title} description={intro.methodology.intro} path={urls.page("methodology")} current={{ page: "methodology" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "How we measured" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Methodology</p>
+    <h1 class="display xl">{intro.methodology.title}</h1>
+    <p class="deck">{intro.methodology.intro}</p>
+    <nav class="reg-links" aria-label="On this page"><a href="#dataset">The dataset</a><a href="#sample">The sample</a><a href="#tasks">The two tasks</a><a href="#protocol">One request per problem</a><a href="#scoring">Scoring</a><a href="#limits">Limits</a><a href="#runs">Run records</a><a href="#check">Check it yourself</a></nav>
+  </section>
+
+  <section class="wrap section" id="dataset" aria-labelledby="dataset-h">
+    <h2 class="display" id="dataset-h">The dataset: ProofWriter</h2>
+    <p class="lede">ProofWriter (Tafjord, Dalvi and Clark, 2021) is a multi-hop deductive reasoning dataset from AI2, published under CC BY 4.0. Each problem is a short theory of facts and rules in English and a statement to judge against it.</p>
+    <dl class="defs compact">
+      <div><dt>Version</dt><dd>V2020.12.3, official test splits: {owa.configs.join(", ")}</dd></div>
+      <div><dt>Gold answers</dt><dd>{owa.label_check}. Our solver reproduces every published test label, on both tasks, with zero disagreements.</dd></div>
+      <div><dt>Pool</dt><dd>{int(pool)} open-world test questions, from which the open-world sample is drawn</dd></div>
+      <div><dt>Synthetic</dt><dd>The theories are generated from templates, some reworded by people (the NatLang set). Models may have seen the dataset in training.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap section" id="sample" aria-labelledby="sample-h">
+    <h2 class="display" id="sample-h">The sample: {int(owa.n)} problems per task, {int(tasks.reduce((a, t) => a + t.n, 0))} in all</h2>
+    <p class="lede">Running every model on the full test set is not practical, so the harness draws a sample with a fixed seed ({owa.seed}). Items are spread evenly over proof depth and the correct answer first, so deep proofs and the unknown answer are never starved the way a uniform draw would starve them; inside each cell, items are chosen to cover the other properties and spread across theories. A bigger sample with the same seed only adds items, so answers already collected stay valid.</p>
+    {taskOrder.map((s) => { const t = taskBySlug[s]; const st = strata(t); return (
+      <Fragment>
+        <h3>{TASK_INFO[s].long}: items per depth and answer</h3>
+        <div class="table-scroll">
+          <table class="cell-table">
+            <thead><tr><th scope="col">Depth</th>{t.options.map((o) => <th scope="col" class="num">{o}</th>)}<th scope="col" class="num">Total</th><th scope="col" class="num">Available in the pool</th></tr></thead>
+            <tbody>{t.depths.map((d) => (
+              <tr><th scope="row">{d}</th>{t.options.map((o) => <td class="num">{st[d] && st[d][o] ? int(st[d][o].selected) : "—"}</td>)}<td class="num strong">{int(t.selected.depth[d])}</td><td class="num">{int(t.pool.depth[d])}</td></tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </Fragment>
+    ); })}
+    <p class="note">ProofWriter publishes no separate depth-4 split; depth-4 items come from the splits built for deeper theories.</p>
+  </section>
+
+  <section class="wrap section" id="tasks" aria-labelledby="tasks-h">
+    <h2 class="display" id="tasks-h">The two tasks</h2>
+    <p class="lede">The same kinds of theory under two rules for what cannot be proved. Every model got exactly this question and these options, in this order.</p>
+    {taskOrder.map((s) => { const t = taskBySlug[s]; return (
+      <div class="req-resp">
+        <h3>{TASK_INFO[s].long}</h3>
+        <p>{t.question}</p>
+        <ul>{t.options.map((o) => <li><strong>{o}</strong>: {t.descriptions[o]}</li>)}</ul>
+      </div>
+    ); })}
+  </section>
+
+  <section class="wrap section" id="protocol" aria-labelledby="protocol-h">
+    <h2 class="display" id="protocol-h">One request per problem, the same for every model</h2>
+    <p class="lede">Each model answered each problem once, with the problem's text, the task's question and its options. Nothing was retried into a valid answer.</p>
+    <ul class="how-list">
+      {models.map((m) => <li><strong>{m.label}.</strong> {aboutModel(m.id)}</li>)}
+    </ul>
+    <p>An answer that is not exactly one of the options is scored as wrong and kept in the record as given. Across every scored run so far there {invalid === 1 ? "was 1 such answer" : `were ${int(invalid)} such answers`}.</p>
+  </section>
+
+  <section class="wrap section" id="scoring" aria-labelledby="scoring-h">
+    <h2 class="display" id="scoring-h">Scoring</h2>
+    <dl class="defs">
+      <div><dt>Accuracy</dt><dd>The share of problems answered correctly, with a 95% interval: the range the score would fall in if we drew the problems again (a percentile bootstrap, 1,000 draws, seed 0).</dd></div>
+      <div><dt>Floors</dt><dd>Chance (one over the number of options) and the best constant guess: always giving the most common correct answer in that slice.</dd></div>
+      <div><dt>Recall and macro-F1</dt><dd>Recall is the share of items with a given correct answer that the model got right; macro-F1 averages the F1 of each answer, so a model cannot score well by ignoring one.</dd></div>
+      <div><dt>Paired differences</dt><dd>Two models on exactly the same items: the difference in accuracy, with its own 95% interval. Narrower than comparing two separate intervals.</dd></div>
+      <div><dt>Breakdowns</dt><dd>Accuracy by {axes.length} properties of the problems: {axes.map((a) => a.label.toLowerCase()).join(", ")}. Only depth is controlled.</dd></div>
+      <div><dt>Repeatability</dt><dd>Each model answers every item a second time; we report agreement, Gwet's AC1 and Cohen's kappa. <a href={urls.page("repeatability")}>Details</a>.</dd></div>
+    </dl>
+  </section>
+
+  <section class="wrap section" id="limits" aria-labelledby="limits-h">
+    <h2 class="display" id="limits-h">What the numbers cannot tell you</h2>
+    <ul class="how-list">{honesty.map((h) => <li><strong>{h.title}.</strong> {h.text}</li>)}</ul>
+    <p>At about 300 items per depth, a depth's accuracy is uncertain by roughly ±5 points; at about 100 items per depth and answer, roughly ±10. Only large differences are resolvable at that level.</p>
+  </section>
+
+  <section class="wrap section" id="runs" aria-labelledby="runs-h">
+    <h2 class="display" id="runs-h">Run records</h2>
+    <p class="lede">Every run the harness has recorded with its manifest: when, how many requests at once, on what machine and how busy it was. Earlier runs predate the manifests.</p>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Purpose</th><th scope="col">Started</th><th scope="col">Finished</th><th scope="col" class="num">Answered</th><th scope="col" class="num">At once</th><th scope="col">Machine</th><th scope="col">Load average at start</th></tr></thead>
+        <tbody>{data.manifests.map((m) => (
+          <tr><th scope="row">{L(m.engine)}</th><td>{TASK_INFO[m.task] ? TASK_INFO[m.task].short : m.task}</td><td>{m.tree === "timing" ? "rerun (timing, retest)" : "scored run"}</td><td>{fmtTime(m.started_at)}</td><td>{fmtTime(m.finished_at)}</td>
+            <td class="num">{int(m.answered)} of {int(m.requested)}</td><td class="num">{m.concurrency}</td><td>{m.machine ? `${m.machine.cpu}, ${Math.round(m.machine.memory_bytes / 2 ** 30)} GB` : "—"}</td><td>{m.load_start ? m.load_start.join(" / ") : "not recorded"}</td></tr>
+        ))}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="wrap section" id="check" aria-labelledby="check-h">
+    <h2 class="display" id="check-h">Check it yourself</h2>
+    <p>Every score on this site is computed from the saved answers, offline, without calling a model. The harness rebuilds them and this site from the same files:</p>
+    <pre class="code"><code>{`hd verify          # recompute every ProofWriter gold label with the independent solver
+hd replay          # rescore every saved answer: studies/*.jsonl
+hd report          # write RESULTS.md
+cd site && npm run build    # rebuild this site from studies/, engines.yaml and the run manifests`}</code></pre>
+    <p>Every number is also in <a href={urls.data()}>one data file</a>.</p>
+  </section>
+  <AnthusNote />
+</Base>

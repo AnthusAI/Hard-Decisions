@@ -1,0 +1,23 @@
+# Response headers for the Amplify app (Amplify reads customHttp.yml from the repository root).
+# Pages and the data file revalidate on every visit, so a new build shows at once; fingerprinted
+# files (/_astro/ bundles and /og/ cards, whose names change with their content) are cached for a
+# year. The local preview server (site/scripts/serve.mjs) applies these same rules.
+customHeaders:
+  - pattern: "**/*"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=0, must-revalidate"
+      - key: X-Content-Type-Options
+        value: nosniff
+      - key: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - key: X-Frame-Options
+        value: SAMEORIGIN
+  - pattern: "/_astro/*"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
+  - pattern: "/og/**/*"
+    headers:
+      - key: Cache-Control
+        value: "public, max-age=31536000, immutable"
