@@ -181,8 +181,13 @@ def cmd_score(args) -> int:
 
 
 def cmd_replay(args) -> int:
+    from hard_decisions import agreement
     for slug in all_slugs():
-        for path in scoring.replay(Task.load(slug)):
+        task = Task.load(slug)
+        for path in scoring.replay(task):
+            print(f"wrote {path.relative_to(ROOT)}")
+        path = agreement.replay(task)
+        if path:
             print(f"wrote {path.relative_to(ROOT)}")
     return 0
 

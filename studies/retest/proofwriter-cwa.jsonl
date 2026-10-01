@@ -1,0 +1,7 @@
+{"ac1": 0.9577782469083678, "ac1_high": 0.9711390456644431, "ac1_low": 0.9444447187915121, "accuracy_run1": 0.8927777777777778, "accuracy_run2": 0.8972222222222223, "agreement": 0.9788888888888889, "axis": "overall", "changed": 38, "engine": "jev", "kappa": 0.9577781426580264, "n": 1800, "prob_shift_max": 0.9, "prob_shift_mean": 0.020144444444444444, "task": "proofwriter-cwa", "value": "all"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "0"}
+{"axis": "depth", "change_rate": 0.01, "changed": 3, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "1"}
+{"axis": "depth", "change_rate": 0.016666666666666666, "changed": 5, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "2"}
+{"axis": "depth", "change_rate": 0.02, "changed": 6, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "3"}
+{"axis": "depth", "change_rate": 0.04, "changed": 12, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "4"}
+{"axis": "depth", "change_rate": 0.04, "changed": 12, "engine": "jev", "n": 300, "task": "proofwriter-cwa", "value": "5"}

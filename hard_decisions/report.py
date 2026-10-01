@@ -29,6 +29,60 @@ def _cell(row: dict) -> str:
     return f"{_pct(row['accuracy'])} [{_pct(row['ci_low'])}-{_pct(row['ci_high'])}]"
 
 
+def _num(value, digits=3) -> str:
+    return "-" if value is None else f"{value:.{digits}f}"
+
+
+def _retest_section(task: Task, studies: Path) -> List[str]:
+    path = studies / "retest" / f"{task.slug}.jsonl"
+    if not path.exists():
+        return []
+    rows = _rows(path)
+    overall = [r for r in rows if r["axis"] == "overall"]
+    lines = ["### Test-retest repeatability (run 1 = scored record, run 2 = rerun in `timing/`)", "",
+             "Agreement is the share of items with the same answer both times. AC1 is Gwet's chance-corrected "
+             "agreement (95% bootstrap interval); Cohen's kappa is shown for comparison and understates agreement "
+             "when an engine gives one answer to most items. Probability shift is the absolute change in run 1's "
+             "chosen option's probability.", "",
+             "| engine | n | agreement | AC1 | kappa | changed | accuracy run 1 / run 2 | prob shift mean / max |",
+             "|---|---|---|---|---|---|---|---|"]
+    for r in overall:
+        lines.append(f"| {r['engine']} | {r['n']} | {_pct(r['agreement'])} | {r['ac1']:.3f} "
+                     f"[{r['ac1_low']:.3f}-{r['ac1_high']:.3f}] | {r['kappa']:.3f} | {r['changed']} | "
+                     f"{_pct(r['accuracy_run1'])} / {_pct(r['accuracy_run2'])} | "
+                     f"{_num(r['prob_shift_mean'])} / {_num(r['prob_shift_max'])} |")
+    depths = sorted({r["value"] for r in rows if r["axis"] == "depth"}, key=int)
+    engines = [r["engine"] for r in overall]
+    lines += ["", "Share of answers that changed, by proof depth:", "",
+              "| depth | " + " | ".join(engines) + " |", "|---|" + "---|" * len(engines)]
+    for d in depths:
+        cells = []
+        for e in engines:
+            m = next((r for r in rows if r["engine"] == e and r["axis"] == "depth" and r["value"] == d), None)
+            cells.append("-" if m is None else f"{_pct(m['change_rate'])} ({m['changed']})")
+        lines.append(f"| {d} | " + " | ".join(cells) + " |")
+    return lines + [""]
+
+
+def _latency_section(task: Task, root: Path) -> List[str]:
+    """Per-request wall time from the reruns in ``timing/``, all made one request at a time."""
+    from hard_decisions.record import read_record
+    lines = []
+    for path in sorted((root / "timing").glob(f"*/{task.slug}.jsonl.gz")):
+        values = sorted(r["latency_ms"] for r in read_record(path) if r.get("latency_ms") is not None)
+        if not values:
+            continue
+        q = lambda p: values[int(p * (len(values) - 1))]  # noqa: E731
+        lines.append(f"| {path.parent.name} | {len(values)} | {q(0.5):.0f} | {q(0.9):.0f} | {values[-1]:.0f} | "
+                     f"{sum(values) / 60000:.1f} |")
+    if not lines:
+        return []
+    return ["### Latency per decision (reruns in `timing/`, one request at a time)", "",
+            "Wall time around each request as measured by the harness: network included for hosted engines; "
+            "local engines on the machine named in each run's `.runs.jsonl` manifest.", "",
+            "| engine | n | p50 ms | p90 ms | max ms | total minutes |", "|---|---|---|---|---|---|"] + lines + [""]
+
+
 def task_section(task: Task, studies: Path) -> List[str]:
     engines: Dict[str, List[dict]] = {}
     for path in sorted(studies.glob(f"{task.slug}-*.jsonl")):
@@ -71,6 +125,8 @@ def task_section(task: Task, studies: Path) -> List[str]:
                     floor = match["best_constant"]
             lines.append(f"| {value} | {_n(ns)} | " + " | ".join(cells) + f" | {_floor(floor)} |")
         lines.append("")
+    lines += _retest_section(task, studies)
+    lines += _latency_section(task, studies.parent)
     pairs = sorted(p for p in studies.glob(f"{task.slug}-*-vs-*.jsonl"))
     if pairs:
         lines += ["### Paired differences (same items; accuracy difference in points)", "",
