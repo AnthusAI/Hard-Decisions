@@ -38,3 +38,18 @@ reported as such.
 ProofWriter is synthetic and templated, and models may have seen it in training. Interval widths at 100 to 150
 items per depth are about plus or minus 8 to 10 points per class-balanced stratum, so only large differences are
 resolvable at the depth-by-label level. Breakdowns are descriptive, not causal.
+
+## Amendment 1: Kev (written before Kev answered any item)
+
+- **Engine:** `kev-0.8b`, Kev's pointer head on Qwen3.5-0.8B-Base, served locally through the same `/v1/systemone`
+  contract and the same typed question as Jev. Pinned identity, identical to the Biased-Decisions Kev study:
+  checkpoint `jaredpalmer/kev-0.8b@54f4f8777356cd5bbbb6c6919c657f26e6f2f6d8`, base
+  `Qwen/Qwen3.5-0.8B-Base@dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68`, server commit
+  `c9c1f855505336ac32092a5f68305d397f7fcc3e`, MLX bfloat16, prefix cache and date facts off, stored temperature
+  2.406. The server's `/v1/models` response is saved in `answers/kev-0.8b/provenance.json`.
+- **Protocol:** one request at a time; a 20-item OWA timing pilot, then the full 1,800 items per task. Same
+  sample, metrics and floors as above. Paired differences are reported as Jev minus Kev on the same items.
+- **Predictions:**
+  1. Kev's accuracy falls with proof depth on both tasks.
+  2. Kev is below Jev overall on both tasks (paired interval excludes zero).
+  3. On OWA, Kev's `unknown` recall is its lowest class recall.

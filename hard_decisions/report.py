@@ -20,6 +20,11 @@ def _floor(value) -> str:
     return "-" if value is None else _pct(value)
 
 
+def _n(ns: List[int]) -> str:
+    """One count when every engine answered the same items, else each engine's count in column order."""
+    return str(ns[0]) if len(set(ns)) == 1 else "/".join(str(n) for n in ns)
+
+
 def _cell(row: dict) -> str:
     return f"{_pct(row['accuracy'])} [{_pct(row['ci_low'])}-{_pct(row['ci_high'])}]"
 
@@ -57,13 +62,14 @@ def task_section(task: Task, studies: Path) -> List[str]:
         lines += [f"### By {heading}", "", "| value | n | " + " | ".join(engines) + " | best constant |",
                   "|---|---|" + "---|" * (len(engines) + 1)]
         for value in values:
-            cells, n, floor = [], 0, None
+            cells, ns, floor = [], [], None
             for e, rows in engines.items():
                 match = next((r for r in rows if r["axis"] == axis and r["value"] == value), None)
                 cells.append(_cell(match) if match else "-")
-                if match:
-                    n, floor = match["n"], match["best_constant"]
-            lines.append(f"| {value} | {n} | " + " | ".join(cells) + f" | {_floor(floor)} |")
+                ns.append(match["n"] if match else 0)
+                if match and floor is None:
+                    floor = match["best_constant"]
+            lines.append(f"| {value} | {_n(ns)} | " + " | ".join(cells) + f" | {_floor(floor)} |")
         lines.append("")
     pairs = sorted(p for p in studies.glob(f"{task.slug}-*-vs-*.jsonl"))
     if pairs:

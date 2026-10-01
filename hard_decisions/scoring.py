@@ -93,8 +93,18 @@ def write_rows(path: Path, rows: List[dict]) -> None:
     path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows), encoding="utf-8")
 
 
+REFERENCE_ENGINE = "jev"
+
+
+def pairs(engines: List[str]) -> List[tuple]:
+    """Jev against every other engine; every pair only when Jev has no record."""
+    if REFERENCE_ENGINE in engines:
+        return [(REFERENCE_ENGINE, e) for e in engines if e != REFERENCE_ENGINE]
+    return [(a, b) for i, a in enumerate(engines) for b in engines[i + 1:]]
+
+
 def replay(task: Task, *, root: Path = ROOT) -> List[Path]:
-    """Rescore every engine that has a record for ``task`` and every pair of them."""
+    """Rescore every engine that has a record for ``task`` and pair Jev with each of them."""
     written = []
     engines = engines_with_records(task.slug, root=root)
     for engine in engines:
@@ -103,11 +113,10 @@ def replay(task: Task, *, root: Path = ROOT) -> List[Path]:
             path = study_path(task.slug, engine, root=root)
             write_rows(path, rows)
             written.append(path)
-    for i, a in enumerate(engines):
-        for b in engines[i + 1:]:
-            rows = paired(a, b, task, root=root)
-            if rows:
-                path = study_path(task.slug, f"{a}-vs-{b}", root=root)
-                write_rows(path, rows)
-                written.append(path)
+    for a, b in pairs(engines):
+        rows = paired(a, b, task, root=root)
+        if rows:
+            path = study_path(task.slug, f"{a}-vs-{b}", root=root)
+            write_rows(path, rows)
+            written.append(path)
     return written

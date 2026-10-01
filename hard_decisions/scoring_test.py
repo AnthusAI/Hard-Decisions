@@ -89,3 +89,13 @@ def test_estimate_prefers_measured_usage(tmp_path):
     recorded = [{"id": i["id"], "usage": {"input_tokens": 100}} for i in items[:4]]
     measured = answering.estimate(task, items, recorded, {i["id"]: i["text"] for i in items})
     assert "measured" in measured.basis
+
+
+def test_pairs_use_jev_as_reference():
+    assert scoring.pairs(["claude", "jev", "laya"]) == [("jev", "claude"), ("jev", "laya")]
+    assert scoring.pairs(["a", "b", "c"]) == [("a", "b"), ("a", "c"), ("b", "c")]
+
+
+def test_report_n_shows_each_engine_when_counts_differ():
+    assert report._n([12, 12]) == "12"
+    assert report._n([300, 12]) == "300/12"
