@@ -1,0 +1,10 @@
+{"axis": "overall", "ci_high": 0.32666666666666666, "ci_low": 0.27666666666666667, "diff": 0.30277777777777776, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 1800, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "ci_high": 0.32666666666666666, "ci_low": 0.21666666666666667, "diff": 0.2733333333333333, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "ci_high": 0.40066225165562913, "ci_low": 0.27483443708609273, "diff": 0.33774834437086093, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "ci_high": 0.44554455445544555, "ci_low": 0.3102310231023102, "diff": 0.3795379537953795, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "ci_high": 0.3696369636963696, "ci_low": 0.23432343234323433, "diff": 0.3102310231023102, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "ci_high": 0.27722772277227725, "ci_low": 0.15181518151815182, "diff": 0.2145214521452145, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "ci_high": 0.35986159169550175, "ci_low": 0.23529411764705882, "diff": 0.30103806228373703, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.021487603305785124, "ci_low": -0.04628099173553719, "diff": -0.013223140495867768, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 605, "task": "proofwriter-owa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.35206611570247937, "ci_low": 0.2611570247933884, "diff": 0.30578512396694213, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 605, "task": "proofwriter-owa", "value": "true"}
+{"axis": "reference_label", "ci_high": 0.6627118644067796, "ci_low": 0.5830508474576271, "diff": 0.6237288135593221, "engine_a": "jev", "engine_b": "kev-0.8b", "n": 590, "task": "proofwriter-owa", "value": "unknown"}
