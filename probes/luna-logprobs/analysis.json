@@ -1,0 +1,2046 @@
+{
+  "examples": [
+    {
+      "correct": false,
+      "gold": "false",
+      "id": "AttNonegNatLang-OWA-479-Q8",
+      "request": {
+        "logprobs": true,
+        "max_completion_tokens": 1024,
+        "messages": [
+          {
+            "content": "Alan is young, round, and kind, but that doesn't mean he isn't also rough and cold at times, as well. That guy Fred sure is nice. That guy Harry sure is nice. Young round people who are green are usually blue. When green, young and round fits a person, you'll see that rough will also fit. It's a certainty that any green, big and kind individual is going to be nice. Kind people with rough skin are usually red because it's wind burn. If someone shows that they are red, then they are also showing that they are green. Is a kind person if feeling cold and looking red then they are usually young.\n\nStatement: Alan is not blue.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false, unknown.",
+            "role": "user"
+          }
+        ],
+        "model": "gpt-6-luna",
+        "reasoning_effort": "none",
+        "response_format": {
+          "json_schema": {
+            "name": "decision",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "enum": [
+                    "true",
+                    "false",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "type": "object"
+            },
+            "strict": true
+          },
+          "type": "json_schema"
+        },
+        "top_logprobs": 5
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": {
+              "content": [
+                {
+                  "bytes": [
+                    123,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "{\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        123,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "{\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    97,
+                    110,
+                    115,
+                    119,
+                    101,
+                    114
+                  ],
+                  "logprob": 0.0,
+                  "token": "answer",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        97,
+                        110,
+                        115,
+                        119,
+                        101,
+                        114
+                      ],
+                      "logprob": 0.0,
+                      "token": "answer"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    58,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "\":\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        58,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "\":\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    117,
+                    110,
+                    107,
+                    110,
+                    111,
+                    119,
+                    110
+                  ],
+                  "logprob": -0.001819610595703125,
+                  "token": "unknown",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        117,
+                        110,
+                        107,
+                        110,
+                        111,
+                        119,
+                        110
+                      ],
+                      "logprob": -0.001819610595703125,
+                      "token": "unknown"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    125
+                  ],
+                  "logprob": 0.0,
+                  "token": "\"}",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        125
+                      ],
+                      "logprob": 0.0,
+                      "token": "\"}"
+                    }
+                  ]
+                }
+              ],
+              "refusal": null
+            },
+            "message": {
+              "annotations": [],
+              "audio": null,
+              "content": "{\"answer\":\"unknown\"}",
+              "function_call": null,
+              "refusal": null,
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1790866630,
+        "id": "chatcmpl-EUCVa4ydOIAtLD1d5VSwqwdcWrIyc",
+        "model": "gpt-6-luna",
+        "moderation": null,
+        "object": "chat.completion",
+        "service_tier": "default",
+        "system_fingerprint": null,
+        "usage": {
+          "completion_tokens": 11,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "prompt_tokens": 340,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 351
+        }
+      },
+      "task": "proofwriter-owa"
+    },
+    {
+      "correct": true,
+      "gold": "unknown",
+      "id": "AttNoneg-OWA-D5-924-Q18",
+      "request": {
+        "logprobs": true,
+        "max_completion_tokens": 1024,
+        "messages": [
+          {
+            "content": "Anne is red. Anne is white. Bob is furry. Bob is red. Fiona is big. Fiona is furry. Fiona is green. Gary is cold. Gary is furry. Gary is green. Green, furry people are nice. All green, nice people are big. Big, green people are furry. All furry people are nice. All big, green people are furry. Big, red people are cold. If someone is nice and red then they are green. Big, cold people are white. If someone is green and cold then they are big.\n\nStatement: Anne is furry.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false, unknown.",
+            "role": "user"
+          }
+        ],
+        "model": "gpt-6-luna",
+        "reasoning_effort": "none",
+        "response_format": {
+          "json_schema": {
+            "name": "decision",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "enum": [
+                    "true",
+                    "false",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "type": "object"
+            },
+            "strict": true
+          },
+          "type": "json_schema"
+        },
+        "top_logprobs": 5
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": {
+              "content": [
+                {
+                  "bytes": [
+                    123,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "{\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        123,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "{\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    97,
+                    110,
+                    115,
+                    119,
+                    101,
+                    114
+                  ],
+                  "logprob": 0.0,
+                  "token": "answer",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        97,
+                        110,
+                        115,
+                        119,
+                        101,
+                        114
+                      ],
+                      "logprob": 0.0,
+                      "token": "answer"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    58,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "\":\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        58,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "\":\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    117,
+                    110,
+                    107,
+                    110,
+                    111,
+                    119,
+                    110
+                  ],
+                  "logprob": -3.814697265625e-06,
+                  "token": "unknown",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        117,
+                        110,
+                        107,
+                        110,
+                        111,
+                        119,
+                        110
+                      ],
+                      "logprob": -3.814697265625e-06,
+                      "token": "unknown"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    125
+                  ],
+                  "logprob": -3.814697265625e-06,
+                  "token": "\"}",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        125
+                      ],
+                      "logprob": -3.814697265625e-06,
+                      "token": "\"}"
+                    }
+                  ]
+                }
+              ],
+              "refusal": null
+            },
+            "message": {
+              "annotations": [],
+              "audio": null,
+              "content": "{\"answer\":\"unknown\"}",
+              "function_call": null,
+              "refusal": null,
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1790866630,
+        "id": "chatcmpl-EUCVa0u5eg0DyNLwbbvk2m0sTjVW2",
+        "model": "gpt-6-luna",
+        "moderation": null,
+        "object": "chat.completion",
+        "service_tier": "default",
+        "system_fingerprint": null,
+        "usage": {
+          "completion_tokens": 11,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "prompt_tokens": 320,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 331
+        }
+      },
+      "task": "proofwriter-owa"
+    },
+    {
+      "correct": false,
+      "gold": "false",
+      "id": "AttNeg-CWA-D5-136-Q12",
+      "request": {
+        "logprobs": true,
+        "max_completion_tokens": 1024,
+        "messages": [
+          {
+            "content": "Anne is nice. Anne is round. Dave is big. Dave is quiet. Dave is round. Erin is green. Erin is quiet. Harry is big. Harry is quiet. Harry is round. All furry, round people are nice. Furry people are nice. All nice people are rough. All green, nice people are furry. Round, big people are furry. If Erin is furry then Erin is big. Round, rough people are big. Quiet people are green. Furry people are quiet.\n\nStatement: Anne is not green.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false.",
+            "role": "user"
+          }
+        ],
+        "model": "gpt-6-luna",
+        "reasoning_effort": "none",
+        "response_format": {
+          "json_schema": {
+            "name": "decision",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "enum": [
+                    "true",
+                    "false"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "type": "object"
+            },
+            "strict": true
+          },
+          "type": "json_schema"
+        },
+        "top_logprobs": 5
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": {
+              "content": [
+                {
+                  "bytes": [
+                    123,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "{\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        123,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "{\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    97,
+                    110,
+                    115,
+                    119,
+                    101,
+                    114
+                  ],
+                  "logprob": 0.0,
+                  "token": "answer",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        97,
+                        110,
+                        115,
+                        119,
+                        101,
+                        114
+                      ],
+                      "logprob": 0.0,
+                      "token": "answer"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    58,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "\":\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        58,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "\":\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    116,
+                    114,
+                    117,
+                    101
+                  ],
+                  "logprob": -0.020458221435546875,
+                  "token": "true",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        116,
+                        114,
+                        117,
+                        101
+                      ],
+                      "logprob": -0.020458221435546875,
+                      "token": "true"
+                    },
+                    {
+                      "bytes": [
+                        102,
+                        97,
+                        108,
+                        115,
+                        101
+                      ],
+                      "logprob": -3.8995132446289062,
+                      "token": "false"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    125
+                  ],
+                  "logprob": 0.0,
+                  "token": "\"}",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        125
+                      ],
+                      "logprob": 0.0,
+                      "token": "\"}"
+                    }
+                  ]
+                }
+              ],
+              "refusal": null
+            },
+            "message": {
+              "annotations": [],
+              "audio": null,
+              "content": "{\"answer\":\"true\"}",
+              "function_call": null,
+              "refusal": null,
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1790866853,
+        "id": "chatcmpl-EUCZBRXdq8PlqrFEmrh4Fb8W3ZfP9",
+        "model": "gpt-6-luna",
+        "moderation": null,
+        "object": "chat.completion",
+        "service_tier": "default",
+        "system_fingerprint": null,
+        "usage": {
+          "completion_tokens": 11,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "prompt_tokens": 289,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 300
+        }
+      },
+      "task": "proofwriter-cwa"
+    },
+    {
+      "correct": true,
+      "gold": "true",
+      "id": "RelNeg-CWA-D5-871-Q9",
+      "request": {
+        "logprobs": true,
+        "max_completion_tokens": 1024,
+        "messages": [
+          {
+            "content": "The bald eagle visits the squirrel. The cow is rough. The cow is round. The cow likes the bald eagle. The cow likes the tiger. The cow needs the bald eagle. The cow needs the squirrel. The cow needs the tiger. The squirrel likes the bald eagle. The squirrel likes the cow. The squirrel visits the cow. The tiger is red. The tiger needs the squirrel. The tiger visits the squirrel. If something visits the bald eagle then the bald eagle is kind. If something is red and cold then it likes the tiger. If the cow visits the bald eagle and the cow is red then the bald eagle visits the squirrel. If something visits the cow and it is cold then it visits the bald eagle. If something needs the tiger then it is cold. If something likes the bald eagle and the bald eagle is kind then the bald eagle is cold. If something likes the squirrel and it visits the bald eagle then the squirrel needs the tiger. If something needs the cow then it is red. If something is cold then it visits the cow.\n\nStatement: The bald eagle is kind.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false.",
+            "role": "user"
+          }
+        ],
+        "model": "gpt-6-luna",
+        "reasoning_effort": "none",
+        "response_format": {
+          "json_schema": {
+            "name": "decision",
+            "schema": {
+              "additionalProperties": false,
+              "properties": {
+                "answer": {
+                  "enum": [
+                    "true",
+                    "false"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "answer"
+              ],
+              "type": "object"
+            },
+            "strict": true
+          },
+          "type": "json_schema"
+        },
+        "top_logprobs": 5
+      },
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": {
+              "content": [
+                {
+                  "bytes": [
+                    123,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "{\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        123,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "{\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    97,
+                    110,
+                    115,
+                    119,
+                    101,
+                    114
+                  ],
+                  "logprob": 0.0,
+                  "token": "answer",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        97,
+                        110,
+                        115,
+                        119,
+                        101,
+                        114
+                      ],
+                      "logprob": 0.0,
+                      "token": "answer"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    58,
+                    34
+                  ],
+                  "logprob": 0.0,
+                  "token": "\":\"",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        58,
+                        34
+                      ],
+                      "logprob": 0.0,
+                      "token": "\":\""
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    116,
+                    114,
+                    117,
+                    101
+                  ],
+                  "logprob": 0.0,
+                  "token": "true",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        116,
+                        114,
+                        117,
+                        101
+                      ],
+                      "logprob": 0.0,
+                      "token": "true"
+                    }
+                  ]
+                },
+                {
+                  "bytes": [
+                    34,
+                    125
+                  ],
+                  "logprob": 3.814697265625e-06,
+                  "token": "\"}",
+                  "top_logprobs": [
+                    {
+                      "bytes": [
+                        34,
+                        125
+                      ],
+                      "logprob": 3.814697265625e-06,
+                      "token": "\"}"
+                    }
+                  ]
+                }
+              ],
+              "refusal": null
+            },
+            "message": {
+              "annotations": [],
+              "audio": null,
+              "content": "{\"answer\":\"true\"}",
+              "function_call": null,
+              "refusal": null,
+              "role": "assistant",
+              "tool_calls": null
+            }
+          }
+        ],
+        "created": 1790866853,
+        "id": "chatcmpl-EUCZBPPeC8fEP4HSEKY2kob2qBT4A",
+        "model": "gpt-6-luna",
+        "moderation": null,
+        "object": "chat.completion",
+        "service_tier": "default",
+        "system_fingerprint": null,
+        "usage": {
+          "completion_tokens": 11,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": 0
+          },
+          "prompt_tokens": 401,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "total_tokens": 412
+        }
+      },
+      "task": "proofwriter-cwa"
+    }
+  ],
+  "overall": {
+    "accuracy": 0.6408333333333334,
+    "auroc": 0.6698948457416833,
+    "bands": [
+      {
+        "accuracy": 0.4460431654676259,
+        "from": 0.0,
+        "mean_stated": 0.30673108162699836,
+        "n": 139,
+        "to": 0.5
+      },
+      {
+        "accuracy": 0.5238095238095238,
+        "from": 0.5,
+        "mean_stated": 0.678390958408231,
+        "n": 168,
+        "to": 0.8
+      },
+      {
+        "accuracy": 0.4818181818181818,
+        "from": 0.8,
+        "mean_stated": 0.8611539566000325,
+        "n": 110,
+        "to": 0.9
+      },
+      {
+        "accuracy": 0.5136986301369864,
+        "from": 0.9,
+        "mean_stated": 0.927975324604965,
+        "n": 146,
+        "to": 0.95
+      },
+      {
+        "accuracy": 0.5121951219512195,
+        "from": 0.95,
+        "mean_stated": 0.9746919509598972,
+        "n": 328,
+        "to": 0.99
+      },
+      {
+        "accuracy": 0.6841317365269461,
+        "from": 0.99,
+        "mean_stated": 0.9993454921481807,
+        "n": 2672,
+        "to": 1.0
+      }
+    ],
+    "ece": 0.3170820856165399,
+    "mean_stated": 0.9482685805710882,
+    "n": 3600,
+    "wrong": 1293,
+    "wrong_at_95": 0.7795823665893271,
+    "wrong_at_99": 0.6558391337973705
+  },
+  "tasks": {
+    "proofwriter-cwa": {
+      "accuracy": 0.6483333333333333,
+      "auroc": 0.6789129984527102,
+      "bands": [
+        {
+          "accuracy": 0.49230769230769234,
+          "from": 0.0,
+          "mean_stated": 0.2911070032314609,
+          "n": 65,
+          "to": 0.5
+        },
+        {
+          "accuracy": 0.527027027027027,
+          "from": 0.5,
+          "mean_stated": 0.6815618963560237,
+          "n": 74,
+          "to": 0.8
+        },
+        {
+          "accuracy": 0.54,
+          "from": 0.8,
+          "mean_stated": 0.8612726000977343,
+          "n": 50,
+          "to": 0.9
+        },
+        {
+          "accuracy": 0.5428571428571428,
+          "from": 0.9,
+          "mean_stated": 0.9275551275285234,
+          "n": 70,
+          "to": 0.95
+        },
+        {
+          "accuracy": 0.5167785234899329,
+          "from": 0.95,
+          "mean_stated": 0.974773335054445,
+          "n": 149,
+          "to": 0.99
+        },
+        {
+          "accuracy": 0.6810218978102189,
+          "from": 0.99,
+          "mean_stated": 0.9993562927506754,
+          "n": 1370,
+          "to": 1.0
+        }
+      ],
+      "by_depth": {
+        "0": {
+          "accuracy": 0.98,
+          "auroc": 0.9424603174603174,
+          "bands": [
+            {
+              "accuracy": 0.6666666666666666,
+              "from": 0.0,
+              "mean_stated": 0.1644404773999861,
+              "n": 3,
+              "to": 0.5
+            },
+            {
+              "accuracy": 1.0,
+              "from": 0.5,
+              "mean_stated": 0.7788542609133176,
+              "n": 1,
+              "to": 0.8
+            },
+            {
+              "accuracy": null,
+              "from": 0.8,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.75,
+              "from": 0.9,
+              "mean_stated": 0.9313843096862391,
+              "n": 4,
+              "to": 0.95
+            },
+            {
+              "accuracy": null,
+              "from": 0.95,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.9858156028368794,
+              "from": 0.99,
+              "mean_stated": 0.9999392782975487,
+              "n": 282,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.021454126751801392,
+          "mean_stated": 0.989935425196041,
+          "n": 300,
+          "wrong": 6,
+          "wrong_at_95": 0.6666666666666666,
+          "wrong_at_99": 0.6666666666666666
+        },
+        "1": {
+          "accuracy": 0.7766666666666666,
+          "auroc": 0.751393248350522,
+          "bands": [
+            {
+              "accuracy": 0.16666666666666666,
+              "from": 0.0,
+              "mean_stated": 0.24237824838760755,
+              "n": 6,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.45454545454545453,
+              "from": 0.5,
+              "mean_stated": 0.6619650162182332,
+              "n": 11,
+              "to": 0.8
+            },
+            {
+              "accuracy": 1.0,
+              "from": 0.8,
+              "mean_stated": 0.8823908941605126,
+              "n": 6,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.8,
+              "from": 0.9,
+              "mean_stated": 0.9219880228748595,
+              "n": 10,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.7391304347826086,
+              "from": 0.95,
+              "mean_stated": 0.9740503513889824,
+              "n": 23,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.8008298755186722,
+              "from": 0.99,
+              "mean_stated": 0.9994110589071132,
+              "n": 241,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.19307547603690867,
+          "mean_stated": 0.9650378166170412,
+          "n": 300,
+          "wrong": 67,
+          "wrong_at_95": 0.8059701492537313,
+          "wrong_at_99": 0.7164179104477612
+        },
+        "2": {
+          "accuracy": 0.6433333333333333,
+          "auroc": 0.638080480364147,
+          "bands": [
+            {
+              "accuracy": 0.5,
+              "from": 0.0,
+              "mean_stated": 0.3467506479471365,
+              "n": 14,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5,
+              "from": 0.5,
+              "mean_stated": 0.6632102286657326,
+              "n": 10,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6666666666666666,
+              "from": 0.8,
+              "mean_stated": 0.8649607608136565,
+              "n": 12,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5,
+              "from": 0.9,
+              "mean_stated": 0.9242110449667916,
+              "n": 16,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.52,
+              "from": 0.95,
+              "mean_stated": 0.9777012962747692,
+              "n": 25,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.6801801801801802,
+              "from": 0.99,
+              "mean_stated": 0.999312308902172,
+              "n": 222,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.3174478801592712,
+          "mean_stated": 0.946477953350019,
+          "n": 300,
+          "wrong": 107,
+          "wrong_at_95": 0.7757009345794392,
+          "wrong_at_99": 0.6635514018691588
+        },
+        "3": {
+          "accuracy": 0.5733333333333334,
+          "auroc": 0.5633402979651163,
+          "bands": [
+            {
+              "accuracy": 0.5555555555555556,
+              "from": 0.0,
+              "mean_stated": 0.3400159380573663,
+              "n": 9,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.7142857142857143,
+              "from": 0.5,
+              "mean_stated": 0.6792316325768597,
+              "n": 14,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.4166666666666667,
+              "from": 0.8,
+              "mean_stated": 0.866581600563351,
+              "n": 12,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.6,
+              "from": 0.9,
+              "mean_stated": 0.9268193251116719,
+              "n": 10,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.4864864864864865,
+              "from": 0.95,
+              "mean_stated": 0.972933772858035,
+              "n": 37,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.5852534562211982,
+              "from": 0.99,
+              "mean_stated": 0.9990451329240364,
+              "n": 217,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.39629709866515933,
+          "mean_stated": 0.9534263533714566,
+          "n": 300,
+          "wrong": 128,
+          "wrong_at_95": 0.8515625,
+          "wrong_at_99": 0.703125
+        },
+        "4": {
+          "accuracy": 0.44,
+          "auroc": 0.5562770562770563,
+          "bands": [
+            {
+              "accuracy": 0.5263157894736842,
+              "from": 0.0,
+              "mean_stated": 0.2760520158630455,
+              "n": 19,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.4583333333333333,
+              "from": 0.5,
+              "mean_stated": 0.6877090176411231,
+              "n": 24,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.2,
+              "from": 0.8,
+              "mean_stated": 0.8538965087880882,
+              "n": 10,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.42857142857142855,
+              "from": 0.9,
+              "mean_stated": 0.9280511600438276,
+              "n": 14,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.35714285714285715,
+              "from": 0.95,
+              "mean_stated": 0.9758526861164062,
+              "n": 28,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.4482758620689655,
+              "from": 0.99,
+              "mean_stated": 0.9989689124443156,
+              "n": 203,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.5096875796264633,
+          "mean_stated": 0.9179875270671459,
+          "n": 300,
+          "wrong": 168,
+          "wrong_at_95": 0.7738095238095238,
+          "wrong_at_99": 0.6666666666666666
+        },
+        "5": {
+          "accuracy": 0.4766666666666667,
+          "auroc": 0.5023384259053049,
+          "bands": [
+            {
+              "accuracy": 0.5,
+              "from": 0.0,
+              "mean_stated": 0.2724802480246628,
+              "n": 14,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5,
+              "from": 0.5,
+              "mean_stated": 0.6949106660651106,
+              "n": 14,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6,
+              "from": 0.8,
+              "mean_stated": 0.8451811215518669,
+              "n": 10,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.4375,
+              "from": 0.9,
+              "mean_stated": 0.9334472030190073,
+              "n": 16,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.5277777777777778,
+              "from": 0.95,
+              "mean_stated": 0.9742531007580502,
+              "n": 36,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.45365853658536587,
+              "from": 0.99,
+              "mean_stated": 0.9992505548532111,
+              "n": 205,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.4807348922952905,
+          "mean_stated": 0.939499779022668,
+          "n": 300,
+          "wrong": 157,
+          "wrong_at_95": 0.8280254777070064,
+          "wrong_at_99": 0.7197452229299363
+        }
+      },
+      "ece": 0.3177030344687343,
+      "mean_disclosed_mass": 0.9990123341586026,
+      "mean_stated": 0.9520608091040621,
+      "n": 1800,
+      "options_disclosed": {
+        "1": 1455,
+        "2": 345
+      },
+      "other_engines_same_items": {
+        "jev": {
+          "accuracy": 0.8927777777777778,
+          "auroc": 0.8575500320811476,
+          "bands": [
+            {
+              "accuracy": null,
+              "from": 0.0,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.6164874551971327,
+              "from": 0.5,
+              "mean_stated": 0.65584229390681,
+              "n": 279,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.7834394904458599,
+              "from": 0.8,
+              "mean_stated": 0.8438853503184714,
+              "n": 157,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.8613138686131386,
+              "from": 0.9,
+              "mean_stated": 0.9211678832116789,
+              "n": 137,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.9288389513108615,
+              "from": 0.95,
+              "mean_stated": 0.9684269662921348,
+              "n": 267,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.9854166666666667,
+              "from": 0.99,
+              "mean_stated": 0.9975625,
+              "n": 960,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.02827777777777775,
+          "n": 1800,
+          "wrong_at_95": 0.17098445595854922,
+          "wrong_at_99": 0.07253886010362694
+        },
+        "kev-0.8b": {
+          "accuracy": 0.5577777777777778,
+          "auroc": 0.5727072864321608,
+          "bands": [
+            {
+              "accuracy": null,
+              "from": 0.0,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5200655200655201,
+              "from": 0.5,
+              "mean_stated": 0.6559042588042588,
+              "n": 1221,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6446280991735537,
+              "from": 0.8,
+              "mean_stated": 0.848842699724518,
+              "n": 363,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.6,
+              "from": 0.9,
+              "mean_stated": 0.924230303030303,
+              "n": 165,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.7058823529411765,
+              "from": 0.95,
+              "mean_stated": 0.9627803921568627,
+              "n": 51,
+              "to": 0.99
+            },
+            {
+              "accuracy": null,
+              "from": 0.99,
+              "mean_stated": null,
+              "n": 0,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.17032711111111112,
+          "n": 1800,
+          "wrong_at_95": 0.018844221105527637,
+          "wrong_at_99": 0.0
+        },
+        "kev-4b": {
+          "accuracy": 0.5877777777777777,
+          "auroc": 0.5906232325651307,
+          "bands": [
+            {
+              "accuracy": null,
+              "from": 0.0,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5623342175066313,
+              "from": 0.5,
+              "mean_stated": 0.6259690981432361,
+              "n": 1508,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6936170212765957,
+              "from": 0.8,
+              "mean_stated": 0.8453782978723404,
+              "n": 235,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.8,
+              "from": 0.9,
+              "mean_stated": 0.921086,
+              "n": 50,
+              "to": 0.95
+            },
+            {
+              "accuracy": 1.0,
+              "from": 0.95,
+              "mean_stated": 0.9529857142857142,
+              "n": 7,
+              "to": 0.99
+            },
+            {
+              "accuracy": null,
+              "from": 0.99,
+              "mean_stated": null,
+              "n": 0,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.07667150000000003,
+          "n": 1800,
+          "wrong_at_95": 0.0,
+          "wrong_at_99": 0.0
+        },
+        "laya": {
+          "accuracy": 0.5561111111111111,
+          "auroc": 0.5602557642607705,
+          "bands": [
+            {
+              "accuracy": null,
+              "from": 0.0,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5401662049861495,
+              "from": 0.5,
+              "mean_stated": 0.6738072022160665,
+              "n": 361,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.5026041666666666,
+              "from": 0.8,
+              "mean_stated": 0.8577484375000001,
+              "n": 384,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5157894736842106,
+              "from": 0.9,
+              "mean_stated": 0.9285298245614034,
+              "n": 570,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.6560509554140127,
+              "from": 0.95,
+              "mean_stated": 0.9668768577494692,
+              "n": 471,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.7142857142857143,
+              "from": 0.99,
+              "mean_stated": 0.9939857142857144,
+              "n": 14,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.3167758888888889,
+          "n": 1800,
+          "wrong_at_95": 0.20775969962453067,
+          "wrong_at_99": 0.0050062578222778474
+        }
+      },
+      "responses": 1800,
+      "returned_not_most_probable": 65,
+      "unparsed": 0,
+      "wrong": 633,
+      "wrong_at_95": 0.8056872037914692,
+      "wrong_at_99": 0.6919431279620853
+    },
+    "proofwriter-owa": {
+      "accuracy": 0.6333333333333333,
+      "auroc": 0.6617271398192451,
+      "bands": [
+        {
+          "accuracy": 0.40540540540540543,
+          "from": 0.0,
+          "mean_stated": 0.3204549342717272,
+          "n": 74,
+          "to": 0.5
+        },
+        {
+          "accuracy": 0.5212765957446809,
+          "from": 0.5,
+          "mean_stated": 0.675894688108905,
+          "n": 94,
+          "to": 0.8
+        },
+        {
+          "accuracy": 0.43333333333333335,
+          "from": 0.8,
+          "mean_stated": 0.8610550870186143,
+          "n": 60,
+          "to": 0.9
+        },
+        {
+          "accuracy": 0.4868421052631579,
+          "from": 0.9,
+          "mean_stated": 0.9283623482280031,
+          "n": 76,
+          "to": 0.95
+        },
+        {
+          "accuracy": 0.5083798882681564,
+          "from": 0.95,
+          "mean_stated": 0.9746242066577316,
+          "n": 179,
+          "to": 0.99
+        },
+        {
+          "accuracy": 0.6874039938556068,
+          "from": 0.99,
+          "mean_stated": 0.9993341274589197,
+          "n": 1302,
+          "to": 1.0
+        }
+      ],
+      "by_depth": {
+        "0": {
+          "accuracy": 0.9333333333333333,
+          "auroc": 0.8611607142857143,
+          "bands": [
+            {
+              "accuracy": 0.5,
+              "from": 0.0,
+              "mean_stated": 0.21452480720551884,
+              "n": 4,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.25,
+              "from": 0.5,
+              "mean_stated": 0.6385397980211203,
+              "n": 4,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.0,
+              "from": 0.8,
+              "mean_stated": 0.8685499554025249,
+              "n": 1,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.6666666666666666,
+              "from": 0.9,
+              "mean_stated": 0.9240947957343653,
+              "n": 3,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.8,
+              "from": 0.95,
+              "mean_stated": 0.9709908145256211,
+              "n": 5,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.9568345323741008,
+              "from": 0.99,
+              "mean_stated": 0.9999279545956745,
+              "n": 278,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.05723939918697878,
+          "mean_stated": 0.9829601242908683,
+          "n": 300,
+          "wrong": 20,
+          "wrong_at_95": 0.65,
+          "wrong_at_99": 0.6
+        },
+        "1": {
+          "accuracy": 0.7649006622516556,
+          "auroc": 0.6820315834400341,
+          "bands": [
+            {
+              "accuracy": 0.5,
+              "from": 0.0,
+              "mean_stated": 0.33793432615300395,
+              "n": 6,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5833333333333334,
+              "from": 0.5,
+              "mean_stated": 0.6953082550497577,
+              "n": 12,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.3333333333333333,
+              "from": 0.8,
+              "mean_stated": 0.8813521254242772,
+              "n": 3,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5384615384615384,
+              "from": 0.9,
+              "mean_stated": 0.9265788543341587,
+              "n": 13,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.5769230769230769,
+              "from": 0.95,
+              "mean_stated": 0.9744141952916651,
+              "n": 26,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.819327731092437,
+              "from": 0.99,
+              "mean_stated": 0.999560451219551,
+              "n": 238,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.20607891077527282,
+          "mean_stated": 0.9678511861814126,
+          "n": 302,
+          "wrong": 71,
+          "wrong_at_95": 0.7746478873239436,
+          "wrong_at_99": 0.6197183098591549
+        },
+        "2": {
+          "accuracy": 0.6237623762376238,
+          "auroc": 0.6283532906339924,
+          "bands": [
+            {
+              "accuracy": 0.5294117647058824,
+              "from": 0.0,
+              "mean_stated": 0.35983591497267026,
+              "n": 17,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.55,
+              "from": 0.5,
+              "mean_stated": 0.6747446415278046,
+              "n": 20,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.4,
+              "from": 0.8,
+              "mean_stated": 0.8548303828942938,
+              "n": 10,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5789473684210527,
+              "from": 0.9,
+              "mean_stated": 0.9283797891477439,
+              "n": 19,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.46511627906976744,
+              "from": 0.95,
+              "mean_stated": 0.9707716799471972,
+              "n": 43,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.6875,
+              "from": 0.99,
+              "mean_stated": 0.9992975818354711,
+              "n": 192,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.32400501666307163,
+          "mean_stated": 0.9287391049088798,
+          "n": 303,
+          "wrong": 114,
+          "wrong_at_95": 0.7280701754385965,
+          "wrong_at_99": 0.5263157894736842
+        },
+        "3": {
+          "accuracy": 0.5808580858085809,
+          "auroc": 0.5570866141732284,
+          "bands": [
+            {
+              "accuracy": 0.2222222222222222,
+              "from": 0.0,
+              "mean_stated": 0.27759873047870953,
+              "n": 18,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5833333333333334,
+              "from": 0.5,
+              "mean_stated": 0.6670185819777775,
+              "n": 24,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6363636363636364,
+              "from": 0.8,
+              "mean_stated": 0.8622921548801176,
+              "n": 11,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5454545454545454,
+              "from": 0.9,
+              "mean_stated": 0.9312732224554594,
+              "n": 11,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.5405405405405406,
+              "from": 0.95,
+              "mean_stated": 0.9777180988722612,
+              "n": 37,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.6188118811881188,
+              "from": 0.99,
+              "mean_stated": 0.998837143433206,
+              "n": 202,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.3388617653417691,
+          "mean_stated": 0.91971985115035,
+          "n": 303,
+          "wrong": 127,
+          "wrong_at_95": 0.7401574803149606,
+          "wrong_at_99": 0.6062992125984252
+        },
+        "4": {
+          "accuracy": 0.4389438943894389,
+          "auroc": 0.520499778858912,
+          "bands": [
+            {
+              "accuracy": 0.4,
+              "from": 0.0,
+              "mean_stated": 0.29442262004326714,
+              "n": 15,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.46153846153846156,
+              "from": 0.5,
+              "mean_stated": 0.668569481722285,
+              "n": 13,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.38095238095238093,
+              "from": 0.8,
+              "mean_stated": 0.853961958494807,
+              "n": 21,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.47058823529411764,
+              "from": 0.9,
+              "mean_stated": 0.9302853434655406,
+              "n": 17,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.4,
+              "from": 0.95,
+              "mean_stated": 0.9752803678267641,
+              "n": 40,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.4489795918367347,
+              "from": 0.99,
+              "mean_stated": 0.9990088460475032,
+              "n": 196,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.50442265500801,
+          "mean_stated": 0.9329133560509226,
+          "n": 303,
+          "wrong": 170,
+          "wrong_at_95": 0.7764705882352941,
+          "wrong_at_99": 0.6352941176470588
+        },
+        "5": {
+          "accuracy": 0.4532871972318339,
+          "auroc": 0.5213064064160788,
+          "bands": [
+            {
+              "accuracy": 0.42857142857142855,
+              "from": 0.0,
+              "mean_stated": 0.3784023533261816,
+              "n": 14,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.47619047619047616,
+              "from": 0.5,
+              "mean_stated": 0.687690493768716,
+              "n": 21,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.42857142857142855,
+              "from": 0.8,
+              "mean_stated": 0.8702843020304519,
+              "n": 14,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.23076923076923078,
+              "from": 0.9,
+              "mean_stated": 0.9261274378499773,
+              "n": 13,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.5714285714285714,
+              "from": 0.95,
+              "mean_stated": 0.9763586868731732,
+              "n": 28,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.45408163265306123,
+              "from": 0.99,
+              "mean_stated": 0.9990903197573173,
+              "n": 196,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.4793330458406075,
+          "mean_stated": 0.9346800262463053,
+          "n": 289,
+          "wrong": 158,
+          "wrong_at_95": 0.7658227848101266,
+          "wrong_at_99": 0.689873417721519
+        }
+      },
+      "ece": 0.3164611367643454,
+      "mean_disclosed_mass": 0.9984866054239474,
+      "mean_stated": 0.9444763520381142,
+      "n": 1800,
+      "options_disclosed": {
+        "1": 1388,
+        "2": 376,
+        "3": 36
+      },
+      "other_engines_same_items": {
+        "jev": {
+          "accuracy": 0.8383333333333334,
+          "auroc": 0.8485888790965547,
+          "bands": [
+            {
+              "accuracy": 0.5161290322580645,
+              "from": 0.0,
+              "mean_stated": 0.4525806451612903,
+              "n": 31,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5741176470588235,
+              "from": 0.5,
+              "mean_stated": 0.651129411764706,
+              "n": 425,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.7817258883248731,
+              "from": 0.8,
+              "mean_stated": 0.847258883248731,
+              "n": 197,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.8351063829787234,
+              "from": 0.9,
+              "mean_stated": 0.9207446808510638,
+              "n": 188,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.9325396825396826,
+              "from": 0.95,
+              "mean_stated": 0.9659126984126984,
+              "n": 252,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.9943422913719944,
+              "from": 0.99,
+              "mean_stated": 0.9977934936350779,
+              "n": 707,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.04142222222222225,
+          "n": 1800,
+          "wrong_at_95": 0.07216494845360824,
+          "wrong_at_99": 0.013745704467353952
+        },
+        "kev-0.8b": {
+          "accuracy": 0.5355555555555556,
+          "auroc": 0.6594538555460701,
+          "bands": [
+            {
+              "accuracy": 0.36507936507936506,
+              "from": 0.0,
+              "mean_stated": 0.42512698412698413,
+              "n": 441,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5249169435215947,
+              "from": 0.5,
+              "mean_stated": 0.6551062015503876,
+              "n": 903,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.7260981912144703,
+              "from": 0.8,
+              "mean_stated": 0.8466457364341086,
+              "n": 387,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.6956521739130435,
+              "from": 0.9,
+              "mean_stated": 0.9151231884057971,
+              "n": 69,
+              "to": 0.95
+            },
+            {
+              "accuracy": null,
+              "from": 0.95,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.99
+            },
+            {
+              "accuracy": null,
+              "from": 0.99,
+              "mean_stated": null,
+              "n": 0,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.11435405555555556,
+          "n": 1800,
+          "wrong_at_95": 0.0,
+          "wrong_at_99": 0.0
+        },
+        "kev-4b": {
+          "accuracy": 0.5355555555555556,
+          "auroc": 0.710525074946892,
+          "bands": [
+            {
+              "accuracy": 0.334841628959276,
+              "from": 0.0,
+              "mean_stated": 0.46293257918552033,
+              "n": 221,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.4448780487804878,
+              "from": 0.5,
+              "mean_stated": 0.6443106341463415,
+              "n": 1025,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.6428571428571429,
+              "from": 0.8,
+              "mean_stated": 0.8462789285714286,
+              "n": 280,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.8954248366013072,
+              "from": 0.9,
+              "mean_stated": 0.9250607843137255,
+              "n": 153,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.9642857142857143,
+              "from": 0.95,
+              "mean_stated": 0.9676160714285714,
+              "n": 112,
+              "to": 0.99
+            },
+            {
+              "accuracy": 1.0,
+              "from": 0.99,
+              "mean_stated": 0.9930111111111112,
+              "n": 9,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.1636971111111111,
+          "n": 1800,
+          "wrong_at_95": 0.004784688995215311,
+          "wrong_at_99": 0.0
+        },
+        "laya": {
+          "accuracy": 0.42444444444444446,
+          "auroc": 0.6115003840789182,
+          "bands": [
+            {
+              "accuracy": 0.3456221198156682,
+              "from": 0.0,
+              "mean_stated": 0.4362119815668203,
+              "n": 217,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.35638297872340424,
+              "from": 0.5,
+              "mean_stated": 0.6713821808510638,
+              "n": 752,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.4258373205741627,
+              "from": 0.8,
+              "mean_stated": 0.850402870813397,
+              "n": 418,
+              "to": 0.9
+            },
+            {
+              "accuracy": 0.5411255411255411,
+              "from": 0.9,
+              "mean_stated": 0.9256359307359308,
+              "n": 231,
+              "to": 0.95
+            },
+            {
+              "accuracy": 0.6337209302325582,
+              "from": 0.95,
+              "mean_stated": 0.968725,
+              "n": 172,
+              "to": 0.99
+            },
+            {
+              "accuracy": 0.9,
+              "from": 0.99,
+              "mean_stated": 0.9939199999999999,
+              "n": 10,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.32299311111111106,
+          "n": 1800,
+          "wrong_at_95": 0.06177606177606178,
+          "wrong_at_99": 0.0009652509652509653
+        }
+      },
+      "responses": 1800,
+      "returned_not_most_probable": 72,
+      "unparsed": 0,
+      "wrong": 660,
+      "wrong_at_95": 0.7545454545454545,
+      "wrong_at_99": 0.6212121212121212
+    }
+  }
+}
