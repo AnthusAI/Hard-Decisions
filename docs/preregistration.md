@@ -107,3 +107,11 @@ resolvable at the depth-by-label level. Breakdowns are descriptive, not causal.
   2. Jev's AC1 is at least 0.90 on both tasks (observed: 0.958 on both, before this amendment).
   3. Where answers change, they change more at depth 3 and above than at depth 0 to 2, for every engine with at
      least 20 changes.
+
+## Amendment 5: Kev-9B loads through a memory patch (written before Kev-9B answered any item)
+
+Kev-9B's original MLX loader would need about 35-40 GB while merging its adapter, more than this 32 GB machine.
+It is served through a copy of the same runtime with `merge_lora` changed to merge and load one matrix at a time
+(`tools/kev-merge-one-at-a-time.patch`). On Kev-4B the patched loader produced bit-identical weights (same SHA-256
+over every backbone matrix) and identical answers and probabilities on 100 items, with peak memory 9.2 GB instead
+of 17 GB (`tools/README.md`). Everything else in Amendment 3 is unchanged.
