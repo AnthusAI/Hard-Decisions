@@ -73,3 +73,19 @@ resolvable at the depth-by-label level. Breakdowns are descriptive, not causal.
   3. With reasoning off, Luna does not beat Jev at depth 5 on OWA (the paired interval does not exclude zero in
      Luna's favour).
   4. Paraphrased rules lower Luna's accuracy less than they lower Jev's.
+
+## Amendment 3: Kev-4B and Kev-9B (written before either answered an item)
+
+- **Engines:** `kev-4b` (`jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101` on
+  `Qwen/Qwen3.5-4B-Base@1001bb4d826a52d1f399e183466143f4da7b741b`) and, if memory allows, `kev-9b`
+  (`jaredpalmer/kev-9b@b5d8c18e44c60888d138b65cb6507ff0a5a448a0` on
+  `Qwen/Qwen3.5-9B-Base@68c46c4b3498877f3ef123c856ecfde50c39f404`). Same server commit, MLX bfloat16 and settings as
+  `kev-0.8b`; each checkpoint's own stored temperature (4B: 2.406). Weights in a gitignored cache; the server's
+  `/v1/models` response is saved in `answers/<engine>/provenance.json`. Kev-27B (51 GB) does not fit this machine
+  and is not run.
+- **Protocol:** identical to every other engine: same items, same question, one request at a time, a 20-item OWA
+  pilot, then 1,800 items per task.
+- **Predictions:**
+  1. Accuracy rises with size: Kev-4B is above Kev-0.8B overall on both tasks (paired interval excludes zero).
+  2. Kev-4B and Kev-9B stay below Jev overall on both tasks.
+  3. Kev-9B is not reliably above Kev-4B (paired interval includes zero) on at least one task.
