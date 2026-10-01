@@ -82,8 +82,8 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
   {data.lunaMisses && (
     <section class="wrap section" aria-labelledby="miss-h">
       <h2 class="display" id="miss-h">One step of reasoning: problems GPT-6 Luna got wrong and Jev got right</h2>
-      <p class="lede">At proof depth 1 the answer takes one rule applied to facts stated in the text. {taskOrder.map((s, k) => { const t = data.lunaMisses.tasks[s]; return t && `${k ? " On the " : "On the "}${TASK_INFO[s].short.toLowerCase()} task, GPT-6 Luna (reasoning off) got ${int(t.luna_wrong)} of ${int(t.n)} such problems wrong, and Jev got ${int(t.luna_wrong_jev_right)} of those right.`; })}</p>
-      <p class="note">How these four are chosen: {data.lunaMisses.selection} Each card shows GPT-6 Luna's answer; Jev answered every one correctly. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
+      <p class="lede">At proof depth 1 the answer takes one rule applied to facts stated in the text. {taskOrder.map((s, k) => { const t = data.lunaMisses.tasks[s]; return t && `${k ? " On the " : "On the "}${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task, GPT-6 Luna (reasoning off) got ${int(t.luna_wrong)} of ${int(t.n)} such problems wrong, and Jev got ${int(t.luna_wrong_jev_right)} of those right.`; })}</p>
+      <p class="note">How these four are chosen: {data.lunaMisses.selection.split(" Each example has")[0]} Each card shows GPT-6 Luna's answer; Jev answered every one correctly. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
       <div class="mde-grid">
         {taskOrder.flatMap((s) => ((data.lunaMisses.tasks[s] || {}).examples || []).map((ex) => <ExampleCard ex={ex} task={s} depth={data.lunaMisses.depth} />))}
       </div>
