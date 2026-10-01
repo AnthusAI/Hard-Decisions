@@ -3,7 +3,7 @@ import Base from "../../layouts/Base.astro";
 import EngineName from "../../components/EngineName.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
 import { models, modelById, urls, OWA, CWA, TASK_INFO, taskBySlug, pct, pts, fmt, int, overall, axisRow, pairRow, retest, latency, isComplete, L, listOf } from "../../lib/site.js";
-import { intro } from "../../lib/content.js";
+import { intro, DECISIONS_API } from "../../lib/content.js";
 import { fullModels, lean, deepEnd } from "../../lib/insights.js";
 import { tally, predictions } from "../../lib/predictions.js";
 
@@ -13,6 +13,7 @@ const LUNA = "openai-gpt-6-luna-effort-none";
 const jev = modelById.jev;
 const jl0 = pairRow(OWA, "jev", LUNA, "depth", "0"), jl5 = pairRow(OWA, "jev", LUNA, "depth", "5");
 const rt = retest("jev", OWA);
+const lunaO = overall(LUNA, OWA), lunaD5 = axisRow(LUNA, OWA, "depth", "5");
 const t = tally();
 const failed = predictions().flatMap((sec) => sec.predictions.filter((p) => p.status === "failed").map((p) => `“${p.text.split(/(?<=\.)\s/)[0]}”`));
 const jd = jev && isComplete("jev", OWA) ? [0, 1, 2, 3, 4, 5].map((d) => axisRow("jev", OWA, "depth", String(d))) : [];
@@ -81,6 +82,11 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
     {jev && isComplete("jev", OWA) && (
       <p>Jev scored {pct(overall("jev", OWA).accuracy)}% on the open-world task and {pct(overall("jev", CWA).accuracy)}% on the closed-world one, the highest of the models tested. Its weakest answer is unknown ({pct(overall("jev", OWA).recall.unknown)}% recall against {pct(overall("jev", OWA).recall.true)}% on true); its accuracy falls from {pct(jd[0].accuracy)}% at depth 0 to its lowest, {pct(jmin.accuracy)}%, at depth {jmin.value}{jmin.value !== "5" ? `, and is ${pct(jd[5].accuracy)}% at depth 5` : ""}. Paraphrased rules cost it {pts(axisRow("jev", OWA, "paraphrased", "False").accuracy - axisRow("jev", OWA, "paraphrased", "True").accuracy)} points. Those are the places to test first on your own data. <a href={urls.model("jev")}>Jev's full results</a>.</p>
     )}
+  </section>
+
+  <section class="wrap section" aria-labelledby="oda-h">
+    <h2 class="display" id="oda-h">Evaluating the OpenAI Decisions API</h2>
+    <p>OpenAI's Decisions API, announced at DevDay on 29 September 2026 and in limited preview, is built on a version of GPT-6 Luna (<a href={DECISIONS_API.sources.decoder.url}>{DECISIONS_API.sources.decoder.label}</a>). We have not tested the API itself, but we ran GPT-6 Luna in the same shape of task: reasoning off, one request per problem, a fixed list of answers.{lunaO && lunaD5 && ` It answered ${pct(lunaO.accuracy)}% of open-world problems correctly overall and ${pct(lunaD5.accuracy)}% at proof depth 5.`} That is a preview, not a verdict: OpenAI uses a specialized version of Luna, and its accuracy may differ. When you evaluate the API on your own decisions, the same checks apply: accuracy by difficulty, recall on every answer, paired comparisons on the same items, and a second run to check consistency. <a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna, and what it means for the OpenAI Decisions API</a>.</p>
   </section>
 
   <AnthusNote lead="This benchmark measures decision models along these lines: the decision's own difficulty axis, every answer class, paired comparisons, repeatability and predictions written down first. The same measurements apply to your own decisions." />

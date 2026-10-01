@@ -14,6 +14,7 @@ import ModelFacts from "../../../components/ModelFacts.astro";
 import BreakdownSpread from "../../../components/BreakdownSpread.astro";
 import PredLine from "../../../components/PredLine.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
+import DecisionsApi from "../../../components/DecisionsApi.astro";
 import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
 import { liveComparisons } from "../../../lib/content.js";
@@ -43,7 +44,7 @@ function sides(slug, b) {
 }
 const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.test(l.text));
 ---
-<Base title={c.title} description={c.intro} path={urls.comparison(c.slug)} current={{ page: "models", rival: c.slug }}
+<Base title={c.seoTitle || c.title} description={c.intro} path={urls.comparison(c.slug)} current={{ page: "models", rival: c.slug }}
   crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: c.title.split(":")[0] }]}>
   <section class="wrap hero">
     <p class="kicker">Comparison · {c.query}</p>
@@ -51,6 +52,7 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     <p class="deck">{c.intro}</p>
     {c.b.includes(LUNA) && <p class="footnote">GPT-6 Luna ran with reasoning effort set to none, its lowest setting, under the same one-request protocol as every model here: the same question, the same options, one answer per item. A different reasoning setting would be a different model, scored separately.</p>}
     {bs.some((m) => taskOrder.some((s) => statusWords(m.id, s))) && <p class="footnote">{bs.flatMap((m) => taskOrder.filter((s) => statusWords(m.id, s)).map((s) => `${m.label}, ${TASK_INFO[s].short.toLowerCase()}: ${statusWords(m.id, s)}.`)).join(" ")} Partial numbers change when scoring finishes.</p>}
+    {c.note && <p class="note">{c.note} <a href="#decisions-api">What this means for the OpenAI Decisions API</a>.</p>}
     {waiting.length > 0 && <p class="note">Not yet scored: {listOf(waiting.map((m) => m.label))}. {waiting.length === 1 ? "It appears" : "They appear"} here once scored, never as zero.</p>}
   </section>
 
@@ -92,6 +94,8 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     <p class="note">Paired differences: positive means {a.label} was more accurate on the same items.</p>
     {taskOrder.map((s) => <Fragment><h3>Accuracy by depth, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "depth", ids)} ids={ids} slug={s} valueHead="Proof depth" caption={`By depth, ${TASK_INFO[s].short}`} /></Fragment>)}
   </section>
+
+  {c.b.includes(LUNA) && <DecisionsApi />}
 
   {isKev && (
     <section class="wrap section" aria-labelledby="size-help-h">

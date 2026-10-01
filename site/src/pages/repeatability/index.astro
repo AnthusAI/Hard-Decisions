@@ -78,7 +78,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
         </div>
       </Fragment>
     ); }))}
-    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))} returned answers without probabilities, so calibration cannot be measured for {noProbs.length === 1 ? "it" : "them"}.</p>}
+    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))}: we asked for the answer only, as for every model, so no confidence was recorded and calibration is not measured.</p>}
   </section>
   <AnthusNote lead="Consistency and calibration decide whether a decision model's output can be audited and thresholded. They are worth measuring on your own decisions before you rely on them." />
 </Base>

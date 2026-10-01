@@ -13,5 +13,5 @@ const lt = latency(id, OWA);
   <p>Calibration on the {TASK_INFO[s].short.toLowerCase()} task: {m.label}'s probability for its own answer averaged <strong>{pct(d.calibration.mean_confidence)}%</strong> against <strong>{pct(d.calibration.accuracy)}%</strong> accuracy; expected calibration error {pct(d.calibration.ece)} points.</p>
 ); })}
 {!taskOrder.some((s) => derived(id, s) && derived(id, s).calibration) && (id === "openai-gpt-6-luna-effort-none"
-  ? <p>GPT-6 Luna returned an answer without a probability, so its calibration cannot be measured here.</p>
+  ? <p>We asked GPT-6 Luna, like every model, for its answer only, so no confidence was recorded and its calibration is not measured here. <a href="#decisions-api">Confidence and log-probabilities: things to know</a>.</p>
   : <p>Calibration is computed once {m.label}'s scored results are complete.</p>)}

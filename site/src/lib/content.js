@@ -53,7 +53,10 @@ const kevIds = ["kev-9b", "kev-4b", "kev-0.8b"];
 export const comparisons = [
   { slug: "jev-vs-gpt-6-luna", a: "jev", b: ["openai-gpt-6-luna-effort-none"], query: "Jev vs LLM",
     title: "Jev vs GPT-6 Luna: a decision model against an LLM classifier",
-    intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems." },
+    intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems.",
+    // OpenAI's Decisions API (announced 2026-09-29) is built on a version of GPT-6 Luna: these results preview it; they do not test it.
+    seoTitle: "Jev vs GPT-6 Luna, the model behind the OpenAI Decisions API",
+    note: "OpenAI's new Decisions API is built on a version of GPT-6 Luna, so these results preview the accuracy of a Luna-based decision model on multi-step reasoning. They are not a test of the API itself." },
   { slug: "jev-vs-kev", a: "jev", b: kevIds, query: "Kev vs Jev",
     title: "Kev vs Jev: is an open-source decision model a Jev alternative?",
     intro: "Kev is an open decision model you can run on your own hardware; Jev is hosted. We ran every Kev size that fits a 32 GB laptop against Jev on the same problems, and asked whether a bigger Kev helps." },
@@ -61,6 +64,20 @@ export const comparisons = [
     title: "Jev vs Laya: hosted and open decision models on deep reasoning",
     intro: "Laya is a small open decision model built on an encoder. Both it and Jev answered the same problems." },
 ];
+// The OpenAI Decisions API: facts and sources as fact-checked on 2026-10-01. Nothing here says whether
+// the API returns a confidence score: no OpenAI source says so.
+export const DECISIONS_API = {
+  sources: {
+    decoder: { label: "The Decoder", url: "https://the-decoder.com/openai-expands-codex-and-its-api-at-devday-with-security-scans-a-decisions-api-and-ultrafast/" },
+    axios: { label: "Axios", url: "https://www.axios.com/2026/09/29/openai-dev-day-2026-dots-space-sol" },
+    guide: { label: "OpenAI's latest-model guide", url: "https://developers.openai.com/api/docs/guides/latest-model" },
+    luna: { label: "GPT-6 Luna's model page", url: "https://developers.openai.com/api/docs/models/gpt-6-luna" },
+    gpt4: { label: "GPT-4 Technical Report", url: "https://arxiv.org/abs/2303.08774" },
+    carlini: { label: "Carlini et al., 2024", url: "https://arxiv.org/abs/2403.06634" },
+    finlayson: { label: "Finlayson et al., 2024", url: "https://arxiv.org/abs/2403.09539" },
+    o1: { label: "OpenAI on o1's chain of thought", url: "https://openai.com/index/learning-to-reason-with-llms/" },
+  },
+};
 export const comparisonBySlug = Object.fromEntries(comparisons.map((c) => [c.slug, c]));
 // A comparison has a page once both sides have scored results.
 export const liveComparisons = comparisons.filter((c) => modelById[c.a] && modelById[c.a].measured && c.b.some((id) => modelById[id] && modelById[id].measured));

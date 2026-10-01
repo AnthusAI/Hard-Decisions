@@ -14,7 +14,7 @@ const answerMix = (slug) => {
 ---
 {taskOrder.filter((s) => overall(id, s)).map((s) => { const mix = answerMix(s); return (
   <Fragment>
-    <h3>{named ? `${m.label}, ${TASK_INFO[s].short.toLowerCase()} task` : TASK_INFO[s].long}</h3>
+    <h3>{named ? `${m.label}, ${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task` : TASK_INFO[s].long}</h3>
     <Confusion id={id} slug={s} />
     {mix && <p class="note">{m.label} answered {mix.map((x) => `${x.k} ${pct(x.share)}%`).join(", ")} of the time; the correct answers are {Object.entries(taskBySlug[s].selected.reference_label).map(([k, v]) => `${k} ${pct(v / taskBySlug[s].n)}%`).join(", ")}.</p>}
   </Fragment>

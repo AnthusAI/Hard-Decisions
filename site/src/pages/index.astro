@@ -87,7 +87,7 @@ const description = intro.home.intro;
       {liveComparisons.map((c) => (
         <a class="dim-card" href={urls.comparison(c.slug)}>
           <div class="dim-card-h">{c.title.split(":")[0]}</div>
-          <p>{c.title.split(":")[1] ? c.title.split(":")[1].trim() : c.intro}</p>
+          <p>{c.title.split(":")[1] ? c.title.split(":")[1].trim() : c.intro}{c.note && <Fragment>. {c.note.split(". ")[0]}.</Fragment>}</p>
           <div class="dim-card-f">{[c.a, ...c.b].filter((id) => modelById[id] && modelById[id].measured).map(L).join(" · ")}</div>
         </a>
       ))}

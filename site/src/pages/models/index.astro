@@ -26,7 +26,7 @@ import { intro, liveComparisons } from "../../lib/content.js";
       {liveComparisons.map((c) => (
         <a class="dim-card" href={urls.comparison(c.slug)}>
           <div class="dim-card-h">{c.title}</div>
-          <p>{c.intro}</p>
+          <p>{c.intro}{c.note && ` ${c.note}`}</p>
           <div class="dim-card-f">{[c.a, ...c.b].filter((id) => modelById[id] && modelById[id].measured).map(L).join(" · ")}</div>
         </a>
       ))}

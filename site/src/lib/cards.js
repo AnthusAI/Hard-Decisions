@@ -75,6 +75,11 @@ function comparisonCard(cmp) {
   const bars = [a, ...others].filter((id) => isComplete(id, OWA)).map((id) => bar(id, overall(id, OWA).accuracy));
   const claim = coinFlipClaim();
   const strong = claim && [a, ...cmp.b].includes(claim.lead) && cmp.b.concat(a).some((id) => claim.others.includes(id)) ? `${claim.short}. ` : "";
+  if (cmp.seoTitle && bars.length > 1) {
+    const luna = bars.find((b) => b.engine !== a), jev = bars.find((b) => b.engine === a);
+    return { template: "compare", headline: cmp.title, bars, rows: [], numberNote: "accuracy on the same 1,800 open-world problems",
+      description: fit(`GPT-6 Luna, the model OpenAI's new Decisions API is built on, against Jev on 3,600 multi-step reasoning problems: ${L(a)} ${jev.text}, GPT-6 Luna ${luna.text} on the open-world task. A preview of Luna-based decision accuracy, not a test of the OpenAI Decisions API itself. Results by proof depth with 95% intervals.`) };
+  }
   const description = bars.length > 1 ? fit(`${strong}${cmp.intro} On the open-world task: ${bars.map((b) => `${L(b.engine)} ${b.text}`).join(", ")}. Paired differences by proof depth, with 95% intervals.`) : cmp.intro;
   if (bars.length < 2) return { template: "compare", headline: cmp.title, description: `${cmp.intro} Partial results while scoring finishes.`,
     rows: [{ text: "Scoring in progress: partial results only" }] };
