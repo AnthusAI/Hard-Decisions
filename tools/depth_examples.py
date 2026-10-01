@@ -18,6 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 
 from hard_decisions.record import read_by_id, record_path  # noqa: E402
 from hard_decisions.tasks import QUESTION_NAME, Task  # noqa: E402
@@ -125,6 +126,20 @@ def main() -> int:
                     a = row["answers"][QUESTION_NAME]
                     answers[e] = {"choice": a.get("choice"), "probability": (a.get("probabilities") or {}).get(a.get("choice")),
                                   "correct": a.get("choice") == item["metadata"]["reference_label"]}
+            luna = answers.get("openai-gpt-6-luna-effort-none")
+            probe_path = ROOT / "probes" / "luna-logprobs" / f"{slug}.jsonl.gz"
+            if luna is not None and probe_path.exists():
+                # The scored run asked for the answer only; the preregistered log-probability probe (Amendment 6)
+                # asked the same problem again with log-probabilities on. Its confidence is reported beside it.
+                from analyze_luna_logprobs import answer_position
+                import math
+                row = next((json.loads(l) for l in gzip.open(probe_path, "rt") if f'"id": "{item["id"]}"' in l), None)
+                if row:
+                    choice_obj = row["response"]["choices"][0]
+                    probe_answer = json.loads(choice_obj["message"]["content"])["answer"]
+                    found = answer_position(choice_obj["logprobs"]["content"], probe_answer)
+                    luna["probe_choice"] = probe_answer
+                    luna["probe_probability"] = math.exp(found[1]) if found else None
             examples.append({"depth": depth, "id": item["id"], "label": item["metadata"]["reference_label"],
                              "facts": [t["text"] for t in record["triples"].values()],
                              "rules": [r["text"] for r in record["rules"].values()],

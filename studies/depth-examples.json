@@ -32,7 +32,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 0,
@@ -87,7 +89,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "false",
       "correct": false,
-      "probability": null
+      "probability": null,
+      "probe_choice": "false",
+      "probe_probability": 0.9966258833909856
      }
     },
     "depth": 1,
@@ -158,7 +162,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 2,
@@ -246,7 +252,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 3,
@@ -337,7 +345,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 0.9999923706345725
      }
     },
     "depth": 4,
@@ -466,7 +476,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 0.9836630565323625
      }
     },
     "depth": 5,
@@ -615,7 +627,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 0,
@@ -666,7 +680,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 1,
@@ -730,7 +746,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 0.5827477188522743
      }
     },
     "depth": 2,
@@ -809,7 +827,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 0.9999961853100103
      }
     },
     "depth": 3,
@@ -907,7 +927,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 0.9999847413273523
      }
     },
     "depth": 4,
@@ -1036,7 +1058,9 @@
      "openai-gpt-6-luna-effort-none": {
       "choice": "true",
       "correct": true,
-      "probability": null
+      "probability": null,
+      "probe_choice": "true",
+      "probe_probability": 1.0
      }
     },
     "depth": 5,
