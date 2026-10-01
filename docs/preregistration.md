@@ -115,3 +115,28 @@ It is served through a copy of the same runtime with `merge_lora` changed to mer
 (`tools/kev-merge-one-at-a-time.patch`). On Kev-4B the patched loader produced bit-identical weights (same SHA-256
 over every backbone matrix) and identical answers and probabilities on 100 items, with peak memory 9.2 GB instead
 of 17 GB (`tools/README.md`). Everything else in Amendment 3 is unchanged.
+
+## Amendment 6: can GPT-6 Luna's log-probabilities serve as a confidence? (written before the probe ran)
+
+- **Why:** OpenAI's Decisions API is built on a version of GPT-6 Luna. A decision model is only useful with a
+  confidence you can threshold on. Our Luna arm asked for the answer only, like every engine, so it has none. This
+  probe asks whether Luna's log-probabilities could supply one. It is outside the scored benchmark and changes no
+  benchmark number.
+- **A spot check before this amendment** (12 open-world items at depth 3 to 5, 2026-10-01) found Luna returns the
+  chosen answer's log-probability and at most one or two alternatives with reasoning off, refuses `logprobs` with
+  reasoning on, and gave 5 of 12 wrong answers at 97.8% or more. It motivated the probe and is not part of its
+  results.
+- **Design:** every one of the 3,600 benchmark items, sent with exactly the benchmark's GPT-6 Luna request (same
+  prompt, strict JSON schema, `reasoning_effort: none`, default sampling) plus `logprobs: true, top_logprobs: 5`.
+  Every request and response is kept verbatim in `probes/luna-logprobs/` (`tools/probe_luna_logprobs.py`). The
+  answer's probability is the summed probability of the tokens that spell it.
+- **Metrics** (`tools/analyze_luna_logprobs.py`): a reliability table in six probability bands; expected
+  calibration error (ECE); the share of wrong answers stated at 95% or more and at 99% or more; AUROC of the stated
+  probability for separating right from wrong answers, computed the same way for Jev, Kev and Laya on the same
+  items from their recorded probabilities; how many alternatives Luna discloses; and how often the returned answer
+  is not the most probable disclosed option.
+- **Predictions:**
+  1. Luna's ECE exceeds 0.15 on both tasks.
+  2. At least half of Luna's wrong answers are stated at 95% or more, on both tasks.
+  3. Luna's AUROC is lower than Jev's on both tasks.
+  4. On most responses, Luna discloses fewer than all of the task's options.
