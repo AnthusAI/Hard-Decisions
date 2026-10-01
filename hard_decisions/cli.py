@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from hard_decisions import answering, proofwriter, report, sampling, scoring
-from hard_decisions.record import engines_with_records, read_record, record_path
+from hard_decisions.record import append_manifest, engines_with_records, read_record, record_path
 from hard_decisions.tasks import ROOT, Task, all_slugs
 
 SEMANTICS_SLUG = {"OWA": "proofwriter-owa", "CWA": "proofwriter-cwa"}
@@ -115,11 +115,28 @@ def _engine(name: str):
     raise SystemExit(f"unknown engine {name!r}; available: jev, laya, kev-<size>, <vendor>:<model>")
 
 
+def _machine() -> dict:
+    import platform
+    info = {"platform": platform.platform(), "python": platform.python_version()}
+    if sys.platform == "darwin":
+        import subprocess
+        for key, name in (("model", "hw.model"), ("cpu", "machdep.cpu.brand_string"), ("memory_bytes", "hw.memsize")):
+            out = subprocess.run(["sysctl", "-n", name], capture_output=True, text=True).stdout.strip()
+            info[key] = int(out) if key == "memory_bytes" and out.isdigit() else out
+    return info
+
+
+def _code_version() -> dict:
+    import subprocess
+    run = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True).stdout.strip()  # noqa: E731
+    return {"commit": run("rev-parse", "HEAD"), "dirty": bool(run("status", "--porcelain", "--untracked-files=no"))}
+
+
 def cmd_answer(args) -> int:
     task = Task.load(args.task)
     items = task.load_items()
     engine = _engine(args.engine)
-    path = record_path(engine.name, task.slug)
+    path = record_path(engine.name, task.slug, tree="timing" if args.timing else "answers")
     todo = answering.pending(items, path, args.limit)
     texts = {i["id"]: i["text"] for i in items}
     print(f"{engine.name} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
@@ -139,7 +156,13 @@ def cmd_answer(args) -> int:
     if args.max_requests is None or len(todo) > args.max_requests:
         print(f"refusing: --max-requests must be given and at least {len(todo)}", file=sys.stderr)
         return 2
+    started_at = answering.utc_now()
     stats = asyncio.run(answering.run(engine, task, todo, path, concurrency=args.concurrency))
+    append_manifest(path, {"engine": engine.name, "task": task.slug, "tree": path.parts[-3],
+                           "started_at": started_at, "finished_at": answering.utc_now(),
+                           "requested": len(todo), "answered": stats["answered"], "failed": stats["failed"],
+                           "concurrency": args.concurrency, "machine": _machine(), "code": _code_version(),
+                           "kev_url": KEV_URL if args.engine.startswith("kev") else None})
     print(f"answered {stats['answered']}, failed {stats['failed']} (rerun to retry failures)")
     return 0 if not stats["failed"] else 1
 
@@ -192,6 +215,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--confirm", action="store_true")
     p.add_argument("--max-requests", type=int)
     p.add_argument("--concurrency", type=int, default=8)
+    p.add_argument("--timing", action="store_true",
+                   help="write to timing/ (a rerun for latency only; never scored) instead of answers/")
     p.set_defaults(func=cmd_answer)
     p = sub.add_parser("score")
     p.add_argument("engine")

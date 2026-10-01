@@ -99,3 +99,17 @@ def test_pairs_use_jev_as_reference():
 def test_report_n_shows_each_engine_when_counts_differ():
     assert report._n([12, 12]) == "12"
     assert report._n([300, 12]) == "300/12"
+
+
+def test_rows_carry_start_time_and_runs_write_a_manifest(tmp_path):
+    from hard_decisions.record import append_manifest, manifest_path
+    root, items = make_root(tmp_path, n=4)
+    task = Task.load("proofwriter-owa", root=root)
+    path = record_path("oracle", task.slug, root=root, tree="timing")
+    assert path.parts[-3] == "timing"
+    asyncio.run(answering.run(Oracle(), task, items, path))
+    rows = read_record(path)
+    assert len(rows) == 4 and all(r["started_at"].endswith("+00:00") for r in rows)
+    append_manifest(path, {"concurrency": 1})
+    assert manifest_path(path).name == "proofwriter-owa.runs.jsonl"
+    assert scoring.score("oracle", task, root=root) == []   # timing records are never scored

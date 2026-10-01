@@ -1,8 +1,13 @@
 """The answer record: committed caches so ``hd replay`` reproduces every number without a key.
 
 ``answers/<engine>/<task>.jsonl.gz`` holds one JSON row per answered item:
-``{id, model, usage, latency_ms, answers}``. Rows are appended as they arrive (a gzip file may
-hold several members), so an interrupted run resumes by skipping ids already present.
+``{id, model, usage, latency_ms, answers}``, plus ``started_at`` (UTC, from 2026-10-01 onward). Rows
+are appended as they arrive (a gzip file may hold several members), so an interrupted run resumes by
+skipping ids already present. Each run also appends one line to ``<task>.runs.jsonl`` beside the
+record: when it ran, at what concurrency, on which machine and code.
+
+``timing/<engine>/<task>.jsonl.gz`` has the same shape: reruns made only to measure timing. Scoring
+never reads it, so the scored ``answers/`` records stay the ones the preregistration was scored on.
 """
 from __future__ import annotations
 
@@ -16,8 +21,24 @@ from hard_decisions.tasks import ROOT
 REQUIRED = ("id", "model", "usage", "latency_ms", "answers")
 
 
-def record_path(engine: str, task: str, *, root: Path = ROOT) -> Path:
-    return Path(root) / "answers" / engine / f"{task}.jsonl.gz"
+TREES = ("answers", "timing")
+
+
+def record_path(engine: str, task: str, *, root: Path = ROOT, tree: str = "answers") -> Path:
+    if tree not in TREES:
+        raise ValueError(f"unknown record tree {tree!r}")
+    return Path(root) / tree / engine / f"{task}.jsonl.gz"
+
+
+def manifest_path(path: Path) -> Path:
+    return Path(path).with_name(Path(path).name.replace(".jsonl.gz", ".runs.jsonl"))
+
+
+def append_manifest(path: Path, entry: Mapping) -> None:
+    target = manifest_path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with open(target, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, sort_keys=True) + "\n")
 
 
 def read_record(path: Path) -> List[Dict]:

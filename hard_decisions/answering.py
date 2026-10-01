@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
@@ -20,6 +21,10 @@ from hard_decisions.tasks import Task
 JEV_USD_PER_INPUT_TOKEN = 42 / 1e9   # TypeSafe's published price; output tokens are free
 DEFAULT_CHARS_PER_TOKEN = 3.6
 FALLBACK_OVERHEAD_TOKENS = 80          # wire framing around the text, replaced by measured usage
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
 class AnswerRefused(RuntimeError):
@@ -119,6 +124,7 @@ async def run(engine: Engine, task: Task, items: Sequence[dict], path: Path, *, 
         async with gate:
             if stop.is_set():
                 return
+            started_at = utc_now()
             started = time.perf_counter()
             try:
                 result = await engine.answer(item["text"], questions)
@@ -130,6 +136,7 @@ async def run(engine: Engine, task: Task, items: Sequence[dict], path: Path, *, 
                 return
             append_rows(path, [{"id": item["id"], "model": result.model or engine.name, "usage": result.usage,
                                 "latency_ms": round((time.perf_counter() - started) * 1000, 2),
+                                "started_at": started_at,
                                 "answers": result.answers}])
             stats["answered"] += 1
 
