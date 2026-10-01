@@ -126,6 +126,37 @@ def _machine() -> dict:
     return info
 
 
+def _footprint(pid: int) -> Optional[dict]:
+    """Current and peak physical footprint of a process (macOS ``footprint``), in MB. Unlike RSS this
+    counts GPU (Metal) memory, which is where MLX and MPS keep model weights on Apple silicon."""
+    import re
+    import subprocess
+    if sys.platform != "darwin":
+        return None
+    out = subprocess.run(["footprint", "-p", str(pid)], capture_output=True, text=True).stdout
+    found = {}
+    for key in ("phys_footprint", "phys_footprint_peak"):
+        m = re.search(rf"^\s*{key}:\s*([\d.]+)\s*(KB|MB|GB)", out, re.M)
+        if m:
+            found[f"{key}_mb"] = round(float(m.group(1)) * {"KB": 1 / 1024, "MB": 1, "GB": 1024}[m.group(2)], 1)
+    return {"pid": pid, **found} if found else None
+
+
+def _engine_memory(engine_name: str) -> Optional[dict]:
+    """Memory of the process holding the model: the Kev server for Kev, this process for in-process
+    engines (Laya). Hosted engines have none to measure. The peak covers the process's whole life,
+    including loading, so a server should be started fresh for the model being measured."""
+    import subprocess
+    if engine_name.startswith("kev"):
+        port = KEV_URL.rsplit(":", 1)[-1].strip("/")
+        pids = subprocess.run(["lsof", "-t", f"-iTCP:{port}", "-sTCP:LISTEN"], capture_output=True,
+                              text=True).stdout.split()
+        return _footprint(int(pids[0])) if pids else None
+    if engine_name in LOCAL_ENGINES:
+        return _footprint(os.getpid())
+    return None
+
+
 def _code_version() -> dict:
     import subprocess
     run = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True).stdout.strip()  # noqa: E731
@@ -162,7 +193,8 @@ def cmd_answer(args) -> int:
                            "started_at": started_at, "finished_at": answering.utc_now(),
                            "requested": len(todo), "answered": stats["answered"], "failed": stats["failed"],
                            "concurrency": args.concurrency, "machine": _machine(), "code": _code_version(),
-                           "kev_url": KEV_URL if args.engine.startswith("kev") else None})
+                           "kev_url": KEV_URL if args.engine.startswith("kev") else None,
+                           "memory": _engine_memory(engine.name)})
     print(f"answered {stats['answered']}, failed {stats['failed']} (rerun to retry failures)")
     return 0 if not stats["failed"] else 1
 

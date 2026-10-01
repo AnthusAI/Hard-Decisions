@@ -113,3 +113,18 @@ def test_rows_carry_start_time_and_runs_write_a_manifest(tmp_path):
     append_manifest(path, {"concurrency": 1})
     assert manifest_path(path).name == "proofwriter-owa.runs.jsonl"
     assert scoring.score("oracle", task, root=root) == []   # timing records are never scored
+
+
+def test_engines_section_takes_largest_measured_memory(tmp_path):
+    from hard_decisions.record import append_manifest
+    (tmp_path / "engines.yaml").write_text(yaml.safe_dump({
+        "machine": {"model": "TestMac", "memory": "8 GB"},
+        "kev-x": {"kind": "open decision model", "parameters": "1B"},
+        "hosted-y": {"kind": "hosted decision model", "parameters": "undisclosed"}}))
+    for tree, peak in (("answers", 3072.0), ("timing", 4096.0)):
+        append_manifest(tmp_path / tree / "kev-x" / "t.jsonl.gz",
+                        {"memory": {"phys_footprint_mb": 1024.0, "phys_footprint_peak_mb": peak}})
+    lines = report.engines_section(tmp_path)
+    kev = next(l for l in lines if l.startswith("| kev-x"))
+    assert kev.endswith("| 1.0 GB | 4.0 GB |")
+    assert next(l for l in lines if l.startswith("| hosted-y")).endswith("n/a (hosted) |")
