@@ -871,3 +871,11 @@ details.cell { scroll-margin-top: 140px; }
 @media (min-width: 1100px) { .cm-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .cm-pair { display: grid; gap: 10px 24px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .cm-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Wide screens. Past 1,500 px the column widens so grids and charts have room; past 2,000 px the whole page
+   scales up (CSS zoom), so type, charts and spacing grow together instead of lines of text stretching past a
+   readable length. Media queries read the real viewport, so these steps don't feed back into each other. */
+@media (min-width: 1500px) { :root { --max: 1320px; } }
+@media (min-width: 2000px) { html { zoom: 1.25; } }
+@media (min-width: 2600px) { html { zoom: 1.5; } }
+@media (min-width: 3200px) { html { zoom: 1.75; } }
