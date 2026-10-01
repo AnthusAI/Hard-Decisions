@@ -157,6 +157,21 @@ def _engine_memory(engine_name: str) -> Optional[dict]:
     return None
 
 
+def _machine_load() -> dict:
+    """Load average and the busiest other processes, so a run made on a busy machine is visible in
+    its manifest. Command names only, no arguments."""
+    import subprocess
+    out = subprocess.run(["ps", "-Ao", "pid=,pcpu=,comm="], capture_output=True, text=True).stdout
+    busy = []
+    for line in out.splitlines():
+        parts = line.split(None, 2)
+        if len(parts) == 3 and parts[1].replace(".", "", 1).isdigit() and int(parts[0]) != os.getpid():
+            if float(parts[1]) >= 25:
+                busy.append({"pcpu": float(parts[1]), "command": parts[2].rsplit("/", 1)[-1]})
+    return {"loadavg": [round(x, 2) for x in os.getloadavg()],
+            "busy_processes": sorted(busy, key=lambda b: -b["pcpu"])[:8]}
+
+
 def _code_version() -> dict:
     import subprocess
     run = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True).stdout.strip()  # noqa: E731
@@ -187,14 +202,15 @@ def cmd_answer(args) -> int:
     if args.max_requests is None or len(todo) > args.max_requests:
         print(f"refusing: --max-requests must be given and at least {len(todo)}", file=sys.stderr)
         return 2
-    started_at = answering.utc_now()
+    started_at, load_at_start = answering.utc_now(), _machine_load()
     stats = asyncio.run(answering.run(engine, task, todo, path, concurrency=args.concurrency))
     append_manifest(path, {"engine": engine.name, "task": task.slug, "tree": path.parts[-3],
                            "started_at": started_at, "finished_at": answering.utc_now(),
                            "requested": len(todo), "answered": stats["answered"], "failed": stats["failed"],
                            "concurrency": args.concurrency, "machine": _machine(), "code": _code_version(),
                            "kev_url": KEV_URL if args.engine.startswith("kev") else None,
-                           "memory": _engine_memory(engine.name)})
+                           "memory": _engine_memory(engine.name),
+                           "load": {"start": load_at_start, "end": _machine_load()}})
     print(f"answered {stats['answered']}, failed {stats['failed']} (rerun to retry failures)")
     return 0 if not stats["failed"] else 1
 
