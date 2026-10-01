@@ -89,3 +89,21 @@ resolvable at the depth-by-label level. Breakdowns are descriptive, not causal.
   1. Accuracy rises with size: Kev-4B is above Kev-0.8B overall on both tasks (paired interval excludes zero).
   2. Kev-4B and Kev-9B stay below Jev overall on both tasks.
   3. Kev-9B is not reliably above Kev-4B (paired interval includes zero) on at least one task.
+
+## Amendment 4: test-retest repeatability (written before any rerun except Jev's)
+
+- **Design:** every engine answers the full sample a second time under the original protocol, one request at a
+  time, into `timing/<engine>/<task>.jsonl.gz`. That rerun also provides the latency data and is never scored.
+  Jev's rerun was collected for timing before this metric was chosen; every other rerun comes after this
+  amendment is committed.
+- **Metrics, per engine and task:** percent agreement (headline); Gwet's AC1 with a 95% percentile bootstrap
+  interval over items (seed 0, 1,000 resamples), the primary chance-corrected measure, chosen because several
+  engines answer one option far more often than the others and Cohen's kappa understates agreement then (the
+  prevalence paradox); Cohen's kappa as a secondary figure; share of answers that change, by proof depth; accuracy in
+  each run; for engines that return probabilities, the mean and maximum absolute change in run 1's chosen
+  option's probability.
+- **Predictions:**
+  1. Kev and Laya agree with themselves on at least 99.5% of items on both tasks (local, fixed weights).
+  2. Jev's AC1 is at least 0.90 on both tasks (observed: 0.958 on both, before this amendment).
+  3. Where answers change, they change more at depth 3 and above than at depth 0 to 2, for every engine with at
+     least 20 changes.
