@@ -1,0 +1,145 @@
+{
+ "depth": 1,
+ "selection": "For each task: how many depth-1 problems there are, how many Luna got wrong, and how many of those Jev got right. Then the two such problems with the shortest text (ties by id), so a reader can check them in a few seconds. Selection is by length only, among the problems that meet the condition; it is not a random draw and is not meant as a sample of Luna's accuracy. Each example has the same fields as studies/model-examples.json (Luna's answer and its probability from the log-probability probe when the probe returned the same answer), plus Jev's answer.",
+ "tasks": {
+  "proofwriter-cwa": {
+   "examples": [
+    {
+     "choice": "true",
+     "correct": false,
+     "gold": "false",
+     "id": "RelNeg-CWA-D1-2313-Q4",
+     "jev_choice": "false",
+     "paraphrased": false,
+     "probability": 0.9997024978758172,
+     "probability_source": "probe",
+     "proof": {
+      "stated": null,
+      "steps": [
+       {
+        "concludes": "int1",
+        "conclusion_text": "The rabbit chases the rabbit.",
+        "rule": "rule1",
+        "rule_text": "If someone is big then they chase the rabbit.",
+        "uses": [
+         {
+          "kind": "fact",
+          "ref": "triple2",
+          "text": "The rabbit is big."
+         }
+        ]
+       }
+      ]
+     },
+     "statement": "The rabbit does not chase the rabbit.",
+     "theory": "The lion sees the rabbit. The rabbit is big. The rabbit is rough. If someone is big then they chase the rabbit."
+    },
+    {
+     "choice": "true",
+     "correct": false,
+     "gold": "false",
+     "id": "AttNeg-CWA-D2-1409-Q4",
+     "jev_choice": "false",
+     "paraphrased": false,
+     "probability": 0.9195368194174587,
+     "probability_source": "probe",
+     "proof": {
+      "stated": null,
+      "steps": [
+       {
+        "concludes": "int1",
+        "conclusion_text": "Harry is big.",
+        "rule": "rule2",
+        "rule_text": "If someone is blue and not white then they are big.",
+        "uses": [
+         {
+          "kind": "fact",
+          "ref": "triple4",
+          "text": "Harry is blue."
+         },
+         {
+          "kind": "derived",
+          "ref": "naf1",
+          "text": "Harry is not white."
+         }
+        ]
+       }
+      ]
+     },
+     "statement": "Harry is not big.",
+     "theory": "Dave is round. Erin is round. Fiona is young. Harry is blue. Round people are blue. If someone is blue and not white then they are big."
+    }
+   ],
+   "luna_wrong": 70,
+   "luna_wrong_jev_right": 57,
+   "n": 300
+  },
+  "proofwriter-owa": {
+   "examples": [
+    {
+     "choice": "unknown",
+     "correct": false,
+     "gold": "true",
+     "id": "RelNeg-OWA-D2-531-Q3",
+     "jev_choice": "true",
+     "paraphrased": false,
+     "probability": 0.9999313378065751,
+     "probability_source": "probe",
+     "proof": {
+      "stated": null,
+      "steps": [
+       {
+        "concludes": "int1",
+        "conclusion_text": "The tiger is cold.",
+        "rule": "rule1",
+        "rule_text": "All big people are cold.",
+        "uses": [
+         {
+          "kind": "fact",
+          "ref": "triple1",
+          "text": "The tiger is big."
+         }
+        ]
+       }
+      ]
+     },
+     "statement": "The tiger is cold.",
+     "theory": "The tiger is big. All big people are cold. If someone is cold then they are nice."
+    },
+    {
+     "choice": "unknown",
+     "correct": false,
+     "gold": "false",
+     "id": "RelNoneg-OWA-D2-1714-Q4",
+     "jev_choice": "false",
+     "paraphrased": false,
+     "probability": null,
+     "probability_source": null,
+     "proof": {
+      "stated": null,
+      "steps": [
+       {
+        "concludes": "int1",
+        "conclusion_text": "The tiger is nice.",
+        "rule": "rule2",
+        "rule_text": "Rough things are nice.",
+        "uses": [
+         {
+          "kind": "fact",
+          "ref": "triple3",
+          "text": "The tiger is rough."
+         }
+        ]
+       }
+      ]
+     },
+     "statement": "The tiger is not nice.",
+     "theory": "The tiger is big. The tiger is green. The tiger is rough. All nice things are cold. Rough things are nice."
+    }
+   ],
+   "luna_wrong": 67,
+   "luna_wrong_jev_right": 48,
+   "n": 302
+  }
+ }
+}
