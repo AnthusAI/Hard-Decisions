@@ -12,9 +12,10 @@ export const STAMP = `v${data.provenance.version} · ${data.provenance.generated
 const complete = (slug) => ranked(slug).filter((x) => x.complete);
 // Descriptions stay within 320 characters (test/build.test.mjs): drop whole sentences from the end.
 export const fit = (text, max = 320) => {
-  let out = text;
-  while (out.length > max && /[.!?]\s+\S[^]*$/.test(out)) out = out.replace(/\s+[^.!?]*[.!?]?\s*$/, "").replace(/([^.!?])$/, "$1.");
-  return out;
+  // Sentences end at . ! or ? followed by whitespace and a capital or digit, so decimals ("63.8%") never split one.
+  const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/);
+  while (sentences.length > 1 && sentences.join(" ").length > max) sentences.pop();
+  return sentences.join(" ");
 };
 const bar = (id, value) => ({ engine: id, value, text: `${pct(value)}%`, alt: `${pct(value)}%` });
 

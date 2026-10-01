@@ -1,0 +1,10 @@
+{"axis": "overall", "ci_high": 0.2777777777777778, "ci_low": 0.22666666666666666, "diff": 0.25277777777777777, "engine_a": "jev", "engine_b": "kev-9b", "n": 1800, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "ci_high": 0.11666666666666667, "ci_low": 0.05333333333333334, "diff": 0.08333333333333333, "engine_a": "jev", "engine_b": "kev-9b", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "ci_high": 0.18874172185430463, "ci_low": 0.08940397350993377, "diff": 0.1390728476821192, "engine_a": "jev", "engine_b": "kev-9b", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "ci_high": 0.3234323432343234, "ci_low": 0.20132013201320131, "diff": 0.264026402640264, "engine_a": "jev", "engine_b": "kev-9b", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "ci_high": 0.36633663366336633, "ci_low": 0.2376237623762376, "diff": 0.30363036303630364, "engine_a": "jev", "engine_b": "kev-9b", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "ci_high": 0.40264026402640263, "ci_low": 0.26732673267326734, "diff": 0.3333333333333333, "engine_a": "jev", "engine_b": "kev-9b", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "ci_high": 0.47750865051903113, "ci_low": 0.328719723183391, "diff": 0.39792387543252594, "engine_a": "jev", "engine_b": "kev-9b", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.43636363636363634, "ci_low": 0.35537190082644626, "diff": 0.39669421487603307, "engine_a": "jev", "engine_b": "kev-9b", "n": 605, "task": "proofwriter-owa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.3371900826446281, "ci_low": 0.256198347107438, "diff": 0.2958677685950413, "engine_a": "jev", "engine_b": "kev-9b", "n": 605, "task": "proofwriter-owa", "value": "true"}
+{"axis": "reference_label", "ci_high": 0.10508474576271186, "ci_low": 0.015254237288135594, "diff": 0.061016949152542375, "engine_a": "jev", "engine_b": "kev-9b", "n": 590, "task": "proofwriter-owa", "value": "unknown"}

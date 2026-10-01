@@ -5,6 +5,13 @@
 {"axis": "depth", "change_rate": 0.0429042904290429, "changed": 13, "engine": "jev", "n": 303, "task": "proofwriter-owa", "value": "3"}
 {"axis": "depth", "change_rate": 0.056105610561056105, "changed": 17, "engine": "jev", "n": 303, "task": "proofwriter-owa", "value": "4"}
 {"axis": "depth", "change_rate": 0.03460207612456748, "changed": 10, "engine": "jev", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.5355555555555556, "accuracy_run2": 0.5355555555555556, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "kev-0.8b", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-0.8b", "n": 289, "task": "proofwriter-owa", "value": "5"}
 {"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.5355555555555556, "accuracy_run2": 0.5355555555555556, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "kev-4b", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 300, "task": "proofwriter-owa", "value": "0"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "kev-4b", "n": 302, "task": "proofwriter-owa", "value": "1"}
@@ -19,3 +26,10 @@
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 303, "task": "proofwriter-owa", "value": "3"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 303, "task": "proofwriter-owa", "value": "4"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "laya", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"ac1": 0.8554453320183055, "ac1_high": 0.8760274329372628, "ac1_low": 0.8366412361247366, "accuracy_run1": 0.6405555555555555, "accuracy_run2": 0.6277777777777778, "agreement": 0.8972222222222223, "axis": "overall", "changed": 185, "engine": "openai-gpt-6-luna-effort-none", "kappa": 0.8221914661515025, "n": 1800, "prob_shift_max": null, "prob_shift_mean": null, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "change_rate": 0.03666666666666667, "changed": 11, "engine": "openai-gpt-6-luna-effort-none", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "change_rate": 0.06622516556291391, "changed": 20, "engine": "openai-gpt-6-luna-effort-none", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "change_rate": 0.12871287128712872, "changed": 39, "engine": "openai-gpt-6-luna-effort-none", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "change_rate": 0.12871287128712872, "changed": 39, "engine": "openai-gpt-6-luna-effort-none", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "change_rate": 0.12211221122112212, "changed": 37, "engine": "openai-gpt-6-luna-effort-none", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "change_rate": 0.13494809688581316, "changed": 39, "engine": "openai-gpt-6-luna-effort-none", "n": 289, "task": "proofwriter-owa", "value": "5"}

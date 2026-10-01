@@ -39,7 +39,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
     <p class="note">Probability shift is how far the probability of run 1's answer moved in run 2. {without.length > 0 && `Reruns not yet scored: ${listOf(without.map((m) => { const l = latency(m.id, OWA); return l && !l.complete ? `${m.label} (in progress, ${int(l.n)} of ${int(l.of)} open-world items)` : m.setting ? `${m.label} (${m.setting})` : m.label; }))}.`}</p>
     {withRetest.map((m) => (
       <Fragment>
-        <h3>Where {m.label}'s answers changed, by proof depth</h3>
+        <h3>Where {m.label}'s answers changed{m.setting ? ` (${m.setting})` : ""}, by proof depth</h3>
         <div class="table-scroll">
           <table class="cell-table">
             <thead><tr><th scope="col">Task</th>{taskBySlug[OWA].depths.map((d) => <th scope="col" class="num">depth {d}</th>)}</tr></thead>
@@ -78,7 +78,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
         </div>
       </Fragment>
     ); }))}
-    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))}: we asked for the answer only, as for every model, so no confidence was recorded in the scored run. A separate preregistered probe read GPT-6 Luna's log-probabilities: <a href={urls.preview()}>see its calibration on the OpenAI Decisions API preview page</a>.</p>}
+    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.setting ? `${m.label} (${m.setting})` : m.label))}: we asked for the answer only, as for every model, so no confidence was recorded in the scored run. A separate preregistered probe read GPT-6 Luna's log-probabilities: <a href={urls.preview()}>see its calibration on the OpenAI Decisions API preview page</a>.</p>}
   </section>
   <AnthusNote lead="Consistency and calibration decide whether a decision model's output can be audited and thresholded. They are worth measuring on your own decisions before you rely on them." />
 </Base>
