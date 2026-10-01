@@ -1,0 +1,1158 @@
+{
+ "selection": "Selection is fixed and blind to the answers: for each task and depth 0-5, among sampled items that are templated (not paraphrased), attribute theories, gold answer ``true`` (so a proof exists) and question strategy ``proof``, take the one with the fewest words of theory, ties broken by id. The proof comes from the dataset's own ``proofsWithIntermediates`` (the first proof listed), parsed into steps in the order they're derived.",
+ "tasks": {
+  "proofwriter-cwa": [
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8929
+     },
+     "kev-4b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.5574
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8126
+     },
+     "laya": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9816
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 0,
+    "facts": [
+     "Gary is blue.",
+     "Gary is red.",
+     "Harry is young."
+    ],
+    "id": "AttNeg-CWA-D3-1679-Q1",
+    "label": "true",
+    "proves": "Gary is blue.",
+    "rules": [
+     "All young, kind people are blue.",
+     "Round people are kind.",
+     "If someone is young and not red then they are round."
+    ],
+    "stated_fact": {
+     "ref": "triple1",
+     "text": "Gary is blue."
+    },
+    "statement": "Gary is blue.",
+    "steps": [],
+    "theory_words": 30
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8809
+     },
+     "kev-4b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.8645
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.897
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.9623
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "false",
+      "correct": false,
+      "probability": null
+     }
+    },
+    "depth": 1,
+    "facts": [
+     "Anne is big.",
+     "Anne is cold.",
+     "Anne is nice.",
+     "Anne is rough.",
+     "Anne is round.",
+     "Bob is rough.",
+     "Charlie is nice.",
+     "Charlie is quiet.",
+     "Charlie is rough.",
+     "Charlie is round."
+    ],
+    "id": "AttNoneg-CWA-D1-1168-Q3",
+    "label": "true",
+    "proves": "Anne is quiet.",
+    "rules": [
+     "All round people are quiet."
+    ],
+    "stated_fact": null,
+    "statement": "Anne is quiet.",
+    "steps": [
+     {
+      "concludes": "int1",
+      "conclusion_text": "Anne is quiet.",
+      "rule": "rule1",
+      "rule_text": "All round people are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple5",
+        "text": "Anne is round."
+       }
+      ]
+     }
+    ],
+    "theory_words": 35
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.5551
+     },
+     "kev-4b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8354
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9708
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.929
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 2,
+    "facts": [
+     "Erin is blue.",
+     "Erin is cold.",
+     "Erin is young."
+    ],
+    "id": "AttNeg-CWA-D2-2092-Q5",
+    "label": "true",
+    "proves": "Erin is nice.",
+    "rules": [
+     "Young, blue people are big.",
+     "Big, young people are nice."
+    ],
+    "stated_fact": null,
+    "statement": "Erin is nice.",
+    "steps": [
+     {
+      "concludes": "int2",
+      "conclusion_text": "Erin is big.",
+      "rule": "rule1",
+      "rule_text": "Young, blue people are big.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple3",
+        "text": "Erin is young."
+       },
+       {
+        "kind": "fact",
+        "ref": "triple1",
+        "text": "Erin is blue."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Erin is nice.",
+      "rule": "rule2",
+      "rule_text": "Big, young people are nice.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Erin is big."
+       },
+       {
+        "kind": "fact",
+        "ref": "triple3",
+        "text": "Erin is young."
+       }
+      ]
+     }
+    ],
+    "theory_words": 19
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8108
+     },
+     "kev-4b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.611
+     },
+     "kev-9b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.7943
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.8778
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 3,
+    "facts": [
+     "Erin is red.",
+     "Gary is red."
+    ],
+    "id": "AttNeg-CWA-D3-1716-Q7",
+    "label": "true",
+    "proves": "Gary is kind.",
+    "rules": [
+     "If Gary is quiet then Gary is kind.",
+     "Green things are quiet.",
+     "All red things are green."
+    ],
+    "stated_fact": null,
+    "statement": "Gary is kind.",
+    "steps": [
+     {
+      "concludes": "int3",
+      "conclusion_text": "Gary is green.",
+      "rule": "rule3",
+      "rule_text": "All red things are green.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple2",
+        "text": "Gary is red."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Gary is quiet.",
+      "rule": "rule2",
+      "rule_text": "Green things are quiet.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Gary is green."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Gary is kind.",
+      "rule": "rule1",
+      "rule_text": "If Gary is quiet then Gary is kind.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Gary is quiet."
+       }
+      ]
+     }
+    ],
+    "theory_words": 23
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8589
+     },
+     "kev-4b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.6961
+     },
+     "kev-9b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.8615
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.9655
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 4,
+    "facts": [
+     "Anne is blue.",
+     "Anne is kind.",
+     "Anne is smart.",
+     "Anne is young.",
+     "Charlie is blue.",
+     "Charlie is green.",
+     "Charlie is kind.",
+     "Charlie is red.",
+     "Dave is quiet.",
+     "Harry is kind."
+    ],
+    "id": "AttNoneg-CWA-D5-35-Q9",
+    "label": "true",
+    "proves": "Harry is green.",
+    "rules": [
+     "All kind, quiet people are young.",
+     "All kind people are quiet.",
+     "Kind, young people are blue.",
+     "All young, blue people are green.",
+     "Blue, green people are smart."
+    ],
+    "stated_fact": null,
+    "statement": "Harry is green.",
+    "steps": [
+     {
+      "concludes": "int4",
+      "conclusion_text": "Harry is quiet.",
+      "rule": "rule2",
+      "rule_text": "All kind people are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       }
+      ]
+     },
+     {
+      "concludes": "int3",
+      "conclusion_text": "Harry is young.",
+      "rule": "rule1",
+      "rule_text": "All kind, quiet people are young.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is quiet."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Harry is blue.",
+      "rule": "rule3",
+      "rule_text": "Kind, young people are blue.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is young."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Harry is green.",
+      "rule": "rule4",
+      "rule_text": "All young, blue people are green.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is young."
+       },
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Harry is blue."
+       }
+      ]
+     }
+    ],
+    "theory_words": 57
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.99
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.884
+     },
+     "kev-4b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.7608
+     },
+     "kev-9b": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.7157
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.9232
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 5,
+    "facts": [
+     "Anne is blue.",
+     "Anne is kind.",
+     "Anne is smart.",
+     "Anne is young.",
+     "Charlie is blue.",
+     "Charlie is green.",
+     "Charlie is kind.",
+     "Charlie is red.",
+     "Dave is quiet.",
+     "Harry is kind."
+    ],
+    "id": "AttNoneg-CWA-D5-35-Q11",
+    "label": "true",
+    "proves": "Harry is smart.",
+    "rules": [
+     "All kind, quiet people are young.",
+     "All kind people are quiet.",
+     "Kind, young people are blue.",
+     "All young, blue people are green.",
+     "Blue, green people are smart."
+    ],
+    "stated_fact": null,
+    "statement": "Harry is smart.",
+    "steps": [
+     {
+      "concludes": "int5",
+      "conclusion_text": "Harry is quiet.",
+      "rule": "rule2",
+      "rule_text": "All kind people are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       }
+      ]
+     },
+     {
+      "concludes": "int4",
+      "conclusion_text": "Harry is young.",
+      "rule": "rule1",
+      "rule_text": "All kind, quiet people are young.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int5",
+        "text": "Harry is quiet."
+       }
+      ]
+     },
+     {
+      "concludes": "int3",
+      "conclusion_text": "Harry is blue.",
+      "rule": "rule3",
+      "rule_text": "Kind, young people are blue.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is young."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Harry is green.",
+      "rule": "rule4",
+      "rule_text": "All young, blue people are green.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is young."
+       },
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is blue."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Harry is smart.",
+      "rule": "rule5",
+      "rule_text": "Blue, green people are smart.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is blue."
+       },
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Harry is green."
+       }
+      ]
+     }
+    ],
+    "theory_words": 57
+   }
+  ],
+  "proofwriter-owa": [
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8421
+     },
+     "kev-4b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.846
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.964
+     },
+     "laya": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9768
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 0,
+    "facts": [
+     "Gary is not white."
+    ],
+    "id": "AttNeg-OWA-D0-4837-Q1",
+    "label": "true",
+    "proves": "Gary is not white.",
+    "rules": [
+     "If something is cold and big then it is not young."
+    ],
+    "stated_fact": {
+     "ref": "triple1",
+     "text": "Gary is not white."
+    },
+    "statement": "Gary is not white.",
+    "steps": [],
+    "theory_words": 15
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8625
+     },
+     "kev-4b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9131
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9824
+     },
+     "laya": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9153
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 1,
+    "facts": [
+     "Erin is furry.",
+     "Erin is not kind.",
+     "Erin is round."
+    ],
+    "id": "AttNeg-OWA-D1-2119-Q3",
+    "label": "true",
+    "proves": "Erin is not rough.",
+    "rules": [
+     "If Erin is furry then Erin is not rough."
+    ],
+    "stated_fact": null,
+    "statement": "Erin is not rough.",
+    "steps": [
+     {
+      "concludes": "int1",
+      "conclusion_text": "Erin is not rough.",
+      "rule": "rule1",
+      "rule_text": "If Erin is furry then Erin is not rough.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple1",
+        "text": "Erin is furry."
+       }
+      ]
+     }
+    ],
+    "theory_words": 19
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.99
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.582
+     },
+     "kev-4b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.922
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9674
+     },
+     "laya": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.4784
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 2,
+    "facts": [
+     "Anne is rough.",
+     "Bob is not big.",
+     "Harry is big."
+    ],
+    "id": "AttNeg-OWA-D2-1948-Q5",
+    "label": "true",
+    "proves": "Harry is not nice.",
+    "rules": [
+     "Nice, quiet people are not big.",
+     "If someone is big then they are quiet.",
+     "Quiet people are not nice."
+    ],
+    "stated_fact": null,
+    "statement": "Harry is not nice.",
+    "steps": [
+     {
+      "concludes": "int2",
+      "conclusion_text": "Harry is quiet.",
+      "rule": "rule2",
+      "rule_text": "If someone is big then they are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple3",
+        "text": "Harry is big."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Harry is not nice.",
+      "rule": "rule3",
+      "rule_text": "Quiet people are not nice.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Harry is quiet."
+       }
+      ]
+     }
+    ],
+    "theory_words": 29
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.7593
+     },
+     "kev-4b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8294
+     },
+     "kev-9b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.9326
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.8054
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 3,
+    "facts": [
+     "Bob is not young.",
+     "Dave is not green.",
+     "Erin is nice.",
+     "Gary is white."
+    ],
+    "id": "AttNeg-OWA-D3-999-Q7",
+    "label": "true",
+    "proves": "Gary is not green.",
+    "rules": [
+     "Round things are young.",
+     "If something is white and young then it is not green.",
+     "White things are round."
+    ],
+    "stated_fact": null,
+    "statement": "Gary is not green.",
+    "steps": [
+     {
+      "concludes": "int3",
+      "conclusion_text": "Gary is round.",
+      "rule": "rule3",
+      "rule_text": "White things are round.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple4",
+        "text": "Gary is white."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Gary is young.",
+      "rule": "rule1",
+      "rule_text": "Round things are young.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Gary is round."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Gary is not green.",
+      "rule": "rule2",
+      "rule_text": "If something is white and young then it is not green.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple4",
+        "text": "Gary is white."
+       },
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Gary is young."
+       }
+      ]
+     }
+    ],
+    "theory_words": 33
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.6856
+     },
+     "kev-4b": {
+      "choice": "unknown",
+      "correct": false,
+      "probability": 0.4452
+     },
+     "kev-9b": {
+      "choice": "unknown",
+      "correct": false,
+      "probability": 0.823
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.9647
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 4,
+    "facts": [
+     "Anne is blue.",
+     "Anne is kind.",
+     "Anne is smart.",
+     "Anne is young.",
+     "Charlie is blue.",
+     "Charlie is green.",
+     "Charlie is kind.",
+     "Charlie is red.",
+     "Dave is quiet.",
+     "Harry is kind."
+    ],
+    "id": "AttNoneg-OWA-D5-35-Q9",
+    "label": "true",
+    "proves": "Harry is green.",
+    "rules": [
+     "All kind, quiet people are young.",
+     "All kind people are quiet.",
+     "Kind, young people are blue.",
+     "All young, blue people are green.",
+     "Blue, green people are smart."
+    ],
+    "stated_fact": null,
+    "statement": "Harry is green.",
+    "steps": [
+     {
+      "concludes": "int4",
+      "conclusion_text": "Harry is quiet.",
+      "rule": "rule2",
+      "rule_text": "All kind people are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       }
+      ]
+     },
+     {
+      "concludes": "int3",
+      "conclusion_text": "Harry is young.",
+      "rule": "rule1",
+      "rule_text": "All kind, quiet people are young.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is quiet."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Harry is blue.",
+      "rule": "rule3",
+      "rule_text": "Kind, young people are blue.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is young."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Harry is green.",
+      "rule": "rule4",
+      "rule_text": "All young, blue people are green.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is young."
+       },
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Harry is blue."
+       }
+      ]
+     }
+    ],
+    "theory_words": 57
+   },
+   {
+    "answers": {
+     "jev": {
+      "choice": "true",
+      "correct": true,
+      "probability": 1.0
+     },
+     "kev-0.8b": {
+      "choice": "true",
+      "correct": true,
+      "probability": 0.8287
+     },
+     "kev-4b": {
+      "choice": "unknown",
+      "correct": false,
+      "probability": 0.6838
+     },
+     "kev-9b": {
+      "choice": "unknown",
+      "correct": false,
+      "probability": 0.729
+     },
+     "laya": {
+      "choice": "false",
+      "correct": false,
+      "probability": 0.8277
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "choice": "true",
+      "correct": true,
+      "probability": null
+     }
+    },
+    "depth": 5,
+    "facts": [
+     "Anne is blue.",
+     "Anne is kind.",
+     "Anne is smart.",
+     "Anne is young.",
+     "Charlie is blue.",
+     "Charlie is green.",
+     "Charlie is kind.",
+     "Charlie is red.",
+     "Dave is quiet.",
+     "Harry is kind."
+    ],
+    "id": "AttNoneg-OWA-D5-35-Q11",
+    "label": "true",
+    "proves": "Harry is smart.",
+    "rules": [
+     "All kind, quiet people are young.",
+     "All kind people are quiet.",
+     "Kind, young people are blue.",
+     "All young, blue people are green.",
+     "Blue, green people are smart."
+    ],
+    "stated_fact": null,
+    "statement": "Harry is smart.",
+    "steps": [
+     {
+      "concludes": "int5",
+      "conclusion_text": "Harry is quiet.",
+      "rule": "rule2",
+      "rule_text": "All kind people are quiet.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       }
+      ]
+     },
+     {
+      "concludes": "int4",
+      "conclusion_text": "Harry is young.",
+      "rule": "rule1",
+      "rule_text": "All kind, quiet people are young.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int5",
+        "text": "Harry is quiet."
+       }
+      ]
+     },
+     {
+      "concludes": "int3",
+      "conclusion_text": "Harry is blue.",
+      "rule": "rule3",
+      "rule_text": "Kind, young people are blue.",
+      "uses": [
+       {
+        "kind": "fact",
+        "ref": "triple10",
+        "text": "Harry is kind."
+       },
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is young."
+       }
+      ]
+     },
+     {
+      "concludes": "int2",
+      "conclusion_text": "Harry is green.",
+      "rule": "rule4",
+      "rule_text": "All young, blue people are green.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int4",
+        "text": "Harry is young."
+       },
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is blue."
+       }
+      ]
+     },
+     {
+      "concludes": "int1",
+      "conclusion_text": "Harry is smart.",
+      "rule": "rule5",
+      "rule_text": "Blue, green people are smart.",
+      "uses": [
+       {
+        "kind": "derived",
+        "ref": "int3",
+        "text": "Harry is blue."
+       },
+       {
+        "kind": "derived",
+        "ref": "int2",
+        "text": "Harry is green."
+       }
+      ]
+     }
+    ],
+    "theory_words": 57
+   }
+  ]
+ }
+}
