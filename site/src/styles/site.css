@@ -746,3 +746,4 @@ details.cell { scroll-margin-top: 140px; }
 .claim { font-size: 20px; font-weight: 600; line-height: 1.45; max-width: 46em; margin: 0 0 14px; }
 @media (min-width: 720px) { .claim { font-size: 22px; } }
 #decisions-api, #predictions, [id^="predictions-"], .breakdown-sec, section[id] { scroll-margin-top: 120px; }
+.code.verbatim { max-height: 520px; overflow: auto; font-size: 12.5px; white-space: pre; word-break: normal; }

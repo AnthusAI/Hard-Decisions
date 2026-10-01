@@ -78,7 +78,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
         </div>
       </Fragment>
     ); }))}
-    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))}: we asked for the answer only, as for every model, so no confidence was recorded and calibration is not measured.</p>}
+    {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.label))}: we asked for the answer only, as for every model, so no confidence was recorded in the scored run. A separate preregistered probe read GPT-6 Luna's log-probabilities: <a href={urls.preview()}>see its calibration on the OpenAI Decisions API preview page</a>.</p>}
   </section>
   <AnthusNote lead="Consistency and calibration decide whether a decision model's output can be audited and thresholded. They are worth measuring on your own decisions before you rely on them." />
 </Base>

@@ -98,6 +98,7 @@ export const urls = {
   measured: () => join("how-we-measured"),
   predictions: (section = null) => `${join("how-we-measured")}#${section ? `predictions-${section}` : "predictions"}`,
   speed: () => join("speed-size-and-memory"),
+  preview: () => join("openai-decisions-api-preview"),
   page: (slug) => join(slug),
   data: () => `${BASE}data/results.json`,
 };

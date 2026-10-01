@@ -21,13 +21,17 @@ test("the Luna comparison names the OpenAI Decisions API and links a source for 
 test("the Decisions API is framed as a preview, not as something we tested", () => {
   const t = text(page().html);
   assert.match(t, /not results for the Decisions API itself|not a test of the (?:OpenAI Decisions )?API itself/);
-  for (const p of content) assert.doesNotMatch(text(p.html), /we (?:tested|benchmarked|measured) the (?:OpenAI )?Decisions API/i, p.path);
+  for (const p of content) assert.doesNotMatch(text(p.html), /we (?:have )?(?:tested|benchmarked|measured|ran|probed) the (?:OpenAI )?Decisions API|our (?:test|benchmark|probe) of the (?:OpenAI )?Decisions API/i, p.path);
 });
 
 test("no page says whether the Decisions API returns a confidence score", () => {
+  // Naming confidence near the API is fine ("accuracy and confidence" of the model it is built on);
+  // saying the API returns, gives or lacks one is not: no OpenAI source says either way.
+  const claims = [/Decisions API[^.]*\b(?:returns?|gives?|provides?|exposes?|reports?|outputs?|includes?|lacks?|offers?)\b[^.]*\b(?:confidence|probabilit|log-?prob)/i,
+    /(?:confidence|probabilit|log-?prob)[^.]*\b(?:from|returned by|in) the (?:OpenAI )?Decisions API/i];
   for (const p of content) {
-    for (const s of text(p.html).split(/(?<=[.!?])\s+/)) {
-      if (/Decisions API/.test(s)) assert.doesNotMatch(s, /confidence|probabilit/i, `${p.path}: "${s}"`);
+    for (const sentence of text(p.html).split(/(?<=[.!?])\s+/)) {
+      for (const re of claims) assert.doesNotMatch(sentence, re, `${p.path}: "${sentence}"`);
     }
   }
 });

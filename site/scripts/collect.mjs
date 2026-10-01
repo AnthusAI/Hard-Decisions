@@ -310,6 +310,88 @@ for (const task of tasks) {
   perTask[task.slug] = { studies, status, derived, latency: readLatency(task, manifests) };
 }
 
+// ---------------------------------------------------------------------------------------------
+// The GPT-6 Luna log-probability probe (Amendment 6; outside the scored benchmark). Summaries come
+// from probes/luna-logprobs/analysis.json (tools/analyze_luna_logprobs.py). The analysis gives
+// AUROC by depth for Luna only, so the same AUROC is computed here, the analysis's way, for every
+// engine with recorded probabilities on the same items, by depth.
+// ---------------------------------------------------------------------------------------------
+function aurocOf(scores, correct) {
+  const pos = [], neg = [];
+  scores.forEach((s, i) => (correct[i] ? pos : neg).push(s));
+  if (!pos.length || !neg.length) return null;
+  // Rank-based Mann-Whitney with ties counted half: the same value as the pairwise count.
+  const all = scores.map((s, i) => ({ s, c: correct[i] })).sort((a, b) => a.s - b.s);
+  let rankSumPos = 0;
+  for (let i = 0; i < all.length;) {
+    let j = i;
+    while (j < all.length && all[j].s === all[i].s) j++;
+    const avg = (i + 1 + j) / 2;
+    for (let k = i; k < j; k++) if (all[k].c) rankSumPos += avg;
+    i = j;
+  }
+  return (rankSumPos - (pos.length * (pos.length + 1)) / 2) / (pos.length * neg.length);
+}
+
+// The probability the model gave its own answer, as the analysis reads it from a Luna response:
+// the summed log-probability of the tokens that spell the answer inside the JSON reply.
+function answerLogprob(content, answer) {
+  let text = "";
+  const starts = content.map((t) => { const at = text.length; text += t.token; return at; });
+  const needle = `"${answer}"`;
+  const at = text.indexOf(needle, text.indexOf('"answer"') + '"answer"'.length);
+  if (at < 0) return null;
+  const lo = at + 1, hi = at + 1 + answer.length;
+  const covering = content.map((t, i) => i).filter((i) => starts[i] < hi && starts[i] + content[i].token.length > lo);
+  return covering.length ? { index: covering[0], tokens: covering.map((i) => content[i].token), logprob: covering.reduce((a, i) => a + content[i].logprob, 0) } : null;
+}
+
+function readProbe(tasks) {
+  const dir = join(ROOT, "probes", "luna-logprobs");
+  const path = join(dir, "analysis.json");
+  if (!existsSync(path)) return null;
+  const a = JSON.parse(readFileSync(path, "utf8"));
+  const out = { file: rel(path), modified: mtime(path), tasks: {}, overall: a.overall || null, examples: [], runs: [] };
+  for (const f of ls(dir).filter((f) => f.endsWith(".runs.jsonl"))) for (const m of jsonl(join(dir, f))) out.runs.push(m);
+  for (const task of tasks) {
+    const t = a.tasks && a.tasks[task.slug];
+    if (!t) continue;
+    const gz_ = join(dir, `${task.slug}.jsonl.gz`);
+    const ids = existsSync(gz_) ? gz(gz_).map((r) => r.id) : [];
+    const meta = Object.fromEntries(task._items.map((i) => [i.id, i.metadata]));
+    // AUROC by depth for every engine with probabilities on all the probe's items.
+    const byDepth = {};
+    for (const engine of ["jev", "kev-4b", "kev-0.8b", "laya", "kev-9b"]) {
+      const recPath = join(ROOT, "answers", engine, `${task.slug}.jsonl.gz`);
+      if (!existsSync(recPath)) continue;
+      const rec = new Map(gz(recPath).map((r) => [r.id, r]));
+      const rows = [];
+      for (const id of ids) {
+        const ans = ((rec.get(id) || {}).answers || {}).Decision || {};
+        if (ans.probabilities && ans.choice in ans.probabilities) rows.push({ p: ans.probabilities[ans.choice], c: ans.choice === meta[id].reference_label ? 1 : 0, d: String(meta[id].depth) });
+      }
+      if (rows.length !== ids.length || !ids.length) continue;
+      byDepth[engine] = Object.fromEntries([...new Set(rows.map((r) => r.d))].sort().map((d) => {
+        const g = rows.filter((r) => r.d === d);
+        return [d, { n: g.length, accuracy: g.reduce((x, r) => x + r.c, 0) / g.length, auroc: aurocOf(g.map((r) => r.p), g.map((r) => r.c)) }];
+      }));
+    }
+    out.tasks[task.slug] = { ...t, other_engines_by_depth: byDepth, options: task.options };
+  }
+  // The verbatim examples, with the stated probability read from the response the analysis's way.
+  for (const e of a.examples || []) {
+    const choice = e.response.choices[0];
+    let answer = null;
+    try { answer = JSON.parse(choice.message.content).answer; } catch { answer = null; }
+    const pos = answer ? answerLogprob((choice.logprobs || {}).content || [], answer) : null;
+    const alts = pos ? (choice.logprobs.content[pos.index].top_logprobs || []).map((x) => ({ token: x.token, p: Math.exp(x.logprob) })) : [];
+    out.examples.push({ ...e, answer, stated: pos ? Math.exp(pos.logprob) : null, answer_tokens: pos ? pos.tokens : [], alternatives: alts,
+      depth: (tasks.find((t) => t.slug === e.task)._items.find((i) => i.id === e.id) || { metadata: {} }).metadata.depth });
+  }
+  return out;
+}
+
+const probe = readProbe(tasks);
 const memory = {};
 for (const m of manifests) {
   if (!m.memory) continue;
@@ -339,6 +421,7 @@ const data = {
   manifests: manifests.map(({ load, ...m }) => ({ ...m, load_start: load && load.start ? load.start.loadavg : null, load_end: load && load.end ? load.end.loadavg : null,
     busy_processes: load && load.start ? (load.start.busy_processes || []).length : null })),
   prereg,
+  probe,
 };
 
 mkdirSync(dirname(OUT), { recursive: true });

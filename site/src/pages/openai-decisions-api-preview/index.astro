@@ -1,0 +1,198 @@
+---
+// A preview of the OpenAI Decisions API through GPT-6 Luna, the model OpenAI says it is built on.
+// Accuracy comes from the scored benchmark (studies/); confidence from the preregistered
+// log-probability probe (Amendment 6, probes/luna-logprobs/analysis.json), which is outside the
+// scored benchmark. The API itself is not tested here, and nothing here says whether it returns a
+// confidence score.
+import Base from "../../layouts/Base.astro";
+import DepthChart from "../../components/DepthChart.astro";
+import Legend from "../../components/Legend.astro";
+import AccTable from "../../components/AccTable.astro";
+import DiffRows from "../../components/DiffRows.astro";
+import EngineName from "../../components/EngineName.astro";
+import Predictions from "../../components/Predictions.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, overall, axisTable, pair, L, listOf } from "../../lib/site.js";
+import { intro, DECISIONS_API } from "../../lib/content.js";
+import { predictions } from "../../lib/predictions.js";
+
+const LUNA = "openai-gpt-6-luna-effort-none";
+const S = DECISIONS_API.sources;
+const P = data.probe;
+const ids = ["jev", LUNA];
+const pt = (s) => P && P.tasks[s];
+const top = (s, engine = null) => { const t = pt(s); const b = engine ? (t.other_engines_same_items[engine] || {}).bands : t.bands; return b ? b.find((x) => x.from >= 0.99) : null; };
+const others = (s) => Object.keys(pt(s).other_engines_same_items);
+const ENGINE_LABEL = (e) => (modelById[e] ? modelById[e].label : e);
+const bandLabel = (b) => (b.from >= 0.99 ? "99% or more" : `${pct(b.from, 0)}% to ${pct(b.to, 0)}%`);
+const wrongEx = P ? P.examples.filter((e) => !e.correct) : [];
+const rightEx = P ? P.examples.filter((e) => e.correct) : [];
+const ex = wrongEx.find((e) => e.task === OWA) || wrongEx[0];
+const probeSec = predictions().find((s) => s.title === "Luna confidence probe");
+// The spot check, quoted from Amendment 6.
+const a6 = data.prereg.sections.find((s) => /^Amendment 6/.test(s.heading));
+const spot = a6 ? (/- \*\*A spot check[^]*?(?=\n- \*\*)/.exec(a6.text) || [""])[0].replace(/^- /, "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\s+/g, " ").trim() : "";
+const pretty = (o) => JSON.stringify(o, null, 2);
+const totalNotArgmax = P ? taskOrder.reduce((a, s) => a + (pt(s) ? pt(s).returned_not_most_probable : 0), 0) : 0;
+const totalResponses = P ? taskOrder.reduce((a, s) => a + (pt(s) ? pt(s).responses : 0), 0) : 0;
+const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
+---
+<Base title={intro.preview.seoTitle} description={intro.preview.intro} path={urls.preview()} current={{ page: "preview" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: "OpenAI Decisions API preview" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Preview · built on GPT-6 Luna, not on the API itself</p>
+    <h1 class="display xl">{intro.preview.title}</h1>
+    <p class="deck">{intro.preview.intro}</p>
+    {P && top(OWA) && top(CWA) && (
+      <p class="finding"><span class="finding-num">{pct(top(OWA).accuracy)}%</span><span class="finding-txt">When GPT-6 Luna stated 99% or more, it was right {pct(top(OWA).accuracy)}% of the time on open-world problems and {pct(top(CWA).accuracy)}% on closed-world ones, across {int(top(OWA).n)} and {int(top(CWA).n)} answers.{top(OWA, "jev") && top(CWA, "jev") && <Fragment> <EngineName engine={modelById.jev} href={urls.model("jev")} /> at 99% or more was right {pct(top(OWA, "jev").accuracy)}% and {pct(top(CWA, "jev").accuracy)}% of the time on the same problems.</Fragment>}</span></p>
+    )}
+    <p class="footnote">We have not tested the Decisions API. OpenAI uses a specialized version of Luna, and its accuracy and confidence may differ from what is shown here. We will benchmark the API itself when we can get access.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="what-h">
+    <h2 class="display" id="what-h">What the OpenAI Decisions API is</h2>
+    <p class="lede">At OpenAI DevDay on 29 September 2026, OpenAI announced the Decisions API, in limited preview with broader availability "in the coming days". OpenAI says it "uses a version of GPT-6 Luna": the model picks among answers the developer defines in advance, to classify, route or choose an agent's next action (<a href={S.decoder.url}>{S.decoder.label}</a>, <a href={S.axios.url}>{S.axios.label}</a>).</p>
+    <p>As of 1 October 2026 OpenAI had published no Decisions API documentation. What is public is the model it is built on. GPT-6 Luna, used with reasoning off, one request per problem and a fixed list of answers enforced by a strict JSON schema, is the same shape of task, and that is how it ran in this benchmark. So this page previews a Luna-based decision model; it does not measure the API.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="acc-h">
+    <h2 class="display" id="acc-h">Accuracy: a Luna-based decision model against Jev, by proof depth</h2>
+    <p class="lede">From the scored benchmark: the same 1,800 problems per task for both models, one request each, the same question and options.{overall(LUNA, OWA) && overall("jev", OWA) && ` GPT-6 Luna answered ${pct(overall(LUNA, OWA).accuracy)}% of open-world problems correctly and Jev ${pct(overall("jev", OWA).accuracy)}%; on the closed-world task, ${pct(overall(LUNA, CWA).accuracy)}% and ${pct(overall("jev", CWA).accuracy)}%.`}</p>
+    <div class="two-up">
+      {taskOrder.map((s) => (
+        <figure class="hero-fig">
+          <figcaption><span class="fig-t">{TASK_INFO[s].long}</span></figcaption>
+          <Legend ids={ids} slug={s} />
+          <DepthChart slug={s} ids={ids} compact label={`Jev and GPT-6 Luna by proof depth, ${TASK_INFO[s].short}`} />
+        </figure>
+      ))}
+    </div>
+    {taskOrder.map((s) => { const p = pair(s, "jev", LUNA); return p && (
+      <Fragment>
+        <h3>Jev minus GPT-6 Luna by depth, {TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task</h3>
+        <DiffRows rows={p.filter((r) => r.axis === "depth")} labelOf={(r) => `depth ${r.value}`} label={`Jev minus GPT-6 Luna by depth, ${TASK_INFO[s].short}`} />
+      </Fragment>
+    ); })}
+    <h3>Accuracy by depth, open-world task</h3>
+    <AccTable rows={axisTable(OWA, "depth", ids)} ids={ids} slug={OWA} valueHead="Proof depth" caption="By depth, open world" />
+    <p class="more-link"><a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna in full</a>: every breakdown, answer class and paired difference.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="lp-h">
+    <h2 class="display" id="lp-h">Can Luna give you a confidence?</h2>
+    <p class="lede">A decision model is most useful when it also says how sure it is, so you can act on confident answers and send the rest to a person. The scored benchmark asked every model for its answer only. To see whether GPT-6 Luna could supply a confidence, we read its log-probabilities.</p>
+    <p>A language model writes its reply one token (a word or piece of a word) at a time, and at each step it assigns a probability to every possible next token. A log-probability is the natural logarithm of that probability: 0 means certain, and the more negative it is, the less likely. With <code>logprobs</code> turned on, the API returns the log-probability of each token it wrote, and with <code>top_logprobs</code> the most likely alternatives at each step.</p>
+    <p>Our requests used a strict JSON schema whose only allowed values are the task's options, so every reply is a small object such as <code>{`{"answer":"false"}`}</code>. We find the tokens that spell the answer inside that reply, add their log-probabilities and convert the sum back to a probability: that is the probability Luna gave its own answer. The options begin differently ({listOf(taskBySlug[OWA].options.map((o) => `"${o}"`))}), so the first answer token already identifies one option, and each alternative Luna lists at that position maps to exactly one other option.</p>
+    {P && <p>With reasoning off, Luna exposed these probabilities almost completely. On most responses not every option appears among the alternatives, but the options it lists carry {listOf(masses.map((m) => `${pct(m)}%`))} of the probability on average (open world, closed world), so the ones left out carry almost none. With reasoning on, the API refuses the parameter: "'logprobs' is not supported with this model" (<a href={S.guide.url}>{S.guide.label}</a>).</p>}
+  </section>
+
+  {ex && (
+    <section class="wrap section" aria-labelledby="ex-h">
+      <h2 class="display" id="ex-h">A real request and response, verbatim</h2>
+      <p class="lede">One of the probe's 3,600 requests, exactly as sent and as returned: a {TASK_INFO[ex.task].short.toLowerCase().replace(" ", "-")} problem at proof depth {ex.depth} ({ex.id}). The correct answer is <strong>{ex.gold}</strong>. Luna answered <strong>{ex.answer}</strong>, and the log-probability of that answer's token, {fmt(Math.log(ex.stated), 4)}, is a probability of <strong>{pct(ex.stated, 2)}%</strong>.{ex.alternatives.length > 1 ? ` The alternatives it listed: ${ex.alternatives.map((a) => `"${a.token}" ${pct(a.p, 2)}%`).join(", ")}.` : ` It listed no other option at that position.`}</p>
+      <p>That is a confidently wrong answer: stated as close to certain, and wrong. On its own it proves nothing; the results below show how often it happens.</p>
+      <h3>The request body</h3>
+      <pre class="code verbatim"><code>{pretty(ex.request)}</code></pre>
+      <h3>The response</h3>
+      <pre class="code verbatim"><code>{pretty(ex.response)}</code></pre>
+      {rightEx.length > 0 && (
+        <details class="cell">
+          <summary>A right answer, for comparison ({rightEx[0].id}, stated {pct(rightEx[0].stated, 2)}%, correct answer {rightEx[0].gold})</summary>
+          <pre class="code verbatim"><code>{pretty(rightEx[0].response)}</code></pre>
+        </details>
+      )}
+      <p class="note">Every request and response is kept verbatim in <code>probes/luna-logprobs/</code>.</p>
+    </section>
+  )}
+
+  <section class="wrap section" aria-labelledby="spot-h">
+    <h2 class="display" id="spot-h">The spot check that started it</h2>
+    <p class="lede">Before writing the probe down, we sent a dozen deep problems to GPT-6 Luna with log-probabilities turned on. From the preregistration, word for word:</p>
+    {spot && <blockquote class="pred-q"><p>{spot}</p></blockquote>}
+    <p>Twelve items prove nothing, so we preregistered a full probe (Amendment 6): every one of the {int(totalResponses)} benchmark items, sent with exactly the benchmark's GPT-6 Luna request plus <code>logprobs</code> and <code>top_logprobs: 5</code>, with four predictions written down before it ran. It is outside the scored benchmark and changes no benchmark number.</p>
+  </section>
+
+  {P && (
+    <section class="wrap section" aria-labelledby="res-h">
+      <h2 class="display" id="res-h">Results: when Luna says 99%, how often is it right?</h2>
+      <p class="lede">Each answer is grouped by the probability the model gave it. A well-calibrated model is right about as often as it says. Jev's probabilities are its own, from the scored run, on the same items.</p>
+      {taskOrder.map((s) => { const t = pt(s); const j = t.other_engines_same_items.jev; return (
+        <Fragment>
+          <h3>{TASK_INFO[s].long}</h3>
+          <div class="table-scroll">
+            <table class="cell-table">
+              <thead><tr><th scope="col">Stated probability</th><th scope="col" class="num">Luna answers</th><th scope="col" class="num">Luna stated, average</th><th scope="col" class="num">Luna right</th>{j && <Fragment><th scope="col" class="num">Jev answers</th><th scope="col" class="num">Jev right</th></Fragment>}</tr></thead>
+              <tbody>{t.bands.map((b, i) => { const jb = j && j.bands[i]; return (
+                <tr><th scope="row">{bandLabel(b)}</th><td class="num">{int(b.n)}</td><td class="num">{b.n ? `${pct(b.mean_stated)}%` : "—"}</td><td class="num strong">{b.n ? `${pct(b.accuracy)}%` : "—"}</td>
+                  {j && <Fragment><td class="num">{int(jb.n)}</td><td class="num">{jb.n ? `${pct(jb.accuracy)}%` : "—"}</td></Fragment>}</tr>
+              ); })}</tbody>
+            </table>
+          </div>
+        </Fragment>
+      ); })}
+
+      <h3>Every model, same items</h3>
+      <p>Expected calibration error (ECE) is the average gap between stated probability and accuracy; 0 is perfect. "Wrong at 95%" is the share of wrong answers stated at 95% or more. AUROC is how well the stated probability separates right answers from wrong ones: 1 is perfect and 0.5 is no better than a coin flip.</p>
+      <div class="table-scroll">
+        <table class="cell-table">
+          <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col" class="num">Accuracy, this run</th><th scope="col" class="num">ECE</th><th scope="col" class="num">Wrong at 95%+</th><th scope="col" class="num">Wrong at 99%+</th><th scope="col" class="num">AUROC</th></tr></thead>
+          <tbody>
+            {taskOrder.map((s) => { const t = pt(s); return (
+              <Fragment>
+                <tr><th scope="row"><EngineName engine={modelById[LUNA]} /></th><td>{TASK_INFO[s].short}</td><td class="num">{pct(t.accuracy)}%</td><td class="num strong">{fmt(t.ece, 3)}</td><td class="num">{pct(t.wrong_at_95)}%</td><td class="num">{pct(t.wrong_at_99)}%</td><td class="num strong">{fmt(t.auroc, 3)}</td></tr>
+                {others(s).map((e) => { const o = t.other_engines_same_items[e]; return (
+                  <tr><th scope="row">{modelById[e] ? <EngineName engine={modelById[e]} /> : e}</th><td>{TASK_INFO[s].short}</td><td class="num">{pct(o.accuracy)}%</td><td class="num">{fmt(o.ece, 3)}</td><td class="num">{o.wrong_at_95 == null ? "—" : `${pct(o.wrong_at_95)}%`}</td><td class="num">{o.wrong_at_99 == null ? "—" : `${pct(o.wrong_at_99)}%`}</td><td class="num">{fmt(o.auroc, 3)}</td></tr>
+                ); })}
+              </Fragment>
+            ); })}
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Luna's accuracy here is from the probe, a separate run at OpenAI's default sampling; the scored benchmark's figures ({pct(overall(LUNA, OWA).accuracy)}% and {pct(overall(LUNA, CWA).accuracy)}%) come from the earlier run. In {int(totalNotArgmax)} of {int(totalResponses)} responses ({listOf(taskOrder.map((s) => `${pt(s).returned_not_most_probable} ${TASK_INFO[s].short.toLowerCase()}`))}), the answer returned was not Luna's most probable listed option: that is sampling at the default temperature.</p>
+
+      <h3>Separating right from wrong, by proof depth (AUROC)</h3>
+      <div class="table-scroll">
+        <table class="cell-table">
+          <thead><tr><th scope="col">Task</th><th scope="col">Depth</th><th scope="col" class="num">GPT-6 Luna</th>{others(OWA).filter((e) => pt(OWA).other_engines_by_depth[e]).map((e) => <th scope="col" class="num">{ENGINE_LABEL(e)}</th>)}</tr></thead>
+          <tbody>{taskOrder.map((s) => Object.entries(pt(s).by_depth).map(([d, v], k) => (
+            <tr><th scope="row">{k === 0 ? TASK_INFO[s].short : ""}</th><td>{d}</td><td class="num strong">{fmt(v.auroc, 3)}</td>
+              {others(OWA).filter((e) => pt(OWA).other_engines_by_depth[e]).map((e) => { const x = (pt(s).other_engines_by_depth[e] || {})[d]; return <td class="num">{x && x.auroc != null ? fmt(x.auroc, 3) : "—"}</td>; })}</tr>
+          )))}</tbody>
+        </table>
+      </div>
+      <p>At proof depth 5, Luna's AUROC is {fmt(pt(OWA).by_depth["5"].auroc, 3)} on the open-world task and {fmt(pt(CWA).by_depth["5"].auroc, 3)} on the closed-world task: its probability says next to nothing about whether a deep answer is right.{pt(OWA).other_engines_by_depth.jev && ` Jev's is ${fmt(pt(OWA).other_engines_by_depth.jev["5"].auroc, 3)} and ${fmt(pt(CWA).other_engines_by_depth.jev["5"].auroc, 3)}.`} Jev's figures by depth are computed by this site from its saved probabilities, the same way as the analysis computes Luna's.</p>
+
+      {probeSec && <Fragment><h3>What we predicted</h3><Predictions sections={[probeSec]} headings={false} /></Fragment>}
+    </section>
+  )}
+
+  <section class="wrap section" aria-labelledby="mean-h">
+    <h2 class="display" id="mean-h">What it means for a decision model built on Luna</h2>
+    <p class="lede">A confidence is useful for routing: act on the sure answers, review the unsure ones. On these problems, Luna's stated confidence cannot do that without help.</p>
+    <p><strong>Overconfidence can be calibrated.</strong> If a model's 99% answers are right {P && top(OWA) ? `${pct(top(OWA).accuracy)}%` : "less often"} of the time, you can learn that from labelled data and relabel them. That fixes what the number says, as long as higher stated probability still means more likely right.</p>
+    <p><strong>Calibration cannot add information.</strong> AUROC measures only the ordering: whether right answers tend to get higher probability than wrong ones. Any recalibration that keeps that order leaves AUROC unchanged. Where AUROC is near 0.5, as Luna's is at depth 5, right and wrong answers get the same spread of probabilities, so no remapping of that probability can pick out which deep answers to trust. You would need a different signal.</p>
+    <p>So a Luna-based decision model may be accurate enough on shallow problems, but on decisions that need several steps of reasoning, its own probability is not a usable confidence. Measure this on your own decisions before relying on it; the API's specialized model may behave differently.</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="ctx-h">
+    <h2 class="display" id="ctx-h">Context: overconfidence and access to log-probabilities</h2>
+    <ul class="how-list">
+      <li><strong>Published evidence.</strong> OpenAI's <a href={S.gpt4.url}>{S.gpt4.label}</a> found the pre-trained model well calibrated, and that post-training reduced calibration markedly (its Figure 8).</li>
+      <li><strong>In our experience</strong>, where OpenAI models do expose log-probabilities, they tend to be too overconfident to calibrate into a useful confidence.</li>
+      <li><strong>Our suspicion, with no proof.</strong> Researchers recovered the final layer of production OpenAI models from API log-probabilities and logit bias, and OpenAI changed its API in response (<a href={S.carlini.url}>{S.carlini.label}</a>; see also <a href={S.finlayson.url}>{S.finlayson.label}</a>). OpenAI also chose not to show o1's raw chain of thought, citing user experience, competitive advantage and chain-of-thought monitoring (<a href={S.o1.url}>{S.o1.label}</a>). That may be why log-probabilities are refused with reasoning on, but none of this shows why.</li>
+      <li><strong>Exposed, here.</strong> With reasoning off, Luna's probabilities were exposed almost completely. The problem this probe shows is overconfidence, not withheld probabilities.</li>
+    </ul>
+  </section>
+
+  <section class="wrap section" aria-labelledby="lim-h">
+    <h2 class="display" id="lim-h">Limits</h2>
+    <ul class="how-list">
+      <li>One dataset, and a synthetic one: ProofWriter's templated reasoning problems, not your decisions.</li>
+      <li>The Decisions API itself is untested. OpenAI uses a specialized version of Luna; its accuracy and probabilities may differ.</li>
+      <li>The probe used OpenAI's default sampling, as the benchmark did, so a few answers were not Luna's most probable option.</li>
+      <li>The probe was preregistered (Amendment 6, with the four predictions above) and is outside the scored benchmark: it changes no number elsewhere on this site. <a href={urls.predictions()}>Every prediction</a> · <a href={urls.page("repeatability")}>Calibration for every model</a>.</li>
+    </ul>
+  </section>
+
+  <AnthusNote lead="Anthus AI Solutions made this benchmark and this probe. We evaluate and calibrate decision models, including ones built on GPT-6 Luna: whether their answers hold up on your decisions, and whether their confidence can be trusted to route them." />
+</Base>

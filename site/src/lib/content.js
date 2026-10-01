@@ -43,6 +43,9 @@ export const intro = {
     intro: "The failures in this benchmark are specific enough to plan training data around: deep proofs, the unknown answer, reworded rules and a lean toward one answer. Here is what the results show, model by model." },
   aligning: { title: "Aligning decision models with the decision you mean", query: "aligning decision models",
     intro: "A decision model can be accurate and still answer a different question from the one you meant. The open-world and closed-world tasks ask the same problems under two rules for what \"unknown\" means; the gap between them is an alignment problem you can measure." },
+  preview: { title: "Previewing the OpenAI Decisions API through GPT-6 Luna: accuracy and confidence on deep reasoning",
+    seoTitle: "OpenAI Decisions API preview: GPT-6 Luna's accuracy and confidence", query: "OpenAI Decisions API",
+    intro: "OpenAI's new Decisions API is built on a version of GPT-6 Luna. We have not tested the API itself. We tested GPT-6 Luna the way such a decision model works: one request, a fixed list of answers, reasoning off. Here is how accurate it is on multi-step reasoning, and whether its own probabilities can tell you when to trust an answer." },
   about: { title: "Who makes this and how we tested each model", query: "Hard-Decisions benchmark",
     intro: "Who makes this site, how it is funded, and how each model was reached." },
 };

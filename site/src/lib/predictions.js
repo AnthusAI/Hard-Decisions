@@ -216,6 +216,47 @@ const SECTIONS = [
   },
 ];
 
+// Amendment 6: the GPT-6 Luna log-probability probe, outside the scored benchmark. Checked against
+// probes/luna-logprobs/analysis.json.
+const probeTask = (slug) => (data.probe && data.probe.tasks[slug]) || null;
+const probeReady = () => TASKS.every((s) => probeTask(s));
+SECTIONS.push({
+  match: /^Amendment 6/, title: "Luna confidence probe", model: LUNA,
+  checks: {
+    1: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => ({ s, v: probeTask(s).ece }));
+      return { status: per.every((p) => p.v > 0.15) ? "held" : per.every((p) => p.v <= 0.15) ? "failed" : "mixed",
+        checks: ["Rule: Luna's expected calibration error is above 0.15 on each task.", ...per.map((p) => `${T(p.s)}: ECE ${fmt(p.v, 3)}.`)] };
+    },
+    2: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => ({ s, v: probeTask(s).wrong_at_95, n: probeTask(s).wrong }));
+      return { status: per.every((p) => p.v >= 0.5) ? "held" : per.every((p) => p.v < 0.5) ? "failed" : "mixed",
+        checks: ["Rule: at least half of Luna's wrong answers are stated at 95% or more, on each task.", ...per.map((p) => `${T(p.s)}: ${pct(p.v)}% of ${p.n} wrong answers.`)] };
+    },
+    3: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => ({ s, l: probeTask(s).auroc, j: (probeTask(s).other_engines_same_items.jev || {}).auroc }));
+      if (per.some((p) => p.j == null)) return pending("Jev's probabilities on the probe's items are not available.");
+      return { status: per.every((p) => p.l < p.j) ? "held" : per.every((p) => p.l >= p.j) ? "failed" : "mixed",
+        checks: ["Rule: Luna's AUROC is below Jev's on each task, on the same items.", ...per.map((p) => `${T(p.s)}: Luna ${fmt(p.l, 3)}, Jev ${fmt(p.j, 3)}.`)] };
+    },
+    4: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => {
+        const t = probeTask(s), all = t.options.length;
+        const n = Object.values(t.options_disclosed).reduce((a, b) => a + b, 0);
+        const fewer = Object.entries(t.options_disclosed).filter(([k]) => Number(k) < all).reduce((a, [, v]) => a + v, 0);
+        return { s, fewer, n, all };
+      });
+      return { status: per.every((p) => p.fewer > p.n / 2) ? "held" : per.every((p) => p.fewer <= p.n / 2) ? "failed" : "mixed",
+        checks: ["Rule: on more than half of the responses, fewer than all of the task's options are disclosed.",
+          ...per.map((p) => `${T(p.s)}: ${p.fewer.toLocaleString("en-US")} of ${p.n.toLocaleString("en-US")} responses disclose fewer than all ${p.all} options.`)] };
+    },
+  },
+});
+
 export const STATUS_WORDS = { held: "Held", failed: "Failed", "partly held": "Partly held", mixed: "Mixed", pending: "Pending", "no claim": "No claim", "held so far": "Held so far" };
 export const STATUS_CLASS = { held: "v-held", failed: "v-failed", "partly held": "v-part", mixed: "v-part", pending: "v-pending", "no claim": "v-none", "held so far": "v-held" };
 

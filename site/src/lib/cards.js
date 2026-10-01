@@ -152,6 +152,23 @@ function measuredCard() {
     rows: [{ text: "One request per problem, the same question for every model" }, { text: `${held} of ${total} predictions held so far` }] };
 }
 
+// The probe's "when it says 99% or more" band, for Luna and for any engine on the same items.
+export function topBand(slug, engine = null) {
+  const t = data.probe && data.probe.tasks[slug];
+  if (!t) return null;
+  const bands = engine ? (t.other_engines_same_items[engine] || {}).bands : t.bands;
+  return bands ? bands.find((b) => b.from >= 0.99) || null : null;
+}
+
+function previewCard() {
+  const lo = topBand(OWA), lc = topBand(CWA), jo = topBand(OWA, "jev"), jc = topBand(CWA, "jev");
+  if (!lo || !lc) return { template: "topic", headline: intro.preview.title, description: intro.preview.intro, rows: [{ text: "Probe results pending" }] };
+  return { template: "topic", headline: intro.preview.title,
+    description: fit(`When GPT-6 Luna, the model behind OpenAI's Decisions API, says it is 99% or more sure, it is right ${pct(lo.accuracy)}% of the time on open-world problems and ${pct(lc.accuracy)}% on closed-world ones${jo && jc ? `; Jev is right ${pct(jo.accuracy)}% and ${pct(jc.accuracy)}%` : ""}. A preview built on Luna, not a test of the API itself.`),
+    number: `${pct(lo.accuracy)}%`, numberNote: "of GPT-6 Luna's open-world answers stated at 99% or more were right",
+    rows: [jo ? { engine: "jev", text: `Jev at 99% or more: right ${pct(jo.accuracy)}%` } : null, { text: "Luna-based preview; the Decisions API itself is untested" }].filter(Boolean) };
+}
+
 function aboutCard() {
   return { template: "topic", headline: intro.about.title, description: intro.about.intro,
     rows: [{ text: "Anthus AI Solutions made this. It's self-funded." }, { text: `Models: ${listOf(models.map((m) => m.label))}` }] };
@@ -192,6 +209,7 @@ export function allCards() {
   out.push(finish(urls.measured(), measuredCard()));
   out.push(finish(urls.page("repeatability"), repeatCard()));
   out.push(finish(urls.speed(), latencyCard()));
+  out.push(finish(urls.preview(), previewCard()));
   out.push(finish(urls.page("evaluating-decision-models"), depth5Card("evaluating")));
   out.push(finish(urls.page("fine-tuning-decision-models"), depth5Card("finetuning")));
   out.push(finish(urls.page("aligning-decision-models"), { ...hubCard("aligning"), template: "topic" }));
