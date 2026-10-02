@@ -140,3 +140,30 @@ of 17 GB (`tools/README.md`). Everything else in Amendment 3 is unchanged.
   2. At least half of Luna's wrong answers are stated at 95% or more, on both tasks.
   3. Luna's AUROC is lower than Jev's on both tasks.
   4. On most responses, Luna discloses fewer than all of the task's options.
+
+## Amendment 7: GLiDE (written before GLiDE answered any item)
+
+- **Engine:** `glide`: Fastino's hosted decision model, model `fastino/GLiDE`, through `POST
+  https://api.fastino.ai/v1/systemone` (`hard_decisions/engines/glide.py`). Fastino serves it on the same System One
+  contract as Jev, so the request is exactly Jev's: `state: {"text": <item text>}` and the task's wire question,
+  with no other setting. Fastino describes GLiDE as a "thinking" decision model that spends more computation
+  when its first distribution is uncertain; there is no parameter for this, so it runs as served. The returned
+  model id is recorded per row.
+- **Protocol:** as for every engine: one request per item, no examples, no retries of an answer. A request that
+  fails is retried by the client and, if it still fails, left out of the record and rerun later; an answer that
+  is not one of the options is scored wrong. Same sample, metrics, floors and paired differences (Jev minus
+  GLiDE on the same items). Before the full run, one 20-item pilot on OWA checks the response shape; its rows are
+  kept and count toward the 1,800.
+- **Repeatability and timing:** after the scored run, one `--timing` rerun of every item per task at concurrency
+  1, scored for retest agreement as in Amendment 4 and for latency. Separately, GLiDE's stated probabilities get
+  the same AUROC as Amendment 6 computed for Jev, Kev and Laya.
+- **Spend:** list price $0.30 per million input tokens, output free (docs.fastino.ai/pricing, read 2026-10-02).
+  The dry run prices each task at about $0.22, so the scored runs plus the reruns cost about $1.
+- **Claims under test:** we expect GLiDE to beat the open models. Fastino says it beats Jev (Decision Index 0.2.1,
+  64.81 against 57.91). We make no directional prediction about Jev and report the paired difference either way.
+- **Predictions:**
+  1. GLiDE's overall accuracy is above Kev-9B's, the best open model, on both tasks (paired interval excludes
+     zero).
+  2. GLiDE's accuracy at depths 3 to 5 is above Kev-9B's on both tasks.
+  3. GLiDE's accuracy falls with proof depth on both tasks.
+  4. GLiDE's AUROC exceeds GPT-6 Luna's probe AUROC on both tasks.
