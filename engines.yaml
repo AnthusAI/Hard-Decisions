@@ -11,6 +11,7 @@ jev:
   where_run: TypeSafe API (typesafe-sdk); version recorded per row (jev-1.13.0)
   hardware: not applicable (hosted)
   price: $42 per billion input tokens; output free
+  list_price: {input_usd_per_mtok: 0.042, output_usd_per_mtok: 0, source: TypeSafe's published price}
 
 glide:
   kind: hosted decision model
@@ -22,6 +23,7 @@ glide:
   where_run: Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev)
   hardware: not applicable (hosted)
   price: $0.30 per million input tokens; output free
+  list_price: {input_usd_per_mtok: 0.30, output_usd_per_mtok: 0, source: "docs.fastino.ai/pricing, read 2026-10-02"}
   source: https://docs.fastino.ai/concepts/glide
 
 laya:
@@ -88,6 +90,7 @@ openai-gpt-6-luna-effort-none:
   where_run: OpenAI Chat Completions API, reasoning_effort none, strict JSON schema
   hardware: not applicable (hosted)
   price: $0.10 input / $0.50 output per million tokens
+  list_price: {input_usd_per_mtok: 0.10, output_usd_per_mtok: 0.50, source: "developers.openai.com/api/docs/models/gpt-6-luna, read 2026-10-01"}
   source: https://developers.openai.com/api/docs/models/gpt-6-luna
 
 machine:

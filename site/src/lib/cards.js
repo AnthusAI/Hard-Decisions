@@ -3,7 +3,7 @@
 // page's heading, and every number on a card is also on its page (test/build.test.mjs checks both).
 import { createHash } from "node:crypto";
 import { data, models, modelById, urls, axes, groups, axisByKey, OWA, CWA, taskBySlug, pct, pts, int, fmt, overall, axisRow, isComplete,
-  ranked, leader, latency, retest, axisSpread, valueLabel, L, listOf } from "./site.js";
+  ranked, leader, latency, retest, axisSpread, valueLabel, L, listOf, costOf } from "./site.js";
 import { intro, liveComparisons, modelTitle } from "./content.js";
 import { predictions, tally, STATUS_WORDS } from "./predictions.js";
 import { coinFlipClaim } from "./insights.js";
@@ -137,6 +137,17 @@ function latencyCard() {
 }
 
 
+function costCard() {
+  const rows = models.filter((m) => costOf(m.id)).map((m) => ({ m, c: costOf(m.id).total })).sort((a, b) => a.c.usd_per_million - b.c.usd_per_million);
+  if (!rows.length) return { template: "topic", headline: intro.cost.title, description: intro.cost.intro, rows: [] };
+  const cheap = rows[0];
+  const money = (x) => `$${x >= 100 ? Math.round(x).toLocaleString("en-US") : x.toFixed(0)}`;
+  return { template: "topic", headline: intro.cost.title,
+    description: fit(`At list price, one million decisions cost ${listOf(rows.map((x) => `${money(x.c.usd_per_million)} on ${x.m.label}`))}, from the tokens each API reported on the same 3,600 problems.`),
+    number: money(cheap.c.usd_per_million), numberNote: `per million decisions on ${cheap.m.label}, at list price`,
+    rows: rows.slice(1).map((x) => ({ engine: x.m.id, text: `${x.m.label}: ${money(x.c.usd_per_million)} per million decisions` })) };
+}
+
 function depth5Card(key) {
   const c = complete(OWA);
   const bars = c.map((x) => bar(x.m.id, axisRow(x.m.id, OWA, "depth", "5").accuracy));
@@ -216,6 +227,7 @@ export function allCards() {
   out.push(finish(urls.measured(), measuredCard()));
   out.push(finish(urls.page("repeatability"), repeatCard()));
   out.push(finish(urls.speed(), latencyCard()));
+  out.push(finish(urls.cost(), costCard()));
   out.push(finish(urls.preview(), previewCard()));
   out.push(finish(urls.depthMeans(), depthMeansCard()));
   out.push(finish(urls.page("evaluating-decision-models"), depth5Card("evaluating")));

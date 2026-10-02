@@ -36,6 +36,8 @@ export const intro = {
     intro: "A decision you cannot repeat is hard to audit. We asked each model every question a second time and counted how many answers changed; for models that report probabilities, we also checked how well those probabilities match how often they are right." },
   speed: { title: "Decision model speed, size and memory: what each model needs to run", query: "decision model latency",
     intro: "How long one decision takes, how big each model is, what hardware its maker states, and how much memory the open models used on our laptop." },
+  cost: { title: "Decision model cost per decision: Jev, GLiDE and GPT-6 Luna", query: "decision model API cost",
+    intro: "What each hosted model cost to answer the same 3,600 problems, at its published list price and the tokens its own API reported, per decision and per correct decision." },
   sizes: { title: "Model sizes and memory", query: "open-source Jev alternative hardware", intro: "Parameters, weights on disk and memory." },
   evaluating: { title: "Evaluating decision models: what a deep-reasoning benchmark shows", query: "evaluating decision models",
     intro: "Overall accuracy hides most of what matters when you evaluate a decision model. This benchmark shows four things a single number would have missed, and how to check each one on your own decisions." },
