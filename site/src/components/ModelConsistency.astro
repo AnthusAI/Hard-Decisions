@@ -1,17 +1,22 @@
 ---
 // One model's test-retest agreement and calibration, in sentences.
-import { urls, modelById, taskOrder, TASK_INFO, OWA, pct, fmt, int, retest, latency, derived } from "../lib/site.js";
+import { data, urls, modelById, taskOrder, TASK_INFO, OWA, pct, fmt, int, retest, latency, derived } from "../lib/site.js";
 const { id } = Astro.props;
 const m = modelById[id];
 const lt = latency(id, OWA);
+// No rerun was made when the latency itself comes from the scored run.
+const noRerun = !!(lt && lt.source === "scored run");
+const auroc = (s) => { const t = data.probe && data.probe.tasks[s]; const o = t && t.other_engines_same_items; return o && o[id] && o.jev && id !== "jev" ? { m: o[id].auroc, jev: o.jev.auroc } : null; };
 ---
 {taskOrder.map((s) => { const r = retest(id, s); return r && (
   <p>Asked every {TASK_INFO[s].short.toLowerCase()} question a second time, {m.label} gave the same answer on <strong>{pct(r.agreement)}%</strong> of {int(r.n)} items ({r.changed} changed; Gwet's AC1 {fmt(r.ac1, 3)}, interval {fmt(r.ac1_lo, 3)} to {fmt(r.ac1_hi, 3)}). Accuracy was {pct(r.accuracy_run1)}% the first time and {pct(r.accuracy_run2)}% the second.</p>
 ); })}
-{!taskOrder.some((s) => retest(id, s)) && <p>{m.label}'s rerun has not been scored yet{lt && !lt.complete ? ` (in progress: ${int(lt.n)} of ${int(lt.of)} open-world items so far)` : ""}.{m.hosted ? "" : ` It is preregistered to agree with itself on at least 99.5% of items, since its weights are fixed and it runs locally.`}</p>}
+{!taskOrder.some((s) => retest(id, s)) && noRerun && <p>{m.label} was not asked a second time: at its speed a rerun of every item would have taken hours, so its consistency is not measured.</p>}
+{!taskOrder.some((s) => retest(id, s)) && !noRerun && <p>{m.label}'s rerun has not been scored yet{lt && !lt.complete ? ` (in progress: ${int(lt.n)} of ${int(lt.of)} open-world items so far)` : ""}.{m.hosted ? "" : ` It is preregistered to agree with itself on at least 99.5% of items, since its weights are fixed and it runs locally.`}</p>}
 {taskOrder.map((s) => { const d = derived(id, s); return d && d.calibration && (
   <p>Calibration on the {TASK_INFO[s].short.toLowerCase()} task: {m.label}'s probability for its own answer averaged <strong>{pct(d.calibration.mean_confidence)}%</strong> against <strong>{pct(d.calibration.accuracy)}%</strong> accuracy; expected calibration error {pct(d.calibration.ece)} points.</p>
 ); })}
+{taskOrder.some((s) => auroc(s)) && <p>Whether its probability tells right answers from wrong ones (AUROC, where 0.5 is no better than chance and 1 is perfect): {taskOrder.filter((s) => auroc(s)).map((s) => `${fmt(auroc(s).m, 2)} on the ${TASK_INFO[s].short.toLowerCase()} task against Jev's ${fmt(auroc(s).jev, 2)}`).join("; ")}.</p>}
 {!taskOrder.some((s) => derived(id, s) && derived(id, s).calibration) && (id === "openai-gpt-6-luna-effort-none"
   ? <p>We asked GPT-6 Luna, like every model, for its answer only, so no confidence was recorded and its calibration is not measured here. A separate preregistered probe read its log-probabilities: <a href={urls.preview()}>see its calibration on the OpenAI Decisions API preview page</a>.</p>
   : <p>Calibration is computed once {m.label}'s scored results are complete.</p>)}

@@ -35,10 +35,11 @@ export function negationGap(id, slug) {
 }
 export { pct, pts, L, pair };
 
-// The depth-5 claim: by five chained inferences, every fully scored model except the leader is no
-// better than a coin flip (its 95% interval reaches 50%) on both tasks, while the leader's interval is
-// clearly above 50% on both. Returned only while the data supports it; otherwise null, and no page
-// or card states it.
+// The depth-5 claim, on the closed-world task, where a coin flip is literally the chance rate (two
+// answers): by five chained inferences every fully scored model except the leader is no better than a
+// coin flip (its 95% interval reaches 50%), while the leader's interval is clearly above 50%. (On the
+// open-world task GLiDE stays well above 50% at depth 5, so the claim is not made there.) Returned only
+// while the data supports it; otherwise null, and no page or card states it.
 export function coinFlipClaim() {
   const full = fullModels();
   if (full.length < 2) return null;
@@ -46,7 +47,7 @@ export function coinFlipClaim() {
   const accuracy = (id) => (overall(id, OWA).accuracy + overall(id, CWA).accuracy) / 2;
   const lead = [...full].sort((a, b) => accuracy(b.id) - accuracy(a.id))[0];
   const others = full.filter((m) => m.id !== lead.id);
-  const rows = (id) => [OWA, CWA].map((s) => d5(id, s));
+  const rows = (id) => [CWA].map((s) => d5(id, s));
   if (rows(lead.id).some((r) => !r || r.lo <= 0.5)) return null;
   if (others.some((m) => rows(m.id).some((r) => !r || r.lo > 0.5))) return null;
   const leadRows = rows(lead.id);
@@ -59,9 +60,9 @@ export function coinFlipClaim() {
   const worst = Math.max(...others.flatMap((m) => rows(m.id).map((r) => r.accuracy)));
   return {
     lead: lead.id, others: others.map((m) => m.id), range, worst,
-    sentence: `As proofs get deeper, every model we tested except ${L(lead.id)} falls to coin-flip accuracy by five chained inferences: ${groupList(groups)}. ${L(lead.id)} still answers ${range} correctly at that depth.`,
-    short: `By five chained inferences, only ${L(lead.id)} beats a coin flip`,
-    detail: `At proof depth 5 no other model scores above ${pct(worst)}% on either task, and none is clearly above 50%; ${L(lead.id)} scores ${range}.`,
+    sentence: `On true-or-false questions, every model we tested except ${L(lead.id)} falls to coin-flip accuracy by five chained inferences: ${groupList(groups)}. ${L(lead.id)} still answers ${range} correctly at that depth.`,
+    short: `On true-or-false questions five inferences deep, only ${L(lead.id)} beats a coin flip`,
+    detail: `At proof depth 5 on the closed-world task no other model scores above ${pct(worst)}%, and none is clearly above 50%; ${L(lead.id)} scores ${range}.`,
   };
 }
 

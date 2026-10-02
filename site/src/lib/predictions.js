@@ -311,3 +311,36 @@ function listNames(names, family, text) {
   const hit = [...names, ...family].filter((n) => text.includes(n));
   return hit.length > 1 ? `${hit.slice(0, -1).join(", ")} and ${hit.at(-1)}` : hit[0];
 }
+
+// Amendment 7: GLiDE. Kev-9B is the best open model; there is no GLiDE-minus-Kev paired study, so the
+// overall rule uses the stricter test that the two 95% intervals do not overlap.
+const GLIDE = "glide";
+SECTIONS.push({
+  match: /^Amendment 7/, title: "GLiDE", model: GLIDE,
+  checks: {
+    1: () => {
+      if (!ready([GLIDE, KEV9])) return pending(notReady([GLIDE, KEV9]));
+      const per = TASKS.map((s) => ({ s, g: overall(GLIDE, s), k: overall(KEV9, s) }));
+      const ok = per.map((p) => p.g.lo > p.k.hi);
+      return { status: ok.every(Boolean) ? "held" : ok.some(Boolean) ? "mixed" : "failed",
+        checks: ["Rule: on each task, GLiDE's 95% interval lies wholly above Kev-9B's (stricter than a paired interval excluding zero).",
+          ...per.map((p) => `${T(p.s)}: GLiDE ${pct(p.g.accuracy)}% [${pct(p.g.lo)}–${pct(p.g.hi)}], Kev-9B ${pct(p.k.accuracy)}% [${pct(p.k.lo)}–${pct(p.k.hi)}].`)] };
+    },
+    2: () => {
+      if (!ready([GLIDE, KEV9])) return pending(notReady([GLIDE, KEV9]));
+      const per = TASKS.flatMap((s) => [3, 4, 5].map((d) => ({ s, d, g: axisRow(GLIDE, s, "depth", String(d)), k: axisRow(KEV9, s, "depth", String(d)) })));
+      const ok = per.map((p) => p.g.accuracy > p.k.accuracy);
+      return { status: ok.every(Boolean) ? "held" : ok.some(Boolean) ? "partly held" : "failed",
+        checks: ["Rule: at each of depths 3, 4 and 5 on each task, GLiDE's accuracy is above Kev-9B's. (No interval was preregistered, so it is a point comparison; where the intervals overlap it is noted.)",
+          ...per.map((p) => `${T(p.s)} depth ${p.d}: GLiDE ${pct(p.g.accuracy)}%, Kev-9B ${pct(p.k.accuracy)}%${p.g.lo > p.k.hi ? "" : " (intervals overlap)"}.`)] };
+    },
+    3: () => fallsVerdict(GLIDE),
+    4: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => ({ s, l: probeTask(s).auroc, g: (probeTask(s).other_engines_same_items.glide || {}).auroc }));
+      if (per.some((p) => p.g == null)) return pending("GLiDE's probabilities on the probe's items are not available.");
+      return { status: per.every((p) => p.g > p.l) ? "held" : per.every((p) => p.g <= p.l) ? "failed" : "mixed",
+        checks: ["Rule: GLiDE's AUROC is above GPT-6 Luna's probe AUROC on each task, on the same items.", ...per.map((p) => `${T(p.s)}: GLiDE ${fmt(p.g, 3)}, Luna ${fmt(p.l, 3)}.`)] };
+    },
+  },
+});

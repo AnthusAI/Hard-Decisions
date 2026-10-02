@@ -192,19 +192,27 @@ function readManifests() {
   return out;
 }
 
+// Engines with no one-at-a-time rerun, by the owner's decision (preregistration, deviation from
+// Amendment 7): their latency comes from the scored run, sent several requests at a time.
+const SCORED_RUN_LATENCY = ["glide"];
+
 function readLatency(task, manifests) {
   const out = {};
-  for (const engine of ls(join(ROOT, "timing"))) {
-    const path = join(ROOT, "timing", engine, `${task.slug}.jsonl.gz`);
+  const sources = [...ls(join(ROOT, "timing")).map((e) => [e, "timing"]),
+    ...SCORED_RUN_LATENCY.filter((e) => !existsSync(join(ROOT, "timing", e, `${task.slug}.jsonl.gz`))).map((e) => [e, "answers"])];
+  for (const [engine, tree] of sources) {
+    const path = join(ROOT, tree, engine, `${task.slug}.jsonl.gz`);
     if (!existsSync(path)) continue;
     const values = gz(path).map((r) => r.latency_ms).filter((v) => typeof v === "number").sort((a, b) => a - b);
     if (!values.length) continue;
     const q = (p) => values[Math.floor(p * (values.length - 1))];
-    const manifest = manifests.filter((m) => m.tree === "timing" && m.engine === engine && m.task === task.slug).at(-1) || null;
+    const runs = manifests.filter((m) => m.tree === tree && m.engine === engine && m.task === task.slug);
+    const manifest = runs.at(-1) || null;
     // A rerun is complete when every item has a timing and the run wrote its manifest at the end.
     const complete = values.length >= task.n && !!manifest;
     out[engine] = { file: rel(path), n: values.length, of: task.n, complete, p50: q(0.5), p90: q(0.9), max: values.at(-1),
-      total_minutes: values.reduce((a, b) => a + b, 0) / 60000, concurrency: manifest ? manifest.concurrency : null,
+      total_minutes: values.reduce((a, b) => a + b, 0) / 60000, source: tree === "timing" ? "rerun" : "scored run",
+      concurrency: runs.length ? Math.max(...runs.map((m) => m.concurrency || 1)) : null,
       machine: manifest ? manifest.machine : null,
       load_start: manifest && manifest.load && manifest.load.start ? manifest.load.start.loadavg : null,
       load_end: manifest && manifest.load && manifest.load.end ? manifest.load.end.loadavg : null };

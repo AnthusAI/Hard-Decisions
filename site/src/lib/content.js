@@ -57,6 +57,11 @@ const kevIds = ["kev-9b", "kev-4b", "kev-0.8b"];
 // One page per rival model, written as its comparison with Jev. A model listed here that has no
 // scored results yet (Kev-9B) joins its page automatically once it does.
 export const comparisons = [
+  { slug: "jev-vs-glide", a: "jev", b: ["glide"], query: "Jev vs GLiDE",
+    title: "Jev vs GLiDE: two hosted decision models on deep reasoning",
+    intro: "GLiDE is Fastino's hosted decision model, released on 1 October 2026, which Fastino calls the first thinking decision model. It takes the same request as Jev, so both got exactly the same text, question and options for the same 3,600 problems.",
+    seoTitle: "Jev vs GLiDE: Fastino's thinking decision model on multi-hop reasoning",
+    note: "Fastino reports that GLiDE beats Jev on its Decision Index 0.2.1 (64.81 to 57.91). That is Fastino's benchmark, not this one; we preregistered no prediction about which would win here." },
   { slug: "jev-vs-gpt-6-luna", a: "jev", b: ["openai-gpt-6-luna-effort-none"], query: "Jev vs LLM",
     title: "Jev vs GPT-6 Luna: a decision model against an LLM classifier",
     intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems.",
@@ -90,7 +95,7 @@ export const liveComparisons = comparisons.filter((c) => modelById[c.a] && model
 export const comparisonsFor = (id) => liveComparisons.filter((c) => c.a === id || c.b.includes(id));
 
 export const modelQuery = (m) => ({
-  jev: "Jev accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", laya: "Laya decision model accuracy",
+  jev: "Jev accuracy", glide: "GLiDE decision model accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", laya: "Laya decision model accuracy",
 }[m.id] || `${m.label} accuracy`);
 export const modelTitle = (m) => ({
   jev: "Jev accuracy on multi-hop reasoning",

@@ -12,6 +12,18 @@ jev:
   hardware: not applicable (hosted)
   price: $42 per billion input tokens; output free
 
+glide:
+  kind: hosted decision model
+  maker: Fastino Labs
+  parameters: undisclosed
+  architecture: undisclosed ("thinking" decision model that adds reasoning when its first distribution is uncertain)
+  context_tokens: 40000
+  weights: not available (hosted)
+  where_run: Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev)
+  hardware: not applicable (hosted)
+  price: $0.30 per million input tokens; output free
+  source: https://docs.fastino.ai/concepts/glide
+
 laya:
   kind: open decision model
   maker: Convai Innovations

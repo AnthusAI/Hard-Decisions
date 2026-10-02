@@ -48,6 +48,7 @@ function marker(id, size) {
   const shape = e.marker === "square" ? { type: "rect", props: { x: 3, y: 3, width: 18, height: 18, rx: 2, fill } }
     : e.marker === "diamond" ? { type: "path", props: { d: "M12 1 L23 12 L12 23 L1 12 Z", fill } }
     : e.marker === "diamond-open" ? { type: "path", props: { d: "M12 3.5 L20.5 12 L12 20.5 L3.5 12 Z", fill: "none", stroke: fill, strokeWidth: 3.5 } }
+    : e.marker === "triangle-down" ? { type: "path", props: { d: "M12 22 L22.5 3 L1.5 3 Z", fill } }
     : e.marker === "triangle" ? { type: "path", props: { d: "M12 2 L22.5 21 L1.5 21 Z", fill } }
     : { type: "circle", props: { cx: 12, cy: 12, r: 10, fill } };
   return { type: "svg", props: { width: size, height: size, viewBox: "0 0 24 24", style: { display: "flex", flexShrink: 0 }, children: [shape] } };

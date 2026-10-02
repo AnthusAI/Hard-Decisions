@@ -56,7 +56,7 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     <p class="deck">{c.intro}</p>
     {c.b.includes(LUNA) && <p class="footnote">GPT-6 Luna ran with reasoning effort set to none, its lowest setting, under the same one-request protocol as every model here: the same question, the same options, one answer per item. A different reasoning setting would be a different model, scored separately.</p>}
     {bs.some((m) => taskOrder.some((s) => statusWords(m.id, s))) && <p class="footnote">{bs.flatMap((m) => taskOrder.filter((s) => statusWords(m.id, s)).map((s) => `${m.label}, ${TASK_INFO[s].short.toLowerCase()}: ${statusWords(m.id, s)}.`)).join(" ")} Partial numbers change when scoring finishes.</p>}
-    {c.note && <p class="note">{c.note} <a href="#decisions-api">What this means for the OpenAI Decisions API</a>.</p>}
+    {c.note && <p class="note">{c.note}{c.b.includes(LUNA) && <Fragment> <a href="#decisions-api">What this means for the OpenAI Decisions API</a>.</Fragment>}</p>}
     {waiting.length > 0 && <p class="note">Not yet scored: {listOf(waiting.map((m) => m.label))}. {waiting.length === 1 ? "It appears" : "They appear"} here once scored, never as zero.</p>}
   </section>
 
@@ -220,7 +220,7 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
         ); })}</tbody>
       </table>
     </div>
-    <p class="note">Times are open-world, one request at a time. Hosted models were timed over the network against the vendor's servers and open models on one laptop, so speed is not like for like across the two. <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
+    <p class="note">Times are open-world, one request at a time{ids.some((id) => latency(id, OWA) && latency(id, OWA).source === "scored run") ? ` except ${listOf(ids.filter((id) => latency(id, OWA) && latency(id, OWA).source === "scored run").map(L))}, timed in its scored run with ${latency(ids.find((id) => latency(id, OWA) && latency(id, OWA).source === "scored run"), OWA).concurrency} requests in flight` : ""}. Hosted models were timed over the network against the vendor's servers and open models on one laptop, so speed is not like for like across the two. <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
     {bs.map((b) => <ModelFacts id={b.id} heading={b.label} />)}
     </div>
   </section>

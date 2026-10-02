@@ -37,7 +37,7 @@ test("every confusion cell's count matches the data, and each row sums to that a
   assert.ok(checked > 100, `only ${checked} rows checked`);
 });
 
-const ON_PAGE = { "/models/jev/": ["jev"], "/compare/jev-vs-gpt-6-luna/": ["jev", "openai-gpt-6-luna-effort-none"], "/compare/jev-vs-laya/": ["jev", "laya"],
+const ON_PAGE = { "/models/jev/": ["jev"], "/compare/jev-vs-glide/": ["jev", "glide"], "/compare/jev-vs-gpt-6-luna/": ["jev", "openai-gpt-6-luna-effort-none"], "/compare/jev-vs-laya/": ["jev", "laya"],
   "/compare/jev-vs-kev/": ["jev", "kev-9b", "kev-4b", "kev-0.8b"] };
 
 test("comparison pages show Jev's matrix beside each rival's, for each task, on the same problems", () => {

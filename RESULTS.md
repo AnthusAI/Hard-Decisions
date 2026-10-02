@@ -9,6 +9,7 @@ Local engines ran on MacBookPro18,4 (Apple M1 Max) with 32 GB unified memory. Me
 | engine | kind | parameters | weights on disk | where it ran | maker's stated hardware | memory in use | memory peak |
 |---|---|---|---|---|---|---|---|
 | jev | hosted decision model | undisclosed | not available (hosted) | TypeSafe API (typesafe-sdk); version recorded per row (jev-1.13.0) | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
+| glide | hosted decision model | undisclosed | not available (hosted) | Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev) | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
 | laya | open decision model | 421M | 0.84 GB (model.safetensors, convaiinnovations/laya repo root) | this machine, laya 0.3.21 package, PyTorch on MPS | not stated by the maker | 10.0 GB | 10.0 GB |
 | kev-0.8b | open decision model | 0.8B base (Qwen3.5-0.8B-Base) + rank-16 LoRA adapter and pointer head | 1.75 GB base (Qwen/Qwen3.5-0.8B-Base@dc7cdfe2) + 0.05 GB adapter and head (jaredpalmer/kev-0.8b@54f4f877) | this machine, Kev server c9c1f855 on MLX | "Any Apple Silicon Mac, L4" (Kev README) | 2.1 GB | 3.2 GB |
 | kev-4b | open decision model | 4B base (Qwen3.5-4B-Base) + rank-16 LoRA adapter (33.8M trainable) and pointer head | 9.32 GB base (Qwen/Qwen3.5-4B-Base@1001bb4d) + 0.14 GB adapter and head (jaredpalmer/kev-4b@139fdd94) | this machine, Kev server c9c1f855 on MLX | "32 GB Mac, L40S, H100" (Kev README) | 8.6 GB | 17.0 GB |

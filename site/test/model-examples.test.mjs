@@ -8,7 +8,7 @@ import { content, unescape } from "./helpers.mjs";
 
 const ME = JSON.parse(readFileSync(new URL("../../studies/model-examples.json", import.meta.url), "utf8"));
 const roundHalfUp = (x) => Math.floor(x + 0.5 + 1e-9);
-const PAGE = { jev: "/models/jev/", "openai-gpt-6-luna-effort-none": "/compare/jev-vs-gpt-6-luna/", laya: "/compare/jev-vs-laya/",
+const PAGE = { jev: "/models/jev/", glide: "/compare/jev-vs-glide/", "openai-gpt-6-luna-effort-none": "/compare/jev-vs-gpt-6-luna/", laya: "/compare/jev-vs-laya/",
   "kev-0.8b": "/compare/jev-vs-kev/", "kev-4b": "/compare/jev-vs-kev/", "kev-9b": "/compare/jev-vs-kev/" };
 
 function sectionOf(html, engine) {
