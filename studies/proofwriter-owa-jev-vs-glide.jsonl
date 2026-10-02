@@ -1,0 +1,10 @@
+{"axis": "overall", "ci_high": 0.03277777777777778, "ci_low": -0.011666666666666667, "diff": 0.009444444444444445, "engine_a": "jev", "engine_b": "glide", "n": 1800, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "ci_high": 0.02, "ci_low": -0.016666666666666666, "diff": 0.0, "engine_a": "jev", "engine_b": "glide", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "ci_high": 0.04304635761589404, "ci_low": -0.04304635761589404, "diff": 0.0, "engine_a": "jev", "engine_b": "glide", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "ci_high": 0.056105610561056105, "ci_low": -0.0429042904290429, "diff": 0.006600660066006601, "engine_a": "jev", "engine_b": "glide", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "ci_high": 0.07260726072607261, "ci_low": -0.04950495049504951, "diff": 0.013201320132013201, "engine_a": "jev", "engine_b": "glide", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "ci_high": 0.0429042904290429, "ci_low": -0.08250825082508251, "diff": -0.019801980198019802, "engine_a": "jev", "engine_b": "glide", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "ci_high": 0.1314878892733564, "ci_low": -0.006920415224913495, "diff": 0.058823529411764705, "engine_a": "jev", "engine_b": "glide", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.15867768595041323, "ci_low": 0.08760330578512397, "diff": 0.12231404958677686, "engine_a": "jev", "engine_b": "glide", "n": 605, "task": "proofwriter-owa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.15041322314049588, "ci_low": 0.08264462809917356, "diff": 0.11735537190082644, "engine_a": "jev", "engine_b": "glide", "n": 605, "task": "proofwriter-owa", "value": "true"}
+{"axis": "reference_label", "ci_high": -0.18135593220338983, "ci_low": -0.2559322033898305, "diff": -0.21694915254237288, "engine_a": "jev", "engine_b": "glide", "n": 590, "task": "proofwriter-owa", "value": "unknown"}

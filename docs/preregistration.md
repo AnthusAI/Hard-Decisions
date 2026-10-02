@@ -167,3 +167,10 @@ of 17 GB (`tools/README.md`). Everything else in Amendment 3 is unchanged.
   2. GLiDE's accuracy at depths 3 to 5 is above Kev-9B's on both tasks.
   3. GLiDE's accuracy falls with proof depth on both tasks.
   4. GLiDE's AUROC exceeds GPT-6 Luna's probe AUROC on both tasks.
+
+### Deviation from Amendment 7 (written after GLiDE's scored runs, before any analysis beyond the standard report)
+
+The `--timing` rerun was dropped at the owner's direction on 2026-10-02: at GLiDE's latency it would have run for
+hours. GLiDE therefore has no retest agreement, and its latency comes from the scored runs at concurrency 8 (the
+pilot's 20 rows at concurrency 4), not from a one-at-a-time rerun like Jev's. Two OWA requests failed with server
+errors and were rerun once at concurrency 1; both answered.
