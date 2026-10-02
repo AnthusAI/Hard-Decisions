@@ -28,11 +28,11 @@ def engine(model):
     return gliner_decide.GlinerDecideEngine(loader=lambda: (model, torch, "fake"))
 
 
-async def test_request_carries_question_and_described_options_and_all_probabilities():
+async def test_request_is_the_hosted_form_task_and_labels_and_records_all_probabilities():
     model = FakeModel([0.1, 0.2, 2.0])
     result = await engine(model).answer("Bob is big.\n\nStatement: Bob is red.", QUESTION)
     text, tasks = model.calls[0]
-    assert tasks == {"Decision": {"labels": QUESTION["Decision"]["criteria"], "prompt": QUESTION["Decision"]["instructions"]}}
+    assert tasks == {"Decision": ["true", "false", "unknown"]}
     a = result.answers["Decision"]
     assert a["choice"] == "unknown" and set(a["probabilities"]) == {"true", "false", "unknown"}
     assert abs(sum(a["probabilities"].values()) - 1) < 1e-6 and result.usage is None

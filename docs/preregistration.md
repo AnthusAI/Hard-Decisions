@@ -197,3 +197,22 @@ errors and were rerun once at concurrency 1; both answered.
   2. Its overall accuracy is below Kev-9B's on both tasks.
   3. It agrees with itself on at least 99.5% of items on both tasks.
   4. Its AUROC is below Jev's on both tasks.
+
+### Amendment 8a: GLiNER2.5-Decide's request form (written after a withdrawn run, before the rerun)
+
+- **What went wrong:** the first scored run (2026-10-02) passed the question's instructions (about 90 tokens) as
+  the task `prompt` and each option's description as a described label. The model then gave one answer to almost
+  every item (false to all 1,800 closed-world items; unknown to 93% of open-world items), so its scores equalled
+  the best constant. That run measured the request form, not the model, and is withdrawn; its records are kept in
+  `var/gliner-withdrawn/` and are not part of the benchmark.
+- **The diagnosis, and what was seen:** Fastino's hosted API for this model (`/v1/chat/completions`,
+  `classifications`) accepts only a task name and its labels (plus thresholds and `top_k`); it rejects a `prompt`
+  key. On the first 10 items of each task, sent as task `answer` with the option names as labels, the hosted model
+  and this local checkpoint gave the same answer on every item (21 of 21 including a model-card example; confidence
+  within 0.01), and 12 of the 20 were right. Those answers are not part of the record. No other request form was
+  tried on benchmark items.
+- **The rule from here:** the form the hosted API accepts: the item text (which ends with the statement), the
+  question's name (`Decision`) as the task and the options as labels, single-label. The model therefore does not
+  receive the question's instructions or the option descriptions, which every other engine gets; its interface has
+  no place for them. Everything else in Amendment 8 stands, including the predictions, which are checked against the
+  rerun.

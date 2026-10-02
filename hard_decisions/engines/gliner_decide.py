@@ -5,12 +5,16 @@ it lives in its own environment, ``var/gliner-venv``. The model is loaded once, 
 revision, and answers one request at a time on Apple's GPU (MPS) when available (set
 ``GLINER_DEVICE`` to override). Open weights, so a run costs nothing but time.
 
-The request carries what every engine gets: the text, the question's instructions as the task's
-``prompt`` and each option with its description as a described label (the model card's "Question
-over a passage" and "Labels with a description" forms). ``classify_text`` returns only the winning
-label and its probability; a read-only forward hook on the model's classifier layer captures the same
-logits the package softmaxes, so the record holds the probability of every option. Every answer is
-checked to reproduce the package's own label and confidence; a mismatch is an error, never a guess.
+The request is the form Fastino's hosted API accepts for this model (``/v1/chat/completions``
+``classifications``: a task name and its labels, no prompt and no label descriptions; the API rejects a
+``prompt``): the item text, which ends with the statement, the question's name as the task and the
+options as labels. A first run that also passed the question's instructions as a ``prompt`` and each
+option's description collapsed to one answer per task and was withdrawn (preregistration, Amendment 8a).
+This local checkpoint gives the hosted model's answers (21 of 21 identical, confidence within 0.01).
+``classify_text`` returns only the winning label and its probability; a read-only forward hook on the
+model's classifier layer captures the same logits the package softmaxes, so the record holds the
+probability of every option. Every answer is checked to reproduce the package's own label and
+confidence; a mismatch is an error, never a guess.
 """
 from __future__ import annotations
 
@@ -63,7 +67,7 @@ class GlinerDecideEngine:
         answers = {}
         for name, q in questions.items():
             options = list(q["criteria"])
-            tasks = {name: {"labels": dict(q["criteria"]), "prompt": q["instructions"]}}
+            tasks = {name: options}
             self._captured.clear()
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
