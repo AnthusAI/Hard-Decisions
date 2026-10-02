@@ -146,7 +146,7 @@ def main() -> int:
                         "by_depth": {str(d): summarize([r for r in rows if r["depth"] == d])
                                      for d in sorted({r["depth"] for r in rows})}})
         others = {}
-        for engine in ("jev", "glide", "gliner-2.5-decide", "kev-4b", "kev-0.8b", "laya", "kev-9b"):
+        for engine in ("jev", "glide", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "kev-4b", "kev-0.8b", "laya", "kev-9b"):
             er = engine_rows(engine, task, ids, gold)
             if len(er) == len(ids):
                 s = summarize(er)

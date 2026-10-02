@@ -109,6 +109,7 @@ h3 { font-size: 18px; font-weight: 700; margin: 1.6em 0 .4em; }
 .eng { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink); white-space: nowrap; }
 
 figure { margin: 0; }
+.hero-after { margin-top: 32px; }
 .hero-fig { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 20px 16px 12px; box-shadow: var(--shadow); }
 @media (min-width: 720px) { .hero-fig { padding: 28px 28px 16px; } }
 figcaption { display: grid; gap: 4px; margin-bottom: 12px; }
@@ -902,6 +903,8 @@ details.cell { scroll-margin-top: 140px; }
   .hero:has(.hero-top) { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr); column-gap: 56px; align-items: start; }
   .hero:has(.hero-top) .hero-top { display: block; }
   .hero:has(.hero-top) .hero-top > div { display: block; }
+  .hero:has(.hero-top) .hero-fig { grid-column: 2; grid-row: 1 / span 2; }
+  .hero:has(.hero-top) .hero-after { grid-column: 1; }
   .hero:has(.hero-top) .hero-top h1.display.xl { font-size: 64px; max-width: 18ch; }
   .hero:has(.hero-top) .finding { flex-direction: row; flex-wrap: wrap; margin: 18px 0 0; }
   .hero:has(.hero-top) .finding-txt { flex: 1 1 18em; min-width: 0; }

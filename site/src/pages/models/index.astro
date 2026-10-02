@@ -57,7 +57,7 @@ import { intro, liveComparisons } from "../../lib/content.js";
       {[...pendingModels, ...notRunModels].map((m) => (
         <li class="ov-row ov-simple" id={m.slug}>
           <div class="ov-name"><span class="eng">{m.label}</span><div class="flag">{m.notRun ? "Not run" : "Not yet scored"}</div></div>
-          <p class="ov-about">{aboutModel(m.id)} {m.notRun ? "" : `${m.id === "kev-9b" ? "It is preregistered in Amendment 3. " : ""}No answers are recorded yet, and it is never shown as zero.`}</p>
+          <p class="ov-about">{aboutModel(m.id)} {m.notRun ? "" : `No answers are recorded yet, and it is never shown as zero.`}</p>
         </li>
       ))}
     </ol>

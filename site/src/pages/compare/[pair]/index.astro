@@ -15,7 +15,6 @@ import { matrixOf, leanSentence } from "../../../lib/confusion.js";
 import ModelConsistency from "../../../components/ModelConsistency.astro";
 import ModelFacts from "../../../components/ModelFacts.astro";
 import BreakdownSpread from "../../../components/BreakdownSpread.astro";
-import PredLine from "../../../components/PredLine.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
 import DecisionsApi from "../../../components/DecisionsApi.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
@@ -23,7 +22,6 @@ import TimeAndMoney from "../../../components/TimeAndMoney.astro";
 import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
 import { liveComparisons } from "../../../lib/content.js";
-import { predictionLines } from "../../../lib/predictions.js";
 
 export function getStaticPaths() {
   return liveComparisons.map((c) => ({ params: { pair: c.slug }, props: { c } }));
@@ -47,7 +45,6 @@ function sides(slug, b) {
   return { aWins: slice.filter((r) => r.ci_low > 0).map(label), bWins: slice.filter((r) => r.ci_high < 0).map((r) => ({ r, label: label(r) })),
     even: slice.filter((r) => r.ci_low <= 0 && r.ci_high >= 0).map(label) };
 }
-const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.test(l.text));
 ---
 <Base title={c.seoTitle || c.title} description={c.intro} path={urls.comparison(c.slug)} current={{ page: "models", rival: c.slug }}
   crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: c.title.split(":")[0] }]}>
@@ -138,7 +135,6 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
         return <p>{big.label} against {small.label}: {listOf(parts)} overall. By depth on the open-world task the change is {pts(d(big, "0").accuracy - d(small, "0").accuracy)} points at depth 0 and {pts(d(big, "5").accuracy - d(small, "5").accuracy)} points at depth 5{d(big, "0").accuracy > d(small, "0").accuracy && d(big, "5").accuracy < d(small, "5").accuracy ? `: the bigger model is better on easy problems and worse on the deepest ones` : ""}. The harness compares each Kev with Jev on the same items, not the sizes with each other, so read the two sizes' separate intervals with care.</p>;
       })()}
       {waiting.filter((m) => m.family === "kev").length > 0 && <p class="note">{listOf(waiting.filter((m) => m.family === "kev").map((m) => m.label))}: no answers recorded yet. It joins this table when scored.</p>}
-      {sizePred.map((l) => <p class="pred-line">{l.text}. <a href={urls.predictions(l.section)}>See How we measured</a>.</p>)}
       </div>
     </section>
   )}
@@ -229,9 +225,8 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
   </section>
 
   <section class="wrap section sec-prose" aria-labelledby="about-h">
-    <h2 class="display sm" id="about-h">The models, and what we predicted</h2>
+    <h2 class="display sm" id="about-h">The models</h2>
     {ids.map((id) => <p><EngineName engine={modelById[id]} href={id === a.id ? urls.model(id) : undefined} /> {aboutModel(id)}</p>)}
-    <PredLine ids={bIds} />
     <p class="more-link">Other comparisons: {liveComparisons.filter((x) => x.slug !== c.slug).map((x, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(x.slug)}>{x.title.split(":")[0]}</a></Fragment>)} · <a href={urls.models()}>Every model</a></p>
   </section>
 

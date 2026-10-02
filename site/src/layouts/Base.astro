@@ -35,7 +35,7 @@ gtag('config', '${GA_ID}');`;
 const optOut = String.raw`(function(){try{var k='anthus-no-analytics',q=location.search.match(/[?&]notrack=(\w+)/);if(q){if(q[1]==='1')localStorage.setItem(k,'1');else localStorage.removeItem(k)}if(localStorage.getItem(k)==='1')window['ga-disable-G-31SC26SDGX']=true}catch(e){}})();`;
 const on = (k) => (current.page === k ? "on" : null);
 const cur = (k) => (current.page === k ? "page" : undefined);
-const topics = [[urls.measured(), "How we measured"], [urls.depthMeans(), "What proof depth means"], [urls.predictions(), "Predictions"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"], [urls.cost(), "Cost per decision"], [urls.preview(), "OpenAI Decisions API preview"],
+const topics = [[urls.measured(), "How we measured"], [urls.depthMeans(), "What proof depth means"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"], [urls.cost(), "Cost per decision"], [urls.preview(), "OpenAI Decisions API preview"],
   [urls.page("evaluating-decision-models"), "Evaluating decision models"], [urls.page("fine-tuning-decision-models"), "Fine-tuning"],
   [urls.page("aligning-decision-models"), "Aligning"], [urls.page("about"), "About"]];
 ---

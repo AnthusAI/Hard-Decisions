@@ -42,7 +42,20 @@ gliner-2.5-decide:
   kind: open decision model
   maker: Fastino Labs
   parameters: 340M
-  architecture: GLiNER2 schema classifier on a DeBERTa-v3-large encoder; answers in one pass ("does not reason", model card)
+  architecture: GLiNER2 schema classifier on a DeBERTa-v3-large encoder; answers in one pass ("does not reason", model card); asked with the full question and option descriptions in the message, task and labels as the answer form
+  context_tokens: 8192
+  weights: 1.95 GB (model.safetensors, fastino/GLiNER2.5-Decide@5a7adf7)
+  precision: float32, as loaded by gliner2 (PyTorch)
+  where_run: this machine, gliner2 2.0.0 (local extra), PyTorch on MPS
+  hardware: '"CPU or GPU"; 38.3 ms p50 on an NVIDIA V100, 167.3 ms on a 48-vCPU Xeon, short inputs (Fastino)'
+  price: open weights (Apache 2.0); Fastino also hosts it at $0.03 or $0.15 per million input tokens (its pricing page and model catalog disagree)
+  source: https://huggingface.co/fastino/GLiNER2.5-Decide
+
+gliner-2.5-decide-labels-only:
+  kind: open decision model
+  maker: Fastino Labs
+  parameters: 340M
+  architecture: GLiNER2 schema classifier on a DeBERTa-v3-large encoder; answers in one pass ("does not reason", model card); asked in the bare hosted-API form (the text with task and labels only), without the question's instructions or option descriptions
   context_tokens: 8192
   weights: 1.95 GB (model.safetensors, fastino/GLiNER2.5-Decide@5a7adf7)
   precision: float32, as loaded by gliner2 (PyTorch)

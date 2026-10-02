@@ -13,7 +13,6 @@ import { models, pendingModels, notRunModels, modelById, urls, axes, groups, OWA
   axisRow, L, listOf } from "../lib/site.js";
 import { intro, liveComparisons } from "../lib/content.js";
 import { axisLead, depthDrop } from "../lib/cards.js";
-import { tally, STATUS_WORDS } from "../lib/predictions.js";
 
 const LUNA = "openai-gpt-6-luna-effort-none";
 const top = leader(OWA), topC = leader(CWA);
@@ -30,7 +29,6 @@ const gapC5 = topC ? pairRow(CWA, topC.m.id, LUNA, "depth", "5") : null;
 // The runner-up on the open-world task, and its paired gap to the leader on each task.
 const second = top ? ranked(OWA).filter((x) => x.complete && x.m.id !== top.m.id)[0] || null : null;
 const near = second ? [OWA, CWA].map((s) => pairRow(s, top.m.id, second.m.id, "overall", "all")) : null;
-const t = tally();
 const rt = retest("jev", OWA), rtc = retest("jev", CWA);
 const retested = models.map((m) => ({ m, r: retest(m.id, OWA) })).filter((x) => x.r);
 const lat = latency("jev", CWA), latO = latency("jev", OWA);
@@ -42,14 +40,8 @@ const description = intro.home.intro;
       <p class="kicker">Benchmark for decision models and LLM classifiers · ProofWriter</p>
       <h1 class="display xl">{intro.home.title}</h1>
       <p class="deck">{intro.home.intro}</p>
-      <p class="deck">{models.length} models so far: hosted and open decision models, and a general LLM used as a classifier. Every result below links to the problems and the numbers behind it.</p>
     </div>
-    {top && (
-      <p class="finding">
-        <span class="finding-num">{pct(top.r.accuracy)}%</span>
-        <span class="finding-txt"><EngineName engine={top.m} href={urls.model(top.m.id)} /> answered {pct(top.r.accuracy)}% of open-world problems correctly{topC && topC.m.id === top.m.id ? <Fragment> and {pct(topC.r.accuracy)}% of closed-world ones</Fragment> : ""}, the highest of the models tested.{gap0 && gap5 && <Fragment> Its lead over <a href={urls.model(LUNA)}>GPT-6 Luna</a> (reasoning off) is <strong>{pts(gap0.diff)} points at depth 0 and {pts(gap5.diff)} points at depth 5</strong> on the same problems{gapC0 && gapC5 && <Fragment> ({pts(gapC0.diff)} and {pts(gapC5.diff)} on the closed-world task)</Fragment>}.</Fragment>}{near && near.every(Boolean) && <Fragment> The closest is <EngineName engine={second.m} href={urls.model(second.m.id)} />: {near[0].ci_low <= 0 ? <Fragment>level with it on the open-world task ({pts(near[0].diff)} points, within noise)</Fragment> : <Fragment>{pts(near[0].diff)} points behind on the open-world task</Fragment>}{near[1].ci_low > 0 ? <Fragment>, but <strong>{pts(near[1].diff).replace("+", "")} points behind</strong> on the closed-world one</Fragment> : <Fragment> and level on the closed-world one</Fragment>}.</Fragment>}</span>
-      </p>
-    )}</div>
+</div>
     <figure class="hero-fig">
       <figcaption>
         <span class="fig-t">Accuracy by proof depth, both tasks</span>
@@ -66,6 +58,15 @@ const description = intro.home.intro;
         ))}
       </div>
     </figure>
+    <div class="hero-after">
+    {top && (
+      <p class="finding">
+        <span class="finding-num">{pct(top.r.accuracy)}%</span>
+        <span class="finding-txt"><EngineName engine={top.m} href={urls.model(top.m.id)} /> answered {pct(top.r.accuracy)}% of open-world problems correctly{topC && topC.m.id === top.m.id ? <Fragment> and {pct(topC.r.accuracy)}% of closed-world ones</Fragment> : ""}, the highest of the models tested.{gap0 && gap5 && <Fragment> Its lead over <a href={urls.model(LUNA)}>GPT-6 Luna</a> (reasoning off) is <strong>{pts(gap0.diff)} points at depth 0 and {pts(gap5.diff)} points at depth 5</strong> on the same problems{gapC0 && gapC5 && <Fragment> ({pts(gapC0.diff)} and {pts(gapC5.diff)} on the closed-world task)</Fragment>}.</Fragment>}{near && near.every(Boolean) && <Fragment> The closest is <EngineName engine={second.m} href={urls.model(second.m.id)} />: {near[0].ci_low <= 0 ? <Fragment>level with it on the open-world task ({pts(near[0].diff)} points, within noise)</Fragment> : <Fragment>{pts(near[0].diff)} points behind on the open-world task</Fragment>}{near[1].ci_low > 0 ? <Fragment>, but <strong>{pts(near[1].diff).replace("+", "")} points behind</strong> on the closed-world one</Fragment> : <Fragment> and level on the closed-world one</Fragment>}.</Fragment>}</span>
+      </p>
+    )}
+      <p class="deck">{models.length} models so far: hosted and open decision models, and a general LLM used as a classifier. Every result below links to the problems and the numbers behind it.</p>
+    </div>
   </section>
 
   {shallow && deep && (
@@ -174,8 +175,8 @@ const description = intro.home.intro;
     <div class="dim-grid">
       <a class="dim-card" href={urls.measured()}>
         <div class="dim-card-h">{intro.measured.title}</div>
-        <p>The sample, the protocol and the scoring, and the predictions written before any model answered: {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}.</p>
-        <div class="dim-card-f">Methodology · preregistration</div>
+        <p>The sample, the protocol and the scoring: what every model was asked and how its answers were counted.</p>
+        <div class="dim-card-f">Methodology</div>
       </a>
       <a class="dim-card" href={urls.page("repeatability")}>
         <div class="dim-card-h">{intro.repeatability.title}</div>

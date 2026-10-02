@@ -8,7 +8,6 @@ import ModelErrors from "../../../components/ModelErrors.astro";
 import ModelConsistency from "../../../components/ModelConsistency.astro";
 import ModelFacts from "../../../components/ModelFacts.astro";
 import BreakdownSpread from "../../../components/BreakdownSpread.astro";
-import PredLine from "../../../components/PredLine.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
 import EngineName from "../../../components/EngineName.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
@@ -135,11 +134,6 @@ const answerMix = (slug) => {
     <ModelFacts id={id} />
     <p class="note">{m.hosted ? "Hosted: timed over the network against the vendor's servers, so its latency is not like for like with a model on a laptop." : "Run on one Apple M1 Max laptop with 32 GB of unified memory; memory is the physical footprint of the process holding the model."} <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
     </div>
-  </section>
-
-  <section class="wrap section sec-prose tight" aria-labelledby="pred-h">
-    <h2 class="display sm" id="pred-h">What we predicted about {m.label}</h2>
-    <PredLine ids={[id]} />
   </section>
 
   <AnthusNote />

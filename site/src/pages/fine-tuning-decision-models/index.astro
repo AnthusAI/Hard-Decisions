@@ -83,7 +83,7 @@ const leaning = cwaDone.map((m) => ({ m, l: lean(m.id, CWA) })).filter((x) => x.
 
   <section class="wrap section sec-prose" aria-labelledby="neg-h">
     <h2 class="display" id="neg-h">{negUp ? "A surprise: negation did not hurt" : "Negation in the rules"}</h2>
-    <p>We preregistered that negation in the rules would lower accuracy. For Jev {negUp ? "it did the opposite" : "it did"}: {neg ? `${pct(neg.with.accuracy)}% with negation against ${pct(neg.without.accuracy)}% without, on the open-world task` : "see the negation page"}. Theories with negation differ in other ways too, so this is descriptive, but it is a reminder to measure a suspected weakness before spending training data on it. <a href={urls.axis("theory_negation")}>Negation</a>.</p>
+    <p>You might expect negation in the rules to lower accuracy. For Jev {negUp ? "it did the opposite" : "it did"}: {neg ? `${pct(neg.with.accuracy)}% with negation against ${pct(neg.without.accuracy)}% without, on the open-world task` : "see the negation page"}. Theories with negation differ in other ways too, so this is descriptive, but it is a reminder to measure a suspected weakness before spending training data on it. <a href={urls.axis("theory_negation")}>Negation</a>.</p>
   </section>
 
   <section class="wrap section sec-split" aria-labelledby="size-h">
@@ -96,7 +96,7 @@ const leaning = cwaDone.map((m) => ({ m, l: lean(m.id, CWA) })).filter((x) => x.
         <li><EngineName engine={m} href={urls.model(m.id)} /><span>open world{statusWords(m.id, OWA) ? ` (${statusWords(m.id, OWA)})` : ""}; depth 0 {pct(axisRow(m.id, OWA, "depth", "0").accuracy)}%, depth 5 {pct(axisRow(m.id, OWA, "depth", "5").accuracy)}%</span><span class="av">{pct(overall(m.id, OWA).accuracy)}%</span></li>
       ))}
     </ul>
-    {a3 && <p>We preregistered that a bigger Kev would be more accurate overall. Verdict so far: <strong>{STATUS_WORDS[a3.predictions[0].status].toLowerCase()}</strong>. {a3.predictions[0].checks.slice(1).join(" ")} A larger base model changes where a model is strong, not only how strong it is. <a href={urls.comparison("jev-vs-kev")}>Kev model sizes</a>.</p>}
+    <p>A larger base model changes where a model is strong, not only how strong it is: compare each size's depth 0 and depth 5 scores. <a href={urls.comparison("jev-vs-kev")}>Kev model sizes</a>.</p>
     </div>
   </section>
 

@@ -41,9 +41,11 @@ const META = {
   "kev-0.8b": { label: "Kev-0.8B", slug: "kev-0-8b", color: "#8a5a00", color_dark: "#e6b94d", marker: "diamond-open", family: "kev", size: 0.8 },
   "kev-27b": { label: "Kev-27B", slug: "kev-27b", color: "#6b7280", color_dark: "#9ca3af", marker: "diamond", family: "kev", size: 27 },
   "gliner-2.5-decide": { label: "GLiNER2.5-Decide", slug: "gliner-2-5-decide", color: "#0f766e", color_dark: "#2dd4bf", marker: "circle-open", family: "gliner" },
+  "gliner-2.5-decide-labels-only": { label: "GLiNER2.5-Decide, labels only", slug: "gliner-2-5-decide-labels-only", color: "#5f9e96", color_dark: "#8fd6cc", marker: "circle-open", family: "gliner",
+    setting: "labels only" },
   laya: { label: "Laya", slug: "laya", color: "#b5177a", color_dark: "#e05ba6", marker: "square", family: "laya" },
 };
-const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "laya", "kev-27b"];
+const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya", "kev-27b"];
 
 const ids = [...new Set([...ORDER.filter((id) => data.facts[id] || Object.values(data.results).some((r) => r.status[id])),
   ...Object.keys(data.facts), ...Object.values(data.results).flatMap((r) => Object.keys(r.status))])];
@@ -86,7 +88,7 @@ export const L = (id) => (modelById[id] ? modelById[id].label : id);
 const BASE = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const join = (...segs) => BASE + segs.filter(Boolean).map((s) => `${s}/`).join("");
 // Each non-Jev model's page is its comparison with Jev.
-export const RIVAL_PAGE = { "gliner-2.5-decide": "jev-vs-gliner-2-5-decide", glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
+export const RIVAL_PAGE = { "gliner-2.5-decide": "jev-vs-gliner-2-5-decide", "gliner-2.5-decide-labels-only": "jev-vs-gliner-2-5-decide", glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
 export const rivalPageOf = (id) => RIVAL_PAGE[id] || (modelById[id] && modelById[id].family === "kev" ? "jev-vs-kev" : null);
 export const urls = {
   home: () => BASE,
@@ -188,7 +190,7 @@ const AXIS_META = {
     what: "Whether the theory states attributes of entities (\"Bob is kind\") or relations between them (\"The bear eats the squirrel\")." },
   theory_negation: { slug: "negation", label: "Negation in the theory", h1: "Does negation in the rules lower accuracy?",
     query: "negation reasoning decision models", unit: "theory",
-    what: "Whether the theory's facts and rules contain \"not\". The preregistration predicted that negation would lower accuracy." },
+    what: "Whether the theory's facts and rules contain \"not\"." },
   statement_negated: { slug: "negated-statements", label: "Negated statement", h1: "Accuracy on negated statements",
     query: "negated statements reasoning accuracy", unit: "statement",
     what: "Whether the statement to judge itself contains \"not\" (\"The lion is not blue\")." },
@@ -197,7 +199,7 @@ const AXIS_META = {
     what: "ProofWriter records how each statement was generated (its strategy field): from a proof (proof), from a rule's conclusion (rconc) or at random (random), each also in an inverted form (inv-). In practice the strategy fixes the gold answer, so this page mostly repeats the true, false and unknown breakdown." },
   paraphrased: { slug: "paraphrased-rules", label: "Paraphrased rules", h1: "Paraphrased rules vs templated rules",
     query: "ProofWriter paraphrased NatLang", unit: "wording",
-    what: "Whether the theory comes from ProofWriter's NatLang set, where people reworded the templated sentences, or from the templated sets. The preregistration predicted paraphrased rules would be no easier." },
+    what: "Whether the theory comes from ProofWriter's NatLang set, where people reworded the templated sentences, or from the templated sets." },
   theory_max_depth: { slug: "theory-depth", label: "Theory's deepest proof", h1: "Accuracy by the deepest proof in the theory",
     query: "ProofWriter theory depth", unit: "max depth",
     what: "The depth of the deepest conclusion anywhere in the theory, whatever the question asks. It tells you how much inference the theory supports, not how much this question needs." },
@@ -225,7 +227,7 @@ const GROUP_DEFS = [
   { slug: "true-false-unknown", axes: ["reference_label"], label: "True, false, unknown" },
   { slug: "negation", axes: ["theory_negation", "statement_negated"], label: "Negation",
     h1: "Negation: in the rules and in the statement", query: "negation reasoning decision models",
-    what: "Two kinds of \"not\": in the theory's facts and rules, and in the statement to judge. The preregistration predicted that negation in the rules would lower accuracy." },
+    what: "Two kinds of \"not\": in the theory's facts and rules, and in the statement to judge." },
   { slug: "paraphrased-rules", axes: ["paraphrased"], label: "Paraphrased rules" },
   { slug: "problem-size", axes: null, label: "Problem size and more",
     h1: "Problem size and other parameters: length, rules, facts and proof size", query: "ProofWriter results by problem size",
@@ -290,7 +292,8 @@ export function aboutModel(id) {
   if (id === "jev") return `Jev is a hosted decision model made by ${x.maker || "TypeSafe"}. We call it through its maker's software kit, typesafe-sdk, on paid API access; the version is recorded on every answer (${(study("jev", OWA) && study("jev", OWA).overall.model || []).join(", ") || "jev-1.13.0"}). Its size and architecture are not published.`;
   if (id === "glide") return `GLiDE is a hosted decision model made by Fastino Labs, which describes it as a "thinking" decision model: it forms a probability over the options and spends more computation when the leading option is uncertain. Fastino serves it on the same System One request format as Jev, so it got exactly Jev's request: the text, the question and the options, one request per item. Its size and architecture are not published.`;
   if (id === "openai-gpt-6-luna-effort-none") return `GPT-6 Luna is a hosted large language model made by OpenAI. We used it as a classifier: one request per item through the Chat Completions API, with reasoning effort set to none (its lowest setting) and a strict JSON schema that allows only the task's options. Its size and architecture are not published.`;
-  if (id === "gliner-2.5-decide") return `GLiNER2.5-Decide is an open decision model made by Fastino Labs: a ${x.parameters || "340M"}-parameter schema classifier on a DeBERTa-v3-large encoder, released under Apache 2.0. It answers in one pass; its model card says it "does not reason." We ran it on our own laptop with Fastino's gliner2 package, PyTorch on Apple's GPU, giving it the question as its prompt and each option with its description.`;
+  if (id === "gliner-2.5-decide") return `GLiNER2.5-Decide is an open decision model made by Fastino Labs: a ${x.parameters || "340M"}-parameter schema classifier on a DeBERTa-v3-large encoder, released under Apache 2.0. It answers in one pass; its model card says it "does not reason." We ran it on our own laptop with Fastino's gliner2 package, PyTorch on Apple's GPU, with everything every other model gets: the problem, then the question's instructions and each option with its description, in the message, and the options as its answer labels. On the same inputs, our copy gave Fastino's hosted model's answers.`;
+  if (id === "gliner-2.5-decide-labels-only") return `The same GLiNER2.5-Decide checkpoint asked in the bare form Fastino's hosted API documents: the problem text, which ends with the statement, and the answer options as labels, without the question's instructions or the option descriptions. It is shown beside the full form to show what those add.`;
   if (id === "laya") return `Laya is an open decision model made by ${x.maker || "Convai Innovations"}: a ${x.parameters || "421M"}-parameter ${String(x.architecture || "ModernBERT-large encoder with decision heads").replace(/, trained with RLCD$/, "")}. We ran it on our own laptop with the laya package, PyTorch on Apple's GPU.`;
   if (/^kev-/.test(id)) {
     const size = (META[id] || {}).size;

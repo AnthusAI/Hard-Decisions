@@ -131,9 +131,8 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
 
   <section class="wrap section sec-prose" aria-labelledby="spot-h">
     <h2 class="display" id="spot-h">The spot check that started it</h2>
-    <p class="lede">Before writing the probe down, we sent a dozen deep problems to GPT-6 Luna with log-probabilities turned on. From the preregistration, word for word:</p>
-    {spot && <blockquote class="pred-q"><p>{spot}</p></blockquote>}
-    <p>Twelve items prove nothing, so we preregistered a full probe (Amendment 6): every one of the {int(totalResponses)} benchmark items, sent with exactly the benchmark's GPT-6 Luna request plus <code>logprobs</code> and <code>top_logprobs: 5</code>, with four predictions written down before it ran. It is outside the scored benchmark and changes no benchmark number.</p>
+    <p class="lede">We first sent a dozen deep open-world problems to GPT-6 Luna with log-probabilities turned on. With reasoning off, Luna returned the chosen answer's log-probability and at most one or two alternatives, and gave 5 of the 12 wrong answers at 97.8% or more.</p>
+    <p>Twelve items prove nothing, so we ran a full probe: every one of the {int(totalResponses)} benchmark items, sent with exactly the benchmark's GPT-6 Luna request plus <code>logprobs</code> and <code>top_logprobs: 5</code>. It is outside the scored benchmark and changes no benchmark number.</p>
   </section>
 
   {P && (
@@ -189,7 +188,6 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
       </div>
       <p>At proof depth 5, Luna's AUROC is {fmt(pt(OWA).by_depth["5"].auroc, 3)} on the open-world task and {fmt(pt(CWA).by_depth["5"].auroc, 3)} on the closed-world task: its probability says next to nothing about whether a deep answer is right.{pt(OWA).other_engines_by_depth.jev && ` Jev's is ${fmt(pt(OWA).other_engines_by_depth.jev["5"].auroc, 3)} and ${fmt(pt(CWA).other_engines_by_depth.jev["5"].auroc, 3)}.`} Jev's figures by depth are computed by this site from its saved probabilities, the same way as the analysis computes Luna's.</p>
 
-      {probeSec && <Fragment><h3>What we predicted</h3><Predictions sections={[probeSec]} headings={false} /></Fragment>}
       </div>
     </section>
   )}
@@ -218,7 +216,7 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
       <li>One dataset, and a synthetic one: ProofWriter's templated reasoning problems, not your decisions.</li>
       <li>The Decisions API itself is untested. OpenAI uses a specialized version of Luna; its accuracy and probabilities may differ.</li>
       <li>The probe used OpenAI's default sampling, as the benchmark did, so a few answers were not Luna's most probable option.</li>
-      <li>The probe was preregistered (Amendment 6, with the four predictions above) and is outside the scored benchmark: it changes no number elsewhere on this site. <a href={urls.predictions()}>Every prediction</a> · <a href={urls.page("repeatability")}>Calibration for every model</a>.</li>
+      <li>The probe is outside the scored benchmark: it changes no number elsewhere on this site. <a href={urls.page("repeatability")}>Calibration for every model</a>.</li>
     </ul>
   </section>
 

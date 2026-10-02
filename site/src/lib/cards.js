@@ -122,7 +122,7 @@ function repeatCard() {
   if (!r) return { template: "topic", headline: intro.repeatability.title, description: intro.repeatability.intro, rows: [{ text: "Reruns in progress" }] };
   const others = models.filter((m) => m.id !== "jev").map((m) => ({ id: m.id, r: retest(m.id, OWA) })).filter((x) => x.r);
   return { template: "topic", headline: intro.repeatability.title,
-    description: `Asked every question twice, Jev gave the same answer on ${pct(r.agreement)}% of open-world items${r2 ? ` and ${pct(r2.agreement)}% of closed-world ones` : ""} (Gwet's AC1 ${fmt(r.ac1, 3)}).${others.length ? ` ${listOf(others.map((x) => `${L(x.id)} ${pct(x.r.agreement)}%`))}.` : ""} Calibration of each model's probabilities, from its saved answers.`,
+    description: fit(`Asked every question twice, Jev gave the same answer on ${pct(r.agreement)}% of open-world items${r2 ? ` and ${pct(r2.agreement)}% of closed-world ones` : ""} (Gwet's AC1 ${fmt(r.ac1, 3)}). Calibration of each model's probabilities, from its saved answers.${others.length ? ` ${listOf(others.map((x) => `${L(x.id)} ${pct(x.r.agreement)}%`))}.` : ""}`),
     number: `${pct(r.agreement)}%`, numberNote: "of Jev's open-world answers were the same when asked twice",
     rows: [{ engine: "jev", text: `Gwet's AC1 ${fmt(r.ac1, 3)}; ${r.changed} of ${int(r.n)} answers changed` }] };
 }

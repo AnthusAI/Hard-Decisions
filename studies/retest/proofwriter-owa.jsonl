@@ -1,10 +1,17 @@
-{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.3516666666666667, "accuracy_run2": 0.3516666666666667, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "gliner-2.5-decide", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
+{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.3277777777777778, "accuracy_run2": 0.3277777777777778, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "gliner-2.5-decide", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 300, "task": "proofwriter-owa", "value": "0"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 302, "task": "proofwriter-owa", "value": "1"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "2"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "3"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "4"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"ac1": 1.0, "ac1_high": 1.0, "ac1_low": 1.0, "accuracy_run1": 0.455, "accuracy_run2": 0.455, "agreement": 1.0, "axis": "overall", "changed": 0, "engine": "gliner-2.5-decide-labels-only", "kappa": 1.0, "n": 1800, "prob_shift_max": 0.0, "prob_shift_mean": 0.0, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "gliner-2.5-decide-labels-only", "n": 289, "task": "proofwriter-owa", "value": "5"}
 {"ac1": 0.9583992926030823, "ac1_high": 0.969222241182328, "ac1_low": 0.9475447569504353, "accuracy_run1": 0.8383333333333334, "accuracy_run2": 0.8416666666666667, "agreement": 0.9722222222222222, "axis": "overall", "changed": 50, "engine": "jev", "kappa": 0.9582011444526649, "n": 1800, "prob_shift_max": 0.36, "prob_shift_mean": 0.02296666666666667, "task": "proofwriter-owa", "value": "all"}
 {"axis": "depth", "change_rate": 0.0, "changed": 0, "engine": "jev", "n": 300, "task": "proofwriter-owa", "value": "0"}
 {"axis": "depth", "change_rate": 0.009933774834437087, "changed": 3, "engine": "jev", "n": 302, "task": "proofwriter-owa", "value": "1"}

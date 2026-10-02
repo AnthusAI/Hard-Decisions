@@ -82,7 +82,7 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
 
   <section class="wrap section sec-prose" aria-labelledby="pre-h">
     <h2 class="display" id="pre-h">7. Write down what you expect first</h2>
-    <p>We preregistered our predictions before any model answered. So far {t.held || 0} held and {t.failed || 0} failed{t.mixed || t["partly held"] ? `, with ${(t.mixed || 0) + (t["partly held"] || 0)} mixed or partly held` : ""}. {failed.length > 0 && `The failures were the informative part: ${listOf(failed)}. `}An evaluation that only confirms what you expected is easy to fool yourself with. <a href={urls.predictions()}>Every prediction</a>.</p>
+    <p>Before you run a test, write down which model you expect to win and where you expect each one to struggle. An evaluation that only confirms what you expected is easy to fool yourself with; the results that surprise you are the informative ones.</p>
   </section>
 
   <section class="wrap section sec-prose" aria-labelledby="jev-h">
@@ -97,5 +97,5 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
     <p>OpenAI's Decisions API, announced at DevDay on 29 September 2026 and in limited preview, is built on a version of GPT-6 Luna (<a href={DECISIONS_API.sources.decoder.url}>{DECISIONS_API.sources.decoder.label}</a>). We have not tested the API itself, but we ran GPT-6 Luna in the same shape of task: reasoning off, one request per problem, a fixed list of answers.{lunaO && lunaD5 && ` It answered ${pct(lunaO.accuracy)}% of open-world problems correctly overall and ${pct(lunaD5.accuracy)}% at proof depth 5.`} That is a preview, not a verdict: OpenAI uses a specialized version of Luna, and its accuracy may differ. When you evaluate the API on your own decisions, the same checks apply: accuracy by difficulty, recall on every answer, paired comparisons on the same items, and a second run to check consistency. <a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna, and what it means for the OpenAI Decisions API</a>. Before relying on any confidence it gives, check whether that confidence separates right answers from wrong ones on hard problems: <a href={urls.preview()}>our preview of GPT-6 Luna's log-probabilities</a> shows why.</p>
   </section>
 
-  <AnthusNote lead="This benchmark measures decision models along these lines: the decision's own difficulty axis, every answer class, paired comparisons, repeatability and predictions written down first. The same measurements apply to your own decisions." />
+  <AnthusNote lead="This benchmark measures decision models along these lines: the decision's own difficulty axis, every answer class, paired comparisons and repeatability. The same measurements apply to your own decisions." />
 </Base>
