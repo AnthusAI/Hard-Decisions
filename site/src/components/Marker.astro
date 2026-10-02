@@ -7,6 +7,7 @@ const fill = `var(--eng-${engine.slug})`;
   engine.marker === "square" ? <rect x="2.5" y="2.5" width="9" height="9" rx="1.5" fill={fill} />
   : engine.marker === "diamond" ? <path d="M7,0.75L13.25,7L7,13.25L0.75,7Z" fill={fill} />
   : engine.marker === "diamond-open" ? <path d="M7,2L12,7L7,12L2,7Z" fill="none" stroke={fill} stroke-width="2.2" />
+  : engine.marker === "circle-open" ? <circle cx="7" cy="7" r="4.6" fill="none" stroke={fill} stroke-width="2.2" />
   : engine.marker === "triangle-down" ? <path d="M7,12.8L13.2,1.6H0.8Z" fill={fill} />
   : engine.marker === "triangle" ? <path d="M7,1.2L13.2,12.4H0.8Z" fill={fill} />
   : <circle cx="7" cy="7" r="5" fill={fill} />

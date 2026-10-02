@@ -344,3 +344,33 @@ SECTIONS.push({
     },
   },
 });
+
+// Amendment 8: GLiNER2.5-Decide, local.
+const GLINER = "gliner-2.5-decide";
+SECTIONS.push({
+  match: /^Amendment 8/, title: "GLiNER2.5-Decide", model: GLINER,
+  checks: {
+    1: () => fallsVerdict(GLINER),
+    2: () => {
+      if (!ready([GLINER, KEV9])) return pending(notReady([GLINER, KEV9]));
+      const per = TASKS.map((s) => ({ s, g: overall(GLINER, s), k: overall(KEV9, s) }));
+      const ok = per.map((p) => p.g.accuracy < p.k.accuracy);
+      return { status: ok.every(Boolean) ? "held" : ok.some(Boolean) ? "mixed" : "failed",
+        checks: ["Rule: on each task, GLiNER2.5-Decide's overall accuracy is below Kev-9B's (point comparison).",
+          ...per.map((p) => `${T(p.s)}: GLiNER2.5-Decide ${pct(p.g.accuracy)}% [${pct(p.g.lo)}–${pct(p.g.hi)}], Kev-9B ${pct(p.k.accuracy)}% [${pct(p.k.lo)}–${pct(p.k.hi)}].`)] };
+    },
+    3: () => {
+      const per = TASKS.map((s) => ({ s, r: retest(GLINER, s) }));
+      if (per.some((p) => !p.r)) return pending("The rerun has not been scored yet.");
+      return { status: per.every((p) => p.r.agreement >= 0.995) ? "held" : per.every((p) => p.r.agreement < 0.995) ? "failed" : "mixed",
+        checks: ["Rule: the same answer on at least 99.5% of items when asked twice, on each task.", ...per.map((p) => `${T(p.s)}: ${pct(p.r.agreement)}% (${p.r.changed} changed).`)] };
+    },
+    4: () => {
+      if (!probeReady()) return pending("The probe's analysis is not available yet.");
+      const per = TASKS.map((s) => ({ s, g: (probeTask(s).other_engines_same_items[GLINER] || {}).auroc, j: (probeTask(s).other_engines_same_items.jev || {}).auroc }));
+      if (per.some((p) => p.g == null || p.j == null)) return pending("GLiNER2.5-Decide's probabilities on the probe's items are not available yet.");
+      return { status: per.every((p) => p.g < p.j) ? "held" : per.every((p) => p.g >= p.j) ? "failed" : "mixed",
+        checks: ["Rule: GLiNER2.5-Decide's AUROC is below Jev's on each task, on the same items.", ...per.map((p) => `${T(p.s)}: GLiNER2.5-Decide ${fmt(p.g, 3)}, Jev ${fmt(p.j, 3)}.`)] };
+    },
+  },
+});

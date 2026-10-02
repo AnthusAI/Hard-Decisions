@@ -51,7 +51,7 @@ export function coinFlipClaim() {
   if (rows(lead.id).some((r) => !r || r.lo <= 0.5)) return null;
   if (others.some((m) => rows(m.id).some((r) => !r || r.lo > 0.5))) return null;
   const leadRows = rows(lead.id);
-  const families = [...new Set(others.filter((m) => /open decision model/.test(String((m.facts && m.facts.kind) || ""))).map((m) => m.label.split("-")[0]))];
+  const families = [...new Set(others.filter((m) => /open decision model/.test(String((m.facts && m.facts.kind) || ""))).map((m) => (m.family === "kev" ? "Kev" : m.label)))];
   const llms = others.filter((m) => /LLM/.test(String((m.facts && m.facts.kind) || ""))).map((m) => `${m.label} used as a one-shot classifier`);
   const rest = others.filter((m) => !/open decision model|LLM/.test(String((m.facts && m.facts.kind) || ""))).map((m) => m.label);
   const groups = [families.length ? `the open decision models ${listOf(families)}` : null, ...llms, ...rest].filter(Boolean);

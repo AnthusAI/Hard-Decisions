@@ -73,6 +73,10 @@ export const comparisons = [
   { slug: "jev-vs-kev", a: "jev", b: kevIds, query: "Kev vs Jev",
     title: "Kev vs Jev: is an open-source decision model a Jev alternative?",
     intro: "Kev is an open decision model you can run on your own hardware; Jev is hosted. We ran every Kev size that fits a 32 GB laptop against Jev on the same problems, and asked whether a bigger Kev helps." },
+  { slug: "jev-vs-gliner-2-5-decide", a: "jev", b: ["gliner-2.5-decide"], query: "GLiNER2.5-Decide vs Jev",
+    title: "Jev vs GLiNER2.5-Decide: a hosted decision model against Fastino's open one",
+    intro: "GLiNER2.5-Decide is Fastino's open 340M-parameter decision model, released under Apache 2.0, that answers in one pass. We ran it on a laptop against Jev on the same 3,600 problems.",
+    note: "GLiNER2.5-Decide gave nearly the same answer to every problem: false to all 1,800 closed-world problems and unknown to 93% of the open-world ones, so its accuracy is what always giving the most common answer would score, at every depth. Its model card says it is a specialist for operational decisions such as intent, routing and moderation, and that it does not reason; this benchmark asks for chained reasoning." },
   { slug: "jev-vs-laya", a: "jev", b: ["laya"], query: "Jev vs Laya",
     title: "Jev vs Laya: hosted and open decision models on deep reasoning",
     intro: "Laya is a small open decision model built on an encoder. Both it and Jev answered the same problems." },
@@ -104,7 +108,7 @@ export const liveComparisons = comparisons.filter((c) => modelById[c.a] && model
 export const comparisonsFor = (id) => liveComparisons.filter((c) => c.a === id || c.b.includes(id));
 
 export const modelQuery = (m) => ({
-  jev: "Jev accuracy", glide: "GLiDE decision model accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", laya: "Laya decision model accuracy",
+  jev: "Jev accuracy", "gliner-2.5-decide": "GLiNER2.5-Decide accuracy", glide: "GLiDE decision model accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", laya: "Laya decision model accuracy",
 }[m.id] || `${m.label} accuracy`);
 export const modelTitle = (m) => ({
   jev: "Jev accuracy on multi-hop reasoning",

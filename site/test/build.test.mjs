@@ -14,7 +14,7 @@ const localPath = (url) => decodeURIComponent(new URL(url, SITE).pathname);
 const scored = new Set(Object.values(DATA.results).flatMap((r) => Object.keys(r.studies.engines)));
 
 // The page set after the merge: one page per rival (its comparison with Jev), five breakdown pages.
-export const EXPECTED = ["/", "/models/", "/models/jev/", "/compare/jev-vs-glide/", "/compare/jev-vs-gpt-6-luna/", "/compare/jev-vs-kev/", "/compare/jev-vs-laya/",
+export const EXPECTED = ["/", "/models/", "/models/jev/", "/compare/jev-vs-glide/", "/compare/jev-vs-gliner-2-5-decide/", "/compare/jev-vs-gpt-6-luna/", "/compare/jev-vs-kev/", "/compare/jev-vs-laya/",
   "/breakdowns/", "/breakdowns/proof-depth/", "/breakdowns/true-false-unknown/", "/breakdowns/negation/", "/breakdowns/paraphrased-rules/",
   "/breakdowns/problem-size/", "/how-we-measured/", "/repeatability/", "/speed-size-and-memory/", "/cost-per-decision/", "/evaluating-decision-models/",
   "/fine-tuning-decision-models/", "/aligning-decision-models/", "/about/", "/openai-decisions-api-preview/", "/what-proof-depth-means/"];

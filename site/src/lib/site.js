@@ -40,9 +40,10 @@ const META = {
   "kev-4b": { label: "Kev-4B", slug: "kev-4b", color: "#c2410c", color_dark: "#ff8a4c", marker: "diamond", family: "kev", size: 4 },
   "kev-0.8b": { label: "Kev-0.8B", slug: "kev-0-8b", color: "#8a5a00", color_dark: "#e6b94d", marker: "diamond-open", family: "kev", size: 0.8 },
   "kev-27b": { label: "Kev-27B", slug: "kev-27b", color: "#6b7280", color_dark: "#9ca3af", marker: "diamond", family: "kev", size: 27 },
+  "gliner-2.5-decide": { label: "GLiNER2.5-Decide", slug: "gliner-2-5-decide", color: "#0f766e", color_dark: "#2dd4bf", marker: "circle-open", family: "gliner" },
   laya: { label: "Laya", slug: "laya", color: "#b5177a", color_dark: "#e05ba6", marker: "square", family: "laya" },
 };
-const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "laya", "kev-27b"];
+const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "laya", "kev-27b"];
 
 const ids = [...new Set([...ORDER.filter((id) => data.facts[id] || Object.values(data.results).some((r) => r.status[id])),
   ...Object.keys(data.facts), ...Object.values(data.results).flatMap((r) => Object.keys(r.status))])];
@@ -85,7 +86,7 @@ export const L = (id) => (modelById[id] ? modelById[id].label : id);
 const BASE = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const join = (...segs) => BASE + segs.filter(Boolean).map((s) => `${s}/`).join("");
 // Each non-Jev model's page is its comparison with Jev.
-export const RIVAL_PAGE = { glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
+export const RIVAL_PAGE = { "gliner-2.5-decide": "jev-vs-gliner-2-5-decide", glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
 export const rivalPageOf = (id) => RIVAL_PAGE[id] || (modelById[id] && modelById[id].family === "kev" ? "jev-vs-kev" : null);
 export const urls = {
   home: () => BASE,
@@ -289,6 +290,7 @@ export function aboutModel(id) {
   if (id === "jev") return `Jev is a hosted decision model made by ${x.maker || "TypeSafe"}. We call it through its maker's software kit, typesafe-sdk, on paid API access; the version is recorded on every answer (${(study("jev", OWA) && study("jev", OWA).overall.model || []).join(", ") || "jev-1.13.0"}). Its size and architecture are not published.`;
   if (id === "glide") return `GLiDE is a hosted decision model made by Fastino Labs, which describes it as a "thinking" decision model: it forms a probability over the options and spends more computation when the leading option is uncertain. Fastino serves it on the same System One request format as Jev, so it got exactly Jev's request: the text, the question and the options, one request per item. Its size and architecture are not published.`;
   if (id === "openai-gpt-6-luna-effort-none") return `GPT-6 Luna is a hosted large language model made by OpenAI. We used it as a classifier: one request per item through the Chat Completions API, with reasoning effort set to none (its lowest setting) and a strict JSON schema that allows only the task's options. Its size and architecture are not published.`;
+  if (id === "gliner-2.5-decide") return `GLiNER2.5-Decide is an open decision model made by Fastino Labs: a ${x.parameters || "340M"}-parameter schema classifier on a DeBERTa-v3-large encoder, released under Apache 2.0. It answers in one pass; its model card says it "does not reason." We ran it on our own laptop with Fastino's gliner2 package, PyTorch on Apple's GPU, giving it the question as its prompt and each option with its description.`;
   if (id === "laya") return `Laya is an open decision model made by ${x.maker || "Convai Innovations"}: a ${x.parameters || "421M"}-parameter ${String(x.architecture || "ModernBERT-large encoder with decision heads").replace(/, trained with RLCD$/, "")}. We ran it on our own laptop with the laya package, PyTorch on Apple's GPU.`;
   if (/^kev-/.test(id)) {
     const size = (META[id] || {}).size;

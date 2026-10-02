@@ -1279,6 +1279,58 @@
           "wrong_at_95": 0.08070866141732283,
           "wrong_at_99": 0.003937007874015748
         },
+        "gliner-2.5-decide": {
+          "accuracy": 0.5,
+          "auroc": 0.5656,
+          "bands": [
+            {
+              "accuracy": null,
+              "from": 0.0,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.5,
+              "from": 0.5,
+              "mean_stated": 0.6865145307494218,
+              "n": 1798,
+              "to": 0.8
+            },
+            {
+              "accuracy": 0.5,
+              "from": 0.8,
+              "mean_stated": 0.8063068389892578,
+              "n": 2,
+              "to": 0.9
+            },
+            {
+              "accuracy": null,
+              "from": 0.9,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.95
+            },
+            {
+              "accuracy": null,
+              "from": 0.95,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.99
+            },
+            {
+              "accuracy": null,
+              "from": 0.99,
+              "mean_stated": null,
+              "n": 0,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.18664763331413275,
+          "n": 1800,
+          "wrong_at_95": 0.0,
+          "wrong_at_99": 0.0
+        },
         "jev": {
           "accuracy": 0.8927777777777778,
           "auroc": 0.8575500320811476,
@@ -1980,6 +2032,58 @@
           "ece": 0.05609287510994914,
           "n": 1800,
           "wrong_at_95": 0.012987012987012988,
+          "wrong_at_99": 0.0
+        },
+        "gliner-2.5-decide": {
+          "accuracy": 0.3516666666666667,
+          "auroc": 0.5094170792095962,
+          "bands": [
+            {
+              "accuracy": 0.33827893175074186,
+              "from": 0.0,
+              "mean_stated": 0.43629443996266254,
+              "n": 1011,
+              "to": 0.5
+            },
+            {
+              "accuracy": 0.3688212927756654,
+              "from": 0.5,
+              "mean_stated": 0.5548788345358671,
+              "n": 789,
+              "to": 0.8
+            },
+            {
+              "accuracy": null,
+              "from": 0.8,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.9
+            },
+            {
+              "accuracy": null,
+              "from": 0.9,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.95
+            },
+            {
+              "accuracy": null,
+              "from": 0.95,
+              "mean_stated": null,
+              "n": 0,
+              "to": 0.99
+            },
+            {
+              "accuracy": null,
+              "from": 0.99,
+              "mean_stated": null,
+              "n": 0,
+              "to": 1.0
+            }
+          ],
+          "ece": 0.13660726625058384,
+          "n": 1800,
+          "wrong_at_95": 0.0,
           "wrong_at_99": 0.0
         },
         "jev": {

@@ -1,0 +1,10 @@
+{"axis": "overall", "ci_high": 0.5172222222222222, "ci_low": 0.4583333333333333, "diff": 0.4866666666666667, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 1800, "task": "proofwriter-owa", "value": "all"}
+{"axis": "depth", "ci_high": 0.68, "ci_low": 0.5633333333333334, "diff": 0.6233333333333333, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 300, "task": "proofwriter-owa", "value": "0"}
+{"axis": "depth", "ci_high": 0.5993377483443708, "ci_low": 0.45695364238410596, "diff": 0.5298013245033113, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 302, "task": "proofwriter-owa", "value": "1"}
+{"axis": "depth", "ci_high": 0.5676567656765676, "ci_low": 0.41914191419141916, "diff": 0.49504950495049505, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "2"}
+{"axis": "depth", "ci_high": 0.5148514851485149, "ci_low": 0.35973597359735976, "diff": 0.43564356435643564, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "3"}
+{"axis": "depth", "ci_high": 0.429042904290429, "ci_low": 0.24752475247524752, "diff": 0.33663366336633666, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 303, "task": "proofwriter-owa", "value": "4"}
+{"axis": "depth", "ci_high": 0.5847750865051903, "ci_low": 0.42214532871972316, "diff": 0.5017301038062284, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 289, "task": "proofwriter-owa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.8066115702479338, "ci_low": 0.7272727272727273, "diff": 0.768595041322314, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 605, "task": "proofwriter-owa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.8991735537190083, "ci_low": 0.8396694214876033, "diff": 0.8710743801652893, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 605, "task": "proofwriter-owa", "value": "true"}
+{"axis": "reference_label", "ci_high": -0.15593220338983052, "ci_low": -0.23898305084745763, "diff": -0.19661016949152543, "engine_a": "jev", "engine_b": "gliner-2.5-decide", "n": 590, "task": "proofwriter-owa", "value": "unknown"}
