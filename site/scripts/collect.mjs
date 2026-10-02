@@ -229,7 +229,10 @@ function readLatency(task, manifests) {
     const manifest = runs.at(-1) || null;
     // A rerun is complete when every item has a timing and the run wrote its manifest at the end.
     const complete = values.length >= task.n && !!manifest;
-    out[engine] = { by_depth, split, file: rel(path), n: values.length, of: task.n, complete, p50: q(0.5), p90: q(0.9), max: values.at(-1),
+    // Log-spaced histogram, 10 bins per decade from about 32 ms to 320 s, for the timing charts.
+    const edges = Array.from({ length: 41 }, (_, i) => 10 ** (1.5 + i * 0.1));
+    const hist = { edges, counts: edges.slice(0, -1).map((lo, i) => values.filter((v) => v >= lo && v < edges[i + 1]).length) };
+    out[engine] = { by_depth, split, hist, file: rel(path), n: values.length, of: task.n, complete, p50: q(0.5), p90: q(0.9), max: values.at(-1),
       total_minutes: values.reduce((a, b) => a + b, 0) / 60000, source: tree === "timing" ? "rerun" : "scored run",
       concurrency: runs.length ? Math.max(...runs.map((m) => m.concurrency || 1)) : null,
       machine: manifest ? manifest.machine : null,
@@ -335,6 +338,17 @@ for (const task of tasks) {
     if (status[e].status === "complete") derived[e] = { cross: r.cross, calibration: r.calibration, models: r.models, file: r.file };
   }
   perTask[task.slug] = { studies, status, derived, latency: readLatency(task, manifests) };
+}
+// Each engine's median time over every timed decision on every task, for the pooled timing chart.
+const pooledLatency = {};
+for (const engine of new Set(Object.values(perTask).flatMap((t) => Object.keys(t.latency)))) {
+  const vals = [];
+  for (const task of tasks) {
+    const l = perTask[task.slug].latency[engine];
+    if (l) vals.push(...gz(join(ROOT, l.file)).map((r) => r.latency_ms).filter((v) => typeof v === "number"));
+  }
+  vals.sort((a, b) => a - b);
+  if (vals.length) pooledLatency[engine] = { n: vals.length, p50: vals[Math.floor((vals.length - 1) / 2)] };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -500,7 +514,7 @@ const data = {
     note: "Built from the working tree: results scored after the named commit are included.",
     warnings,
   },
-  axes, machine, facts, memory, cost,
+  axes, machine, facts, memory, cost, pooledLatency,
   tasks: tasks.map(({ _items, ...t }) => t),
   results: perTask,
   // Load averages only: the manifests also name the busiest other processes on the machine, which

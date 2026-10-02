@@ -3,6 +3,9 @@
 // and by proof depth, and, for a model whose answers split into a fast and a slow group (one that
 // spends extra computation on some decisions), what the slow answers cost and bought.
 import EngineName from "./EngineName.astro";
+import Legend from "./Legend.astro";
+import LatencyHistogram from "./LatencyHistogram.astro";
+import DepthBars from "./DepthBars.astro";
 import { modelById, urls, taskOrder, TASK_INFO, OWA, pct, int, latency, costOf, L, listOf } from "../lib/site.js";
 import { VENDOR_DESIGN } from "../lib/content.js";
 const { ids } = Astro.props;
@@ -29,7 +32,11 @@ const scored = (id) => latency(id, OWA) && latency(id, OWA).source === "scored r
   {thinkers.map((b) => VENDOR_DESIGN[b] && <p>{VENDOR_DESIGN[b].text.replace(/\.$/, "")} (<a href={VENDOR_DESIGN[b].url}>{VENDOR_DESIGN[b].source}</a>).{VENDOR_DESIGN[a] && <Fragment>{" "}{VENDOR_DESIGN[a].text.replace(/\.$/, "")} (<a href={VENDOR_DESIGN[a].url}>{VENDOR_DESIGN[a].source}</a>).</Fragment>}</p>)}
 
   {timed.length > 1 && <Fragment>
+  <h3>Every decision's time</h3>
+  <Legend ids={timed} slug={OWA} />
+  <LatencyHistogram ids={timed} label="Time per decision, both tasks pooled, log scale" />
   <h3>Average time per decision, by proof depth</h3>
+  <div class="depth-pair">{taskOrder.map((s) => <div class="depth-panel"><p class="depth-panel-t">{TASK_INFO[s].long}</p><DepthBars ids={timed} slug={s} metric="time" /></div>)}</div>
   <div class="table-scroll">
     <table class="cell-table">
       <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>
@@ -43,6 +50,7 @@ const scored = (id) => latency(id, OWA) && latency(id, OWA).source === "scored r
 
   {priced.length > 1 && <Fragment>
   <h3>List-price cost per million decisions, by proof depth</h3>
+  <div class="depth-pair">{taskOrder.map((s) => <div class="depth-panel"><p class="depth-panel-t">{TASK_INFO[s].long}</p><DepthBars ids={priced} slug={s} metric="cost" /></div>)}</div>
   <div class="table-scroll">
     <table class="cell-table">
       <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>
