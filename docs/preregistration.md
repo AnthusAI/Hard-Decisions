@@ -216,3 +216,19 @@ errors and were rerun once at concurrency 1; both answered.
   receive the question's instructions or the option descriptions, which every other engine gets; its interface has
   no place for them. Everything else in Amendment 8 stands, including the predictions, which are checked against the
   rerun.
+
+### Amendment 8b: GLiNER2.5-Decide gets everything the other models get (written before either form was scored)
+
+- **The owner's rule:** this model must receive all the information every other engine receives, structured as its
+  interface allows. Amendment 8a's form leaves out the question's instructions and the option descriptions, so it
+  cannot be the benchmark entry.
+- **`gliner-2.5-decide` (the benchmark entry):** the message is the item text, then the question's instructions and
+  every option with its description, word for word as GPT-6 Luna received them (`render_prompt`), without Luna's
+  closing line asking for a JSON reply, since this model answers by label as Jev does. Task: the question's name;
+  labels: the options. Both the local package and Fastino's hosted API accept this form. The longest message is about
+  370 tokens of the model's 8,192.
+- **`gliner-2.5-decide-labels-only` (reported beside it):** Amendment 8a's bare form (item text, task and labels).
+  Its scored and timing runs finished before this amendment and have not been scored; they are kept and reported as
+  a second engine, labelled as missing the instructions and descriptions.
+- **Predictions:** Amendment 8's four predictions apply to `gliner-2.5-decide`. No prediction is made about which
+  form scores higher; both are reported whatever they show, and neither form will be changed after scoring.

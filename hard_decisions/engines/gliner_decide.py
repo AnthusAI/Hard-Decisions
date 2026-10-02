@@ -5,12 +5,19 @@ it lives in its own environment, ``var/gliner-venv``. The model is loaded once, 
 revision, and answers one request at a time on Apple's GPU (MPS) when available (set
 ``GLINER_DEVICE`` to override). Open weights, so a run costs nothing but time.
 
-The request is the form Fastino's hosted API accepts for this model (``/v1/chat/completions``
-``classifications``: a task name and its labels, no prompt and no label descriptions; the API rejects a
-``prompt``): the item text, which ends with the statement, the question's name as the task and the
-options as labels. A first run that also passed the question's instructions as a ``prompt`` and each
-option's description collapsed to one answer per task and was withdrawn (preregistration, Amendment 8a).
-This local checkpoint gives the hosted model's answers (21 of 21 identical, confidence within 0.01).
+Two request forms, both in the shape Fastino's hosted API accepts for this model (``/v1/chat/completions``:
+the message text, plus ``classifications`` with a task name and its labels; the API rejects a ``prompt``):
+
+- ``full`` (engine ``gliner-2.5-decide``): the message is the item text, then the question's instructions and
+  every option with its description, word for word as GPT-6 Luna received them, without Luna's line about
+  replying in JSON (this model answers by label). Task: the question's name; labels: the options. The model gets
+  everything every other engine gets.
+- ``labels`` (engine ``gliner-2.5-decide-labels-only``): the item text alone, which ends with the statement, with
+  the same task and labels: the bare documented form.
+
+A first run that passed the instructions as the package's ``prompt`` and the descriptions as described labels
+collapsed to one answer per task and was withdrawn (preregistration, Amendment 8a). This local checkpoint gives
+the hosted model's answers (21 of 21 identical, confidence within 0.01).
 ``classify_text`` returns only the winning label and its probability; a read-only forward hook on the
 model's classifier layer captures the same logits the package softmaxes, so the record holds the
 probability of every option. Every answer is checked to reproduce the package's own label and
@@ -45,10 +52,19 @@ def _load():
     return model, torch, f"{REPO}@{REVISION[:7]} gliner2-{gliner2.__version__} {device}"
 
 
-class GlinerDecideEngine:
-    name = "gliner-2.5-decide"
+def message(text: str, question: Mapping[str, Any], form: str) -> str:
+    if form == "labels":
+        return text
+    options = "\n".join(f"- {name}: {description}" for name, description in question["criteria"].items())
+    return f"{text}\n\n{question['instructions']}\n\nOptions:\n{options}"
 
-    def __init__(self, loader=_load):
+
+class GlinerDecideEngine:
+    def __init__(self, loader=_load, form: str = "full"):
+        if form not in ("full", "labels"):
+            raise ValueError(f"unknown form {form!r}")
+        self.form = form
+        self.name = "gliner-2.5-decide" if form == "full" else "gliner-2.5-decide-labels-only"
         self._loader = loader
         self._model = None
         self._torch = None
@@ -71,7 +87,7 @@ class GlinerDecideEngine:
             self._captured.clear()
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                result = self._model.classify_text(text, tasks, include_confidence=True)[name]
+                result = self._model.classify_text(message(text, q, self.form), tasks, include_confidence=True)[name]
             if len(self._captured) != 1 or len(self._captured[0]) != len(options):
                 raise RuntimeError(f"expected one classifier pass over {len(options)} options, got {len(self._captured)}")
             probs = dict(zip(options, self._torch.softmax(self._captured[0], -1).tolist()))

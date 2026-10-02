@@ -24,8 +24,8 @@ class FakeModel:
         return {"Decision": {"label": self._label or list(QUESTION["Decision"]["criteria"])[best], "confidence": float(probs[best])}}
 
 
-def engine(model):
-    return gliner_decide.GlinerDecideEngine(loader=lambda: (model, torch, "fake"))
+def engine(model, form="labels"):
+    return gliner_decide.GlinerDecideEngine(loader=lambda: (model, torch, "fake"), form=form)
 
 
 async def test_request_is_the_hosted_form_task_and_labels_and_records_all_probabilities():
@@ -41,3 +41,13 @@ async def test_request_is_the_hosted_form_task_and_labels_and_records_all_probab
 async def test_a_capture_that_disagrees_with_the_package_is_an_error():
     with pytest.raises(RuntimeError):
         await engine(FakeModel([0.1, 0.2, 2.0], label="true")).answer("x", QUESTION)
+
+
+async def test_full_form_carries_instructions_and_every_described_option_in_the_message():
+    model = FakeModel([0.1, 0.2, 2.0])
+    eng = engine(model, form="full")
+    await eng.answer("Bob is big.\n\nStatement: Bob is red.", QUESTION)
+    text, tasks = model.calls[0]
+    assert eng.name == "gliner-2.5-decide" and tasks == {"Decision": ["true", "false", "unknown"]}
+    assert text.startswith("Bob is big.\n\nStatement: Bob is red.\n\nIs the statement true, false, or unknown?")
+    assert "- unknown: Neither follows." in text and "JSON" not in text
