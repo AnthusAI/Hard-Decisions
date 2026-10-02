@@ -95,7 +95,7 @@ def cmd_list(args) -> int:
 
 
 KEV_URL = os.environ.get("HD_KEV_URL", "http://127.0.0.1:8009")
-LOCAL_ENGINES = ("laya",)
+LOCAL_ENGINES = ("laya", "gliner-2.5-decide")
 
 
 def _engine(name: str):
@@ -108,6 +108,9 @@ def _engine(name: str):
     if name == "glide":
         from hard_decisions.engines.glide import GlideEngine
         return GlideEngine()
+    if name == "gliner-2.5-decide":
+        from hard_decisions.engines.gliner_decide import GlinerDecideEngine
+        return GlinerDecideEngine()
     if name.startswith("kev"):
         from hard_decisions.engines.typesafe_compat import TypesafeCompatibleEngine
         return TypesafeCompatibleEngine(name, KEV_URL)
@@ -115,7 +118,7 @@ def _engine(name: str):
         from hard_decisions.engines.llm import ChatClassifierEngine, spec_for
         vendor, model = name.split(":", 1)
         return ChatClassifierEngine(spec_for(vendor, model))
-    raise SystemExit(f"unknown engine {name!r}; available: jev, glide, laya, kev-<size>, <vendor>:<model>")
+    raise SystemExit(f"unknown engine {name!r}; available: jev, glide, laya, gliner-2.5-decide, kev-<size>, <vendor>:<model>")
 
 
 def _machine() -> dict:

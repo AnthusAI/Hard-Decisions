@@ -174,3 +174,26 @@ The `--timing` rerun was dropped at the owner's direction on 2026-10-02: at GLiD
 hours. GLiDE therefore has no retest agreement, and its latency comes from the scored runs at concurrency 8 (the
 pilot's 20 rows at concurrency 4), not from a one-at-a-time rerun like Jev's. Two OWA requests failed with server
 errors and were rerun once at concurrency 1; both answered.
+
+## Amendment 8: GLiNER2.5-Decide (written before its scored run)
+
+- **Engine:** `gliner-2.5-decide`: Fastino's open GLiNER2.5-Decide, 340M parameters on a DeBERTa-v3-large encoder,
+  Apache 2.0, Hub revision `5a7adf7`, run on this machine through `gliner2` 2.0.0 (local extra) on Apple's GPU
+  (`hard_decisions/engines/gliner_decide.py`, in `var/gliner-venv`). It answers in one pass; Fastino's card says
+  it "does not reason".
+- **Protocol:** the same text, question and options every engine gets, in the forms the model card documents:
+  the question's instructions as the task `prompt`, each option with its description as a described label,
+  single-label. `classify_text` returns only the winning label and its probability; a read-only hook on the
+  classifier layer records the softmax over every option, and each answer is checked to reproduce the package's
+  own label and confidence exactly. One request per item, no examples, no retries of an answer.
+- **Seen before this amendment:** setup checks ran the first 20 items of each task (40 answers; 18 right) to
+  confirm the probability capture (40 of 40 matched) and that the GPU gives the CPU's answers (30 of 30). Those
+  answers are not part of the record; the scored run answers every item afresh.
+- **Runs:** the scored run at concurrency 1, then one `--timing` rerun of every item per task for latency and
+  retest agreement (Amendment 4). Memory from the run manifests.
+- **Spend:** none (open weights, local).
+- **Predictions:**
+  1. Its accuracy falls with proof depth on both tasks.
+  2. Its overall accuracy is below Kev-9B's on both tasks.
+  3. It agrees with itself on at least 99.5% of items on both tasks.
+  4. Its AUROC is below Jev's on both tasks.
