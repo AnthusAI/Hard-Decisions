@@ -195,6 +195,7 @@ function readManifests() {
 // Engines with no one-at-a-time rerun, by the owner's decision (preregistration, deviation from
 // Amendment 7): their latency comes from the scored run, sent several requests at a time.
 const SCORED_RUN_LATENCY = ["glide"];
+const SLOW_MS = 2000;
 
 function readLatency(task, manifests) {
   const out = {};
@@ -203,14 +204,32 @@ function readLatency(task, manifests) {
   for (const [engine, tree] of sources) {
     const path = join(ROOT, tree, engine, `${task.slug}.jsonl.gz`);
     if (!existsSync(path)) continue;
-    const values = gz(path).map((r) => r.latency_ms).filter((v) => typeof v === "number").sort((a, b) => a - b);
+    const rowsAll = gz(path).filter((r) => typeof r.latency_ms === "number");
+    const values = rowsAll.map((r) => r.latency_ms).sort((a, b) => a - b);
     if (!values.length) continue;
+    // By proof depth, and split at SLOW_MS: a model that spends extra computation on some decisions
+    // shows it as a second, slower group, and the split shows what the extra time bought.
+    const meta = Object.fromEntries(task._items.map((i) => [i.id, i.metadata]));
+    const stat = (g) => {
+      const ms = g.map((r) => r.latency_ms).sort((a, b) => a - b);
+      const judged = g.map((r) => { const choice = choiceOf(r), probs = probsOf(r); return { ok: choice === meta[r.id].reference_label,
+        p: probs && choice in probs ? probs[choice] : null }; });
+      const ps = judged.filter((j) => j.p != null);
+      return { n: g.length, mean: ms.reduce((a, b) => a + b, 0) / ms.length, p50: ms[Math.floor(0.5 * (ms.length - 1))],
+        slow_share: ms.filter((x) => x > SLOW_MS).length / ms.length, accuracy: judged.filter((j) => j.ok).length / judged.length,
+        stated: ps.length ? ps.reduce((a, j) => a + j.p, 0) / ps.length : null,
+        input_tokens: g.every((r) => r.usage && r.usage.input_tokens != null) ? g.reduce((a, r) => a + r.usage.input_tokens, 0) / g.length : null };
+    };
+    const by_depth = [0, 1, 2, 3, 4, 5].map((d) => { const g = rowsAll.filter((r) => meta[r.id] && meta[r.id].depth === d); return g.length ? { depth: d, ...stat(g) } : null; }).filter(Boolean);
+    const fastRows = rowsAll.filter((r) => r.latency_ms <= SLOW_MS), slowRows = rowsAll.filter((r) => r.latency_ms > SLOW_MS);
+    const split = { threshold_ms: SLOW_MS, fast: fastRows.length ? stat(fastRows) : null, slow: slowRows.length ? stat(slowRows) : null,
+      at_least_10s: values.filter((x) => x >= 10000).length };
     const q = (p) => values[Math.floor(p * (values.length - 1))];
     const runs = manifests.filter((m) => m.tree === tree && m.engine === engine && m.task === task.slug);
     const manifest = runs.at(-1) || null;
     // A rerun is complete when every item has a timing and the run wrote its manifest at the end.
     const complete = values.length >= task.n && !!manifest;
-    out[engine] = { file: rel(path), n: values.length, of: task.n, complete, p50: q(0.5), p90: q(0.9), max: values.at(-1),
+    out[engine] = { by_depth, split, file: rel(path), n: values.length, of: task.n, complete, p50: q(0.5), p90: q(0.9), max: values.at(-1),
       total_minutes: values.reduce((a, b) => a + b, 0) / 60000, source: tree === "timing" ? "rerun" : "scored run",
       concurrency: runs.length ? Math.max(...runs.map((m) => m.concurrency || 1)) : null,
       machine: manifest ? manifest.machine : null,

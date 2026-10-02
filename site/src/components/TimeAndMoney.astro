@@ -1,0 +1,76 @@
+---
+// Time and money for a comparison page: each model's time per decision and list-price cost, overall
+// and by proof depth, and, for a model whose answers split into a fast and a slow group (one that
+// spends extra computation on some decisions), what the slow answers cost and bought.
+import EngineName from "./EngineName.astro";
+import { modelById, urls, taskOrder, TASK_INFO, OWA, pct, int, latency, costOf, L, listOf } from "../lib/site.js";
+import { VENDOR_DESIGN } from "../lib/content.js";
+const { ids } = Astro.props;
+const [a, ...bs] = ids;
+const money = (x) => (x >= 10 ? `$${Math.round(x).toLocaleString("en-US")}` : `$${x.toFixed(2)}`);
+const secs = (ms) => (ms >= 10000 ? `${Math.round(ms / 1000)} s` : ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : `${Math.round(ms)} ms`);
+const timed = ids.filter((id) => taskOrder.some((s) => latency(id, s)));
+const priced = ids.filter((id) => costOf(id));
+// A slow group worth describing: at least 5% of answers over the threshold on some task.
+const thinkers = bs.filter((id) => taskOrder.some((s) => { const l = latency(id, s); return l && l.split && l.split.slow && l.split.slow.n / l.n >= 0.05; }));
+const tenS = (id) => taskOrder.reduce((t, s) => t + ((latency(id, s) && latency(id, s).split) ? latency(id, s).split.at_least_10s : 0), 0);
+const nOf = (id) => taskOrder.reduce((t, s) => t + (latency(id, s) ? latency(id, s).n : 0), 0);
+const scored = (id) => latency(id, OWA) && latency(id, OWA).source === "scored run";
+---
+{(priced.length > 1 || thinkers.length > 0) && (
+<section class="wrap section sec-split" aria-labelledby="tm-h">
+  <div class="sec-head">
+  <h2 class="display" id="tm-h">Time and money</h2>
+  <p class="lede">{bs.map((b) => { const lb = latency(b, OWA), la = latency(a, OWA), cb = costOf(b), ca = costOf(a); return (
+    <Fragment>{lb && la && `${L(b)}'s median open-world decision took ${secs(lb.p50)} against ${L(a)}'s ${secs(la.p50)}${tenS(b) ? `, and ${int(tenS(b))} of its ${int(nOf(b))} decisions took ten seconds or more (the slowest ${secs(Math.max(...taskOrder.filter((s) => latency(b, s)).map((s) => latency(b, s).max)))})` : ""}. `}{cb && ca && `At list price ${L(b)} cost ${money(cb.total.usd_per_million)} per million decisions against ${L(a)}'s ${money(ca.total.usd_per_million)}: ${(cb.total.usd_per_million / ca.total.usd_per_million).toFixed(1)} times as much per decision and ${(cb.total.usd_per_million_correct / ca.total.usd_per_million_correct).toFixed(1)} times as much per correct decision.`}</Fragment>
+  ); })}</p>
+  </div>
+  <div class="sec-body">
+  {thinkers.map((b) => VENDOR_DESIGN[b] && <p>{VENDOR_DESIGN[b].text.replace(/\.$/, "")} (<a href={VENDOR_DESIGN[b].url}>{VENDOR_DESIGN[b].source}</a>).{VENDOR_DESIGN[a] && <Fragment>{" "}{VENDOR_DESIGN[a].text.replace(/\.$/, "")} (<a href={VENDOR_DESIGN[a].url}>{VENDOR_DESIGN[a].source}</a>).</Fragment>}</p>)}
+
+  {timed.length > 1 && <Fragment>
+  <h3>Average time per decision, by proof depth</h3>
+  <div class="table-scroll">
+    <table class="cell-table">
+      <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>
+      <tbody>{timed.map((id) => taskOrder.filter((s) => latency(id, s) && latency(id, s).by_depth).map((s) => (
+        <tr><th scope="row"><EngineName engine={modelById[id]} /></th><td>{TASK_INFO[s].short}</td>
+          {latency(id, s).by_depth.map((r) => <td class="num">{secs(r.mean)}</td>)}</tr>
+      )))}</tbody>
+    </table>
+  </div>
+  </Fragment>}
+
+  {priced.length > 1 && <Fragment>
+  <h3>List-price cost per million decisions, by proof depth</h3>
+  <div class="table-scroll">
+    <table class="cell-table">
+      <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>
+      <tbody>{priced.map((id) => taskOrder.filter((s) => costOf(id).tasks[s] && costOf(id).tasks[s].by_depth).map((s) => (
+        <tr><th scope="row"><EngineName engine={modelById[id]} /></th><td>{TASK_INFO[s].short}</td>
+          {costOf(id).tasks[s].by_depth.map((r) => <td class="num">{money(r.usd_per_million)}</td>)}</tr>
+      )))}</tbody>
+    </table>
+  </div>
+  </Fragment>}
+
+  {thinkers.map((b) => (
+  <Fragment>
+  <h3>{L(b)}'s fast and slow answers</h3>
+  <p>Split at {latency(b, OWA).split.threshold_ms / 1000} seconds. The slow answers are the ones where {L(b)} spent extra computation; each column says what that cost and what it bought.</p>
+  <div class="table-scroll">
+    <table class="cell-table">
+      <thead><tr><th scope="col">Task</th><th scope="col">Answers</th><th scope="col" class="num">Count</th><th scope="col" class="num">Average time</th><th scope="col" class="num">Input tokens billed, average</th><th scope="col" class="num">Right</th><th scope="col" class="num">Stated probability, average</th></tr></thead>
+      <tbody>{taskOrder.filter((s) => latency(b, s) && latency(b, s).split).map((s) => [["fast", "Under 2 s"], ["slow", "Over 2 s"]].filter(([k]) => latency(b, s).split[k]).map(([k, label]) => { const g = latency(b, s).split[k]; return (
+        <tr><td>{TASK_INFO[s].short}</td><td>{label}</td><td class="num">{int(g.n)}</td><td class="num">{secs(g.mean)}</td><td class="num">{g.input_tokens != null ? int(Math.round(g.input_tokens)) : "—"}</td><td class="num strong">{pct(g.accuracy)}%</td><td class="num">{g.stated != null ? `${pct(g.stated)}%` : "—"}</td></tr>
+      ); }))}</tbody>
+    </table>
+  </div>
+  <p class="note">When {L(b)} took longer, it was more often right, and it stated lower probabilities for those answers. It decides when to spend the extra time from its first probability, so where that probability is high and wrong, it answers quickly and wrong.</p>
+  </Fragment>
+  ))}
+
+  <p class="note">Times are wall time per request{ids.some(scored) ? `; ${listOf(ids.filter(scored).map(L))} timed in ${ids.filter(scored).length > 1 ? "their" : "its"} scored run with ${latency(ids.find(scored), OWA).concurrency} requests in flight, the others one request at a time` : ", one request at a time"}. Costs are list prices times the tokens each API reported. <a href={urls.cost()}>Cost per decision for every hosted model</a> · <a href={urls.speed()}>Speed, size and memory</a>.</p>
+  </div>
+</section>
+)}

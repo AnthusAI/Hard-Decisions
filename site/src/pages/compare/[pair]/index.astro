@@ -19,6 +19,7 @@ import PredLine from "../../../components/PredLine.astro";
 import AnthusNote from "../../../components/AnthusNote.astro";
 import DecisionsApi from "../../../components/DecisionsApi.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
+import TimeAndMoney from "../../../components/TimeAndMoney.astro";
 import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
 import { liveComparisons } from "../../../lib/content.js";
@@ -194,6 +195,8 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     <BreakdownSpread ids={bIds} />
     </div>
   </section>
+
+  <TimeAndMoney ids={ids} />
 
   <section class="wrap section sec-split" aria-labelledby="cons-h">
     <div class="sec-head">

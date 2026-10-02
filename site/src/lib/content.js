@@ -63,7 +63,7 @@ export const comparisons = [
     title: "Jev vs GLiDE: two hosted decision models on deep reasoning",
     intro: "GLiDE is Fastino's hosted decision model, released on 1 October 2026, which Fastino calls the first thinking decision model. It takes the same request as Jev, so both got exactly the same text, question and options for the same 3,600 problems.",
     seoTitle: "Jev vs GLiDE: Fastino's thinking decision model on multi-hop reasoning",
-    note: "Fastino reports that GLiDE beats Jev on its Decision Index 0.2.1 (64.81 to 57.91). That is Fastino's benchmark, not this one; we preregistered no prediction about which would win here." },
+    note: "Jev answers every decision in one parallel pass. GLiDE, by Fastino's own description, spends extra time and tokens on decisions it is unsure of, so it is slower and costs more, most of all on the problems it finds hard (see Time and money). Fastino reports that GLiDE beats Jev on its Decision Index 0.2.1 (64.81 to 57.91); that is Fastino's benchmark, not this one, and we preregistered no prediction about which would win here." },
   { slug: "jev-vs-gpt-6-luna", a: "jev", b: ["openai-gpt-6-luna-effort-none"], query: "Jev vs LLM",
     title: "Jev vs GPT-6 Luna: a decision model against an LLM classifier",
     intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems.",
@@ -90,6 +90,13 @@ export const DECISIONS_API = {
     finlayson: { label: "Finlayson et al., 2024", url: "https://arxiv.org/abs/2403.09539" },
     o1: { label: "OpenAI on o1's chain of thought", url: "https://openai.com/index/learning-to-reason-with-llms/" },
   },
+};
+// How each vendor says its model reaches an answer, quoted, for the Time and money section.
+export const VENDOR_DESIGN = {
+  glide: { source: "Fastino", url: "https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model",
+    text: "Fastino is upfront that GLiDE works this way. It writes that \"traditional decision models score a set of options in a single fixed pass,\" while GLiDE \"first produces a fast probability distribution, then allocates additional reasoning when the leading result is uncertain,\" so it can \"spend more computation on difficult decisions while keeping straightforward ones fast.\" Fastino bills that reasoning as tokens, and its API documentation recommends a read timeout of at least 300 seconds." },
+  jev: { source: "TypeSafe", url: "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+    text: "TypeSafe describes Jev, a System One model, as generating all outputs \"in a single query,\" in parallel, in 70 to 500 milliseconds, so every decision takes about the same time and money." },
 };
 export const comparisonBySlug = Object.fromEntries(comparisons.map((c) => [c.slug, c]));
 // A comparison has a page once both sides have scored results.
