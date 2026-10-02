@@ -22,9 +22,12 @@ const measuredMem = Object.keys(data.memory).length;
     {l && l.complete && <p class="finding"><span class="finding-num">{Math.round(l.p50)} ms</span><span class="finding-txt">Jev's median time per decision on the open-world task, over the network against TypeSafe's servers; 90% of decisions took under {Math.round(l.p90)} ms.</span></p>}
   </section>
 
-  <section class="wrap section" aria-labelledby="t-h">
+  <section class="wrap section sec-split" aria-labelledby="t-h">
+    <div class="sec-head">
     <h2 class="display" id="t-h">Time per decision</h2>
     <p class="lede">Wall time around each request as the harness measured it, from the reruns made one request at a time. Only finished timing runs are summarised; a run still in progress shows how far it has got.</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Where</th><th scope="col" class="num">Median</th><th scope="col" class="num">90th percentile</th><th scope="col" class="num">Slowest</th><th scope="col" class="num">Items</th><th scope="col">Load average, start / end</th></tr></thead>
@@ -36,9 +39,10 @@ const measuredMem = Object.keys(data.memory).length;
       </table>
     </div>
     <p class="note">{untimed.length > 0 && `Not yet timed: ${listOf(untimed.map((m) => (m.setting ? `${m.label} (${m.setting})` : m.label)))}. `}Load average is the machine's one-minute load when the run started and ended, from the run's manifest; it shows how busy the laptop was, which matters for local models.</p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="read-h">
+  <section class="wrap section sec-prose" aria-labelledby="read-h">
     <h2 class="display sm" id="read-h">How to read decision model latency</h2>
     <ul class="how-list">
       <li><strong>Measure where you will deploy.</strong> The same open weights run at very different speeds on a laptop, a workstation GPU and a data-centre GPU; Kev's maker states hardware from "Any Apple Silicon Mac" for its smallest size up to an H100 for larger ones (<a href="#sizes">sizes and hardware below</a>).</li>
@@ -46,8 +50,11 @@ const measuredMem = Object.keys(data.memory).length;
       <li><strong>Tails matter for interactive use.</strong> The 90th percentile and the slowest request are listed beside the median for that reason.</li>
     </ul>
   </section>
-  <section class="wrap section" id="sizes" aria-labelledby="sizes-h">
+  <section class="wrap section sec-split" id="sizes" aria-labelledby="sizes-h">
+    <div class="sec-head">
     <h2 class="display" id="sizes-h">Every model's size, weights and stated hardware</h2>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Parameters</th><th scope="col">Weights on disk</th><th scope="col">Maker's stated hardware</th><th scope="col">Memory used here</th><th scope="col" class="num">Open-world accuracy</th></tr></thead>
@@ -62,8 +69,9 @@ const measuredMem = Object.keys(data.memory).length;
       </table>
     </div>
     <p class="note">Sizes and weight files are the makers' published figures and the pinned revisions on the Hugging Face Hub. Jev and GPT-6 Luna do not publish their size.</p>
+    </div>
   </section>
-  <section class="wrap section" aria-labelledby="m-h">
+  <section class="wrap section sec-prose" aria-labelledby="m-h">
     <h2 class="display" id="m-h">Memory on the test laptop</h2>
     <p class="lede">Every open model ran on {mach.model ? `one ${mach.model.replace(/\s*\(.*\)/, "")}` : "one laptop"} ({mach.memory || "32 GB unified memory"}, Apple M1 Max).</p>
     <p>{measuredMem ? "Memory below is the physical footprint of the process holding the model (the Kev server, or the harness for Laya), in use after answering and at its peak, which includes loading." : "Memory measurements are in progress: no run manifest has recorded one yet, so every open model shows pending above. They are filled in from the manifests on the next build."} {mach.note && `On Apple silicon, model weights live in GPU memory, which a process's resident memory (RSS) does not count, so we use macOS's physical footprint.`}</p>

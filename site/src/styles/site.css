@@ -872,10 +872,41 @@ details.cell { scroll-margin-top: 140px; }
 .cm-pair { display: grid; gap: 10px 24px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .cm-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* Wide screens. Past 1,500 px the column widens so grids and charts have room; past 2,000 px the whole page
-   scales up (CSS zoom), so type, charts and spacing grow together instead of lines of text stretching past a
-   readable length. Media queries read the real viewport, so these steps don't feed back into each other. */
-@media (min-width: 1500px) { :root { --max: 1320px; } }
-@media (min-width: 2000px) { html { zoom: 1.25; } }
-@media (min-width: 2600px) { html { zoom: 1.5; } }
-@media (min-width: 3200px) { html { zoom: 1.75; } }
+/* Wide screens (docs/wide-layout.md). Media queries read the real viewport; widths inside are css px of
+   the zoomed page (viewport / zoom).
+   - 1,500 px: the column widens to 1,320 px; nothing else changes (laptops and below are untouched).
+   - 2,000 px: the page zooms 1.25 for type size, and the column grows to 88% of the window.
+   - 2,400 px: sections become two columns: the header (.sec-head: H2, lede, notes) in a sticky left column of
+     30%, figures and tables (.sec-body) on the right. Prose-only sections (.sec-prose) put the H2 on the
+     left and the text on the right at a readable measure. The home hero spreads across one row.
+   - 2,800 / 4,000 px: zoom 1.4 / 1.6, so type keeps pace while the column keeps growing. */
+@media (min-width: 1500px) {
+  :root { --max: 1320px; }
+  /* Keep lines readable however wide the column gets: 38em is about 75 characters of Montserrat. */
+  .section p, .section li, .section dd, .hero .deck, .hero .footnote, .hero .note, .finding-txt, .colo p { max-width: 38em; }
+}
+@media (min-width: 2000px) {
+  html { zoom: 1.25; }
+  :root { --max: 88%; }
+}
+@media (min-width: 2800px) { html { zoom: 1.4; } }
+@media (min-width: 4000px) { html { zoom: 1.6; } }
+@media (min-width: 2400px) {
+  .sec-split, .sec-prose { display: grid; grid-template-columns: minmax(0, 30%) minmax(0, 1fr); column-gap: 56px; align-items: start; }
+  .sec-split > .sec-head { position: sticky; top: 120px; }
+  .sec-split > .sec-head > :last-child { margin-bottom: 0; }
+  .sec-split > .sec-body > :first-child, .sec-prose > :nth-child(2) { margin-top: 0; }
+  .sec-prose > * { grid-column: 2; }
+  .sec-prose > h2 { grid-column: 1; grid-row: 1 / span 60; position: sticky; top: 120px; align-self: start; }
+  /* The home hero: title, deck and the finding on the left, both depth charts on the right, one row. */
+  .hero:has(.hero-top) { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.5fr); column-gap: 56px; align-items: start; }
+  .hero:has(.hero-top) .hero-top { display: block; }
+  .hero:has(.hero-top) .hero-top > div { display: block; }
+  .hero:has(.hero-top) .hero-top h1.display.xl { font-size: 64px; max-width: 18ch; }
+  .hero:has(.hero-top) .finding { flex-direction: row; flex-wrap: wrap; margin: 18px 0 0; }
+  .hero:has(.hero-top) .finding-txt { flex: 1 1 18em; min-width: 0; }
+  /* Grids take more columns as the body column grows. */
+  .cm-grid, .cm-grid.three { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); }
+  .honesty ol[data-count="6"] { grid-template-columns: repeat(6, 1fr); }
+  .compact-cards, .dim-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}

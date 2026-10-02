@@ -16,7 +16,7 @@ const P = data.probe;
 const top = P && P.tasks[OWA] ? P.tasks[OWA].bands.find((b) => b.from >= 0.99) : null;
 const masses = P ? [OWA, CWA].filter((s) => P.tasks[s]).map((s) => P.tasks[s].mean_disclosed_mass) : [];
 ---
-<section class="wrap section" id="decisions-api" aria-labelledby="decisions-api-h">
+<section class="wrap section sec-prose" id="decisions-api" aria-labelledby="decisions-api-h">
   <h2 class="display" id="decisions-api-h">What this means for the OpenAI Decisions API</h2>
   <p class="lede">At OpenAI DevDay on 29 September 2026, OpenAI announced the Decisions API, in limited preview with broader availability "in the coming days". OpenAI says it "uses a version of GPT-6 Luna": the model picks among answers the developer defines in advance, to classify, route or choose an agent's next action (<a href={S.decoder.url}>{S.decoder.label}</a>, <a href={S.axios.url}>{S.axios.label}</a>).</p>
   <p>That is the shape of task we ran: GPT-6 Luna with reasoning off, one request per problem, and a fixed list of answers enforced with a strict JSON schema. So these results preview the accuracy a Luna-based decision model gets on multi-step reasoning.{o && c && <Fragment> GPT-6 Luna answered {pct(o.accuracy)}% of open-world problems and {pct(c.accuracy)}% of closed-world ones correctly.</Fragment>}{d0 && d5 && <Fragment> On the open-world task it scored {pct(d0.accuracy)}% when the answer is stated outright (depth 0) and {pct(d5.accuracy)}% when it takes five chained inferences{j5 && gap5 && <Fragment>, where Jev scored {pct(j5.accuracy)}% ({pts(gap5.diff)} points on the same items)</Fragment>}.</Fragment>} If your decisions need several steps of reasoning, the depth results above are the ones to read.</p>

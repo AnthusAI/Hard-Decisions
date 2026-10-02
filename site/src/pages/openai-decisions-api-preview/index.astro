@@ -50,15 +50,18 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
     <p class="footnote">We have not tested the Decisions API. OpenAI uses a specialized version of Luna, and its accuracy and confidence may differ from what is shown here. We will benchmark the API itself when we can get access.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="what-h">
+  <section class="wrap section sec-prose" aria-labelledby="what-h">
     <h2 class="display" id="what-h">What the OpenAI Decisions API is</h2>
     <p class="lede">At OpenAI DevDay on 29 September 2026, OpenAI announced the Decisions API, in limited preview with broader availability "in the coming days". OpenAI says it "uses a version of GPT-6 Luna": the model picks among answers the developer defines in advance, to classify, route or choose an agent's next action (<a href={S.decoder.url}>{S.decoder.label}</a>, <a href={S.axios.url}>{S.axios.label}</a>).</p>
     <p>As of 1 October 2026 OpenAI had published no Decisions API documentation. What is public is the model it is built on. GPT-6 Luna, used with reasoning off, one request per problem and a fixed list of answers enforced by a strict JSON schema, is the same shape of task, and that is how it ran in this benchmark. So this page previews a Luna-based decision model; it does not measure the API.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="acc-h">
+  <section class="wrap section sec-split" aria-labelledby="acc-h">
+    <div class="sec-head">
     <h2 class="display" id="acc-h">Accuracy: a Luna-based decision model against Jev, by proof depth</h2>
     <p class="lede">From the scored benchmark: the same 1,800 problems per task for both models, one request each, the same question and options.{overall(LUNA, OWA) && overall("jev", OWA) && ` GPT-6 Luna answered ${pct(overall(LUNA, OWA).accuracy)}% of open-world problems correctly and Jev ${pct(overall("jev", OWA).accuracy)}%; on the closed-world task, ${pct(overall(LUNA, CWA).accuracy)}% and ${pct(overall("jev", CWA).accuracy)}%.`}</p>
+    </div>
+    <div class="sec-body">
     <div class="two-up">
       {taskOrder.map((s) => (
         <figure class="hero-fig">
@@ -77,20 +80,25 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
     <h3>Accuracy by depth, open-world task</h3>
     <AccTable rows={axisTable(OWA, "depth", ids)} ids={ids} slug={OWA} valueHead="Proof depth" caption="By depth, open world" />
     <p class="more-link"><a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna in full</a>: every breakdown, answer class and paired difference.</p>
+    </div>
   </section>
 
   {data.lunaMisses && (
-    <section class="wrap section" aria-labelledby="miss-h">
+    <section class="wrap section sec-split" aria-labelledby="miss-h">
+      <div class="sec-head">
       <h2 class="display" id="miss-h">One step of reasoning: problems GPT-6 Luna got wrong and Jev got right</h2>
       <p class="lede">At proof depth 1 the answer takes one rule applied to facts stated in the text. {taskOrder.map((s, k) => { const t = data.lunaMisses.tasks[s]; return t && `${k ? " On the " : "On the "}${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task, GPT-6 Luna (reasoning off) got ${int(t.luna_wrong)} of ${int(t.n)} such problems wrong, and Jev got ${int(t.luna_wrong_jev_right)} of those right.`; })}</p>
       <p class="note">How these four are chosen: {data.lunaMisses.selection.split(" Each example has")[0]} Each card shows GPT-6 Luna's answer; Jev answered every one correctly. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
+      </div>
+      <div class="sec-body">
       <div class="mde-grid">
         {taskOrder.flatMap((s) => ((data.lunaMisses.tasks[s] || {}).examples || []).map((ex) => <ExampleCard ex={ex} task={s} depth={data.lunaMisses.depth} />))}
+      </div>
       </div>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="lp-h">
+  <section class="wrap section sec-prose" aria-labelledby="lp-h">
     <h2 class="display" id="lp-h">Can Luna give you a confidence?</h2>
     <p class="lede">A decision model is most useful when it also says how sure it is, so you can act on confident answers and send the rest to a person. The scored benchmark asked every model for its answer only. To see whether GPT-6 Luna could supply a confidence, we read its log-probabilities.</p>
     <p>A language model writes its reply one token (a word or piece of a word) at a time, and at each step it assigns a probability to every possible next token. A log-probability is the natural logarithm of that probability: 0 means certain, and the more negative it is, the less likely. With <code>logprobs</code> turned on, the API returns the log-probability of each token it wrote, and with <code>top_logprobs</code> the most likely alternatives at each step.</p>
@@ -99,9 +107,12 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
   </section>
 
   {ex && (
-    <section class="wrap section" aria-labelledby="ex-h">
+    <section class="wrap section sec-split" aria-labelledby="ex-h">
+      <div class="sec-head">
       <h2 class="display" id="ex-h">A real request and response, verbatim</h2>
       <p class="lede">One of the probe's 3,600 requests, exactly as sent and as returned: a {TASK_INFO[ex.task].short.toLowerCase().replace(" ", "-")} problem at proof depth {ex.depth} ({ex.id}). The correct answer is <strong>{ex.gold}</strong>. Luna answered <strong>{ex.answer}</strong>, and the log-probability of that answer's token, {fmt(Math.log(ex.stated), 4)}, is a probability of <strong>{pct(ex.stated, 2)}%</strong>.{ex.alternatives.length > 1 ? ` The alternatives it listed: ${ex.alternatives.map((a) => `"${a.token}" ${pct(a.p, 2)}%`).join(", ")}.` : ` It listed no other option at that position.`}</p>
+      </div>
+      <div class="sec-body">
       <p>That is a confidently wrong answer: stated as close to certain, and wrong. On its own it proves nothing; the results below show how often it happens.</p>
       <h3>The request body</h3>
       <pre class="code verbatim"><code>{pretty(ex.request)}</code></pre>
@@ -114,10 +125,11 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
         </details>
       )}
       <p class="note">Every request and response is kept verbatim in <code>probes/luna-logprobs/</code>.</p>
+      </div>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="spot-h">
+  <section class="wrap section sec-prose" aria-labelledby="spot-h">
     <h2 class="display" id="spot-h">The spot check that started it</h2>
     <p class="lede">Before writing the probe down, we sent a dozen deep problems to GPT-6 Luna with log-probabilities turned on. From the preregistration, word for word:</p>
     {spot && <blockquote class="pred-q"><p>{spot}</p></blockquote>}
@@ -125,9 +137,12 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
   </section>
 
   {P && (
-    <section class="wrap section" aria-labelledby="res-h">
+    <section class="wrap section sec-split" aria-labelledby="res-h">
+      <div class="sec-head">
       <h2 class="display" id="res-h">Results: when Luna says 99%, how often is it right?</h2>
       <p class="lede">Each answer is grouped by the probability the model gave it. A well-calibrated model is right about as often as it says. Jev's probabilities are its own, from the scored run, on the same items.</p>
+      </div>
+      <div class="sec-body">
       {taskOrder.map((s) => { const t = pt(s); const j = t.other_engines_same_items.jev; return (
         <Fragment>
           <h3>{TASK_INFO[s].long}</h3>
@@ -175,10 +190,11 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
       <p>At proof depth 5, Luna's AUROC is {fmt(pt(OWA).by_depth["5"].auroc, 3)} on the open-world task and {fmt(pt(CWA).by_depth["5"].auroc, 3)} on the closed-world task: its probability says next to nothing about whether a deep answer is right.{pt(OWA).other_engines_by_depth.jev && ` Jev's is ${fmt(pt(OWA).other_engines_by_depth.jev["5"].auroc, 3)} and ${fmt(pt(CWA).other_engines_by_depth.jev["5"].auroc, 3)}.`} Jev's figures by depth are computed by this site from its saved probabilities, the same way as the analysis computes Luna's.</p>
 
       {probeSec && <Fragment><h3>What we predicted</h3><Predictions sections={[probeSec]} headings={false} /></Fragment>}
+      </div>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="mean-h">
+  <section class="wrap section sec-prose" aria-labelledby="mean-h">
     <h2 class="display" id="mean-h">What it means for a decision model built on Luna</h2>
     <p class="lede">A confidence is useful for routing: act on the sure answers, review the unsure ones. On these problems, Luna's stated confidence cannot do that without help.</p>
     <p><strong>Overconfidence can be calibrated.</strong> If a model's 99% answers are right {P && top(OWA) ? `${pct(top(OWA).accuracy)}%` : "less often"} of the time, you can learn that from labelled data and relabel them. That fixes what the number says, as long as higher stated probability still means more likely right.</p>
@@ -186,7 +202,7 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
     <p>So a Luna-based decision model may be accurate enough on shallow problems, but on decisions that need several steps of reasoning, its own probability is not a usable confidence. Measure this on your own decisions before relying on it; the API's specialized model may behave differently.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="ctx-h">
+  <section class="wrap section sec-prose" aria-labelledby="ctx-h">
     <h2 class="display" id="ctx-h">Context: overconfidence and access to log-probabilities</h2>
     <ul class="how-list">
       <li><strong>Published evidence.</strong> OpenAI's <a href={S.gpt4.url}>{S.gpt4.label}</a> found the pre-trained model well calibrated, and that post-training reduced calibration markedly (its Figure 8).</li>
@@ -196,7 +212,7 @@ const masses = P ? taskOrder.map((s) => pt(s).mean_disclosed_mass) : [];
     </ul>
   </section>
 
-  <section class="wrap section" aria-labelledby="lim-h">
+  <section class="wrap section sec-prose" aria-labelledby="lim-h">
     <h2 class="display" id="lim-h">Limits</h2>
     <ul class="how-list">
       <li>One dataset, and a synthetic one: ProofWriter's templated reasoning problems, not your decisions.</li>

@@ -26,20 +26,27 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
     <nav class="reg-links" aria-label="On this page"><a href="#dataset">The dataset</a><a href="#sample">The sample</a><a href="#tasks">The two tasks</a><a href="#protocol">One request per problem</a><a href="#scoring">Scoring</a><a href="#limits">Limits</a><a href="#runs">Run records</a><a href="#check">Check it yourself</a><a href="#predictions">Predictions</a></nav>
   </section>
 
-  <section class="wrap section" id="dataset" aria-labelledby="dataset-h">
+  <section class="wrap section sec-split" id="dataset" aria-labelledby="dataset-h">
+    <div class="sec-head">
     <h2 class="display" id="dataset-h">The dataset: ProofWriter</h2>
     <p class="lede">ProofWriter (Tafjord, Dalvi and Clark, 2021) is a multi-hop deductive reasoning dataset from AI2, published under CC BY 4.0. Each problem is a short theory of facts and rules in English and a statement to judge against it.</p>
+    </div>
+    <div class="sec-body">
     <dl class="defs compact">
       <div><dt>Version</dt><dd>V2020.12.3, official test splits: {owa.configs.join(", ")}</dd></div>
       <div><dt>Gold answers</dt><dd>{owa.label_check}. Our solver reproduces every published test label, on both tasks, with zero disagreements.</dd></div>
       <div><dt>Pool</dt><dd>{int(pool)} open-world test questions, from which the open-world sample is drawn</dd></div>
       <div><dt>Synthetic</dt><dd>The theories are generated from templates, some reworded by people (the NatLang set). Models may have seen the dataset in training.</dd></div>
     </dl>
+    </div>
   </section>
 
-  <section class="wrap section" id="sample" aria-labelledby="sample-h">
+  <section class="wrap section sec-split" id="sample" aria-labelledby="sample-h">
+    <div class="sec-head">
     <h2 class="display" id="sample-h">The sample: {int(owa.n)} problems per task, {int(tasks.reduce((a, t) => a + t.n, 0))} in all</h2>
     <p class="lede">Running every model on the full test set is not practical, so the harness draws a sample with a fixed seed ({owa.seed}). Items are spread evenly over proof depth and the correct answer first, so deep proofs and the unknown answer are never starved the way a uniform draw would starve them; inside each cell, items are chosen to cover the other properties and spread across theories. A bigger sample with the same seed only adds items, so answers already collected stay valid.</p>
+    </div>
+    <div class="sec-body">
     {taskOrder.map((s) => { const t = taskBySlug[s]; const st = strata(t); return (
       <Fragment>
         <h3>{TASK_INFO[s].long}: items per depth and answer</h3>
@@ -54,9 +61,10 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
       </Fragment>
     ); })}
     <p class="note">ProofWriter publishes no separate depth-4 split; depth-4 items come from the splits built for deeper theories.</p>
+    </div>
   </section>
 
-  <section class="wrap section" id="tasks" aria-labelledby="tasks-h">
+  <section class="wrap section sec-prose" id="tasks" aria-labelledby="tasks-h">
     <h2 class="display" id="tasks-h">The two tasks</h2>
     <p class="lede">The same kinds of theory under two rules for what cannot be proved. Every model got exactly this question and these options, in this order.</p>
     {taskOrder.map((s) => { const t = taskBySlug[s]; return (
@@ -68,7 +76,7 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
     ); })}
   </section>
 
-  <section class="wrap section" id="protocol" aria-labelledby="protocol-h">
+  <section class="wrap section sec-prose" id="protocol" aria-labelledby="protocol-h">
     <h2 class="display" id="protocol-h">One request per problem, the same for every model</h2>
     <p class="lede">Each model answered each problem once, with the problem's text, the task's question and its options. Nothing was retried into a valid answer.</p>
     <ul class="how-list">
@@ -77,8 +85,11 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
     <p>An answer that is not exactly one of the options is scored as wrong and kept in the record as given. Across every scored run so far there {invalid === 1 ? "was 1 such answer" : `were ${int(invalid)} such answers`}.</p>
   </section>
 
-  <section class="wrap section" id="scoring" aria-labelledby="scoring-h">
+  <section class="wrap section sec-split" id="scoring" aria-labelledby="scoring-h">
+    <div class="sec-head">
     <h2 class="display" id="scoring-h">Scoring</h2>
+    </div>
+    <div class="sec-body">
     <dl class="defs">
       <div><dt>Accuracy</dt><dd>The share of problems answered correctly, with a 95% interval: the range the score would fall in if we drew the problems again (a percentile bootstrap, 1,000 draws, seed 0).</dd></div>
       <div><dt>Floors</dt><dd>Chance (one over the number of options) and the best constant guess: always giving the most common correct answer in that slice.</dd></div>
@@ -87,17 +98,21 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
       <div><dt>Breakdowns</dt><dd>Accuracy by {axes.length} properties of the problems: {axes.map((a) => a.label.toLowerCase()).join(", ")}. Only depth is controlled.</dd></div>
       <div><dt>Repeatability</dt><dd>Each model answers every item a second time; we report agreement, Gwet's AC1 and Cohen's kappa. <a href={urls.page("repeatability")}>Details</a>.</dd></div>
     </dl>
+    </div>
   </section>
 
-  <section class="wrap section" id="limits" aria-labelledby="limits-h">
+  <section class="wrap section sec-prose" id="limits" aria-labelledby="limits-h">
     <h2 class="display" id="limits-h">What the numbers cannot tell you</h2>
     <ul class="how-list">{honesty.map((h) => <li><strong>{h.title}.</strong> {h.text}</li>)}</ul>
     <p>At about 300 items per depth, a depth's accuracy is uncertain by roughly ±5 points; at about 100 items per depth and answer, roughly ±10. Only large differences are resolvable at that level.</p>
   </section>
 
-  <section class="wrap section" id="runs" aria-labelledby="runs-h">
+  <section class="wrap section sec-split" id="runs" aria-labelledby="runs-h">
+    <div class="sec-head">
     <h2 class="display" id="runs-h">Run records</h2>
     <p class="lede">Every run the harness has recorded with its manifest: when, how many requests at once, on what machine and how busy it was. Earlier runs predate the manifests.</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Purpose</th><th scope="col">Started</th><th scope="col">Finished</th><th scope="col" class="num">Answered</th><th scope="col" class="num">At once</th><th scope="col">Machine</th><th scope="col">Load average at start</th></tr></thead>
@@ -107,20 +122,28 @@ const fmtTime = (s) => (s ? s.replace("T", " ").slice(0, 16) + " UTC" : "—");
         ))}</tbody>
       </table>
     </div>
+    </div>
   </section>
 
-  <section class="wrap section" id="check" aria-labelledby="check-h">
+  <section class="wrap section sec-split" id="check" aria-labelledby="check-h">
+    <div class="sec-head">
     <h2 class="display" id="check-h">Check it yourself</h2>
+    </div>
+    <div class="sec-body">
     <p>Every score on this site is computed from the saved answers, offline, without calling a model. The harness rebuilds them and this site from the same files:</p>
     <pre class="code"><code>{`hd verify          # recompute every ProofWriter gold label with the independent solver
 hd replay          # rescore every saved answer: studies/*.jsonl
 hd report          # write RESULTS.md
 cd site && npm run build    # rebuild this site from studies/, engines.yaml and the run manifests`}</code></pre>
     <p>Every number is also in <a href={urls.data()}>one data file</a>.</p>
+    </div>
   </section>
-  <section class="wrap section" id="predictions" aria-labelledby="predictions-h">
+  <section class="wrap section sec-split" id="predictions" aria-labelledby="predictions-h">
+    <div class="sec-head">
     <h2 class="display" id="predictions-h">{intro.predictions.title}</h2>
     <p class="lede">{intro.predictions.intro}</p>
+    </div>
+    <div class="sec-body">
     <p class="finding"><span class="finding-num">{held} of {total}</span><span class="finding-txt">predictions held so far. {Object.entries(t).filter(([k]) => k !== "no claim").map(([k, v]) => `${v} ${STATUS_WORDS[k].toLowerCase()}`).join(", ")}{t["no claim"] ? `; ${t["no claim"]} made no claim` : ""}. A pending prediction waits for results that are still being run or scored; it is never guessed.</span></p>
     <h3 id="predictions-verdicts">How to read a verdict</h3>
     <dl class="defs compact">
@@ -135,6 +158,7 @@ cd site && npm run build    # rebuild this site from studies/, engines.yaml and 
     <p class="note">Fixed before any model answered.</p>
     <ul class="how-list">{data.prereg.design.map((d) => <li>{d.replace(/\*\*/g, "").replace(/`/g, "")}</li>)}</ul>
     {extra.map((s) => <Fragment><h3>{s.heading}</h3><p>{s.text.replace(/`/g, "")}</p></Fragment>)}
+    </div>
   </section>
   <AnthusNote />
 </Base>

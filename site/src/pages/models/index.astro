@@ -15,8 +15,11 @@ import { intro, liveComparisons } from "../../lib/content.js";
     <p class="deck">{intro.models.intro}</p>
   </section>
 
-  <section class="wrap section tight" aria-labelledby="cmp-h">
+  <section class="wrap section sec-split tight" aria-labelledby="cmp-h">
+    <div class="sec-head">
     <h2 class="display sm" id="cmp-h">Jev and its rivals, one page each</h2>
+    </div>
+    <div class="sec-body">
     <div class="dim-grid">
       <a class="dim-card" href={urls.model("jev")}>
         <div class="dim-card-h">Jev accuracy on multi-hop reasoning</div>
@@ -32,10 +35,14 @@ import { intro, liveComparisons } from "../../lib/content.js";
       ))}
     </div>
     <p class="more-link">GPT-6 Luna is the model behind OpenAI's new Decisions API: <a href={urls.preview()}>a preview of the OpenAI Decisions API through GPT-6 Luna</a>, accuracy and confidence.</p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="list-h">
+  <section class="wrap section sec-split" aria-labelledby="list-h">
+    <div class="sec-head">
     <h2 class="display" id="list-h">The models</h2>
+    </div>
+    <div class="sec-body">
     <ol class="overall">
       {models.map((m) => { const o = overall(m.id, OWA), c = overall(m.id, CWA); return (
         <li class="ov-row ov-simple">
@@ -54,16 +61,24 @@ import { intro, liveComparisons } from "../../lib/content.js";
         </li>
       ))}
     </ol>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="acc-h">
+  <section class="wrap section sec-split" aria-labelledby="acc-h">
+    <div class="sec-head">
     <h2 class="display" id="acc-h">Accuracy side by side</h2>
+    </div>
+    <div class="sec-body">
     {taskOrder.map((slug) => <Fragment><h3>{TASK_INFO[slug].long}</h3><OverallTable slug={slug} caption={`Overall accuracy, ${TASK_INFO[slug].long}`} /></Fragment>)}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="pairs-h">
+  <section class="wrap section sec-split" aria-labelledby="pairs-h">
+    <div class="sec-head">
     <h2 class="display" id="pairs-h">Jev against every model, on the same items</h2>
     <p class="lede">Jev minus each model, in points, with the 95% interval of the paired difference. Positive means Jev was more accurate. Because both answered exactly the same items, the interval is narrower than comparing two separate scores.</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th>{taskOrder.map((s) => <Fragment><th scope="col" class="num">{TASK_INFO[s].short}: overall</th><th scope="col" class="num">depth 0</th><th scope="col" class="num">depth 5</th></Fragment>)}</tr></thead>
@@ -76,6 +91,7 @@ import { intro, liveComparisons } from "../../lib/content.js";
       </table>
     </div>
     <p class="more-link"><a href={urls.speed()}>Speed, size and memory</a> · <a href={urls.page("repeatability")}>Consistency</a></p>
+    </div>
   </section>
   <AnthusNote />
 </Base>

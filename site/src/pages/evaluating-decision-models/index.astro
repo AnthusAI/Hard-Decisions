@@ -27,20 +27,27 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
     <p class="deck">{intro.evaluating.intro}</p>
   </section>
 
-  <section class="wrap section tight" aria-labelledby="d5-h">
+  <section class="wrap section sec-split tight" aria-labelledby="d5-h">
+    <div class="sec-head">
     <h2 class="display" id="d5-h">1. Score by difficulty, not with one number</h2>
     <p class="lede">Averages hide where a model stops working. On the open-world task, every model's accuracy falls between depth 0 (the answer is stated) and depth 5 (five chained inferences):</p>
+    </div>
+    <div class="sec-body">
     <ul class="around-list">
       {owaDone.map((m) => { const d = deepEnd(m.id, OWA); return (
         <li><EngineName engine={m} href={urls.model(m.id)} /><span>{pct(d.d0.accuracy)}% at depth 0, {pct(d.d5.accuracy)}% at depth 5{d.atChance ? `; within reach of chance from depth ${d.atChance.value}` : ""}</span><span class="av">{pct(d.d5.accuracy)}%</span></li>
       ); })}
     </ul>
     {jl0 && jl5 && <p>Two models can look close on easy items and far apart on hard ones. Jev and GPT-6 Luna (reasoning off) are {pts(jl0.diff)} points apart at depth 0 and {pts(jl5.diff)} points apart at depth 5 on the same open-world problems. If your decisions need several steps of reasoning, the easy-item number is the wrong one to choose on. <a href={urls.axis("depth")}>Accuracy by proof depth</a>.</p>}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="cls-h">
+  <section class="wrap section sec-split" aria-labelledby="cls-h">
+    <div class="sec-head">
     <h2 class="display" id="cls-h">2. Check every answer, especially "unknown"</h2>
     <p class="lede">A model can reach a respectable average by ignoring one answer entirely. On the open-world task a third of the correct answers are unknown:</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th>{taskBySlug[OWA].options.map((o) => <th scope="col" class="num">Recall: {o}</th>)}<th scope="col">Most common answer</th></tr></thead>
@@ -50,41 +57,42 @@ const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) 
       </table>
     </div>
     <p>Recall on each answer and the answer mix take one look and catch a model that has learned a default rather than the task. <a href={urls.axis("reference_label")}>True, false and unknown</a>.</p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="floor-h">
+  <section class="wrap section sec-prose" aria-labelledby="floor-h">
     <h2 class="display" id="floor-h">3. Read every number against a floor</h2>
     <p>Chance is a third on the open-world task and a half on the closed-world one. A stricter floor is the best constant guess: always giving the most common answer in that slice. {owaDone.map((m) => { const o = overall(m.id, OWA); return `${m.label} is ${pts(o.accuracy - o.best_constant)} points above it`; }).join("; ")} (open world). A model that is only a few points above the constant guess is mostly not using the rules.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="pair-h">
+  <section class="wrap section sec-prose" aria-labelledby="pair-h">
     <h2 class="display" id="pair-h">4. Compare models on the same items</h2>
     <p>Every model here answered the same problems, so differences come with a paired interval that is narrower than two separate ones. Where two models are close, only a paired comparison can say whether the gap is real. <a href={urls.models()}>Paired comparisons</a>.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="rt-h">
+  <section class="wrap section sec-prose" aria-labelledby="rt-h">
     <h2 class="display" id="rt-h">5. Ask twice</h2>
     <p>{rt ? `Asked every open-world question a second time, Jev gave the same answer on ${pct(rt.agreement)}% of items; ${rt.changed} answers changed, mostly on deeper proofs.` : "Reruns are in progress."} A decision that changes when you ask again is hard to audit and hard to threshold. Measure it on your own decisions, and check calibration if the model returns probabilities. <a href={urls.page("repeatability")}>Consistency and calibration</a>.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="lat-h">
+  <section class="wrap section sec-prose" aria-labelledby="lat-h">
     <h2 class="display" id="lat-h">6. Time it where you will run it</h2>
     <p>Latency depends on where the model runs as much as on the model. Our hosted numbers include the network; our open-model numbers are one laptop. Neither predicts your deployment. <a href={urls.speed()}>Latency</a> · <a href={urls.speed()}>Sizes and memory</a>.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="pre-h">
+  <section class="wrap section sec-prose" aria-labelledby="pre-h">
     <h2 class="display" id="pre-h">7. Write down what you expect first</h2>
     <p>We preregistered our predictions before any model answered. So far {t.held || 0} held and {t.failed || 0} failed{t.mixed || t["partly held"] ? `, with ${(t.mixed || 0) + (t["partly held"] || 0)} mixed or partly held` : ""}. {failed.length > 0 && `The failures were the informative part: ${listOf(failed)}. `}An evaluation that only confirms what you expected is easy to fool yourself with. <a href={urls.predictions()}>Every prediction</a>.</p>
   </section>
 
-  <section class="wrap section" aria-labelledby="jev-h">
+  <section class="wrap section sec-prose" aria-labelledby="jev-h">
     <h2 class="display" id="jev-h">Evaluating Jev: what this benchmark shows</h2>
     {jev && isComplete("jev", OWA) && (
       <p>Jev scored {pct(overall("jev", OWA).accuracy)}% on the open-world task and {pct(overall("jev", CWA).accuracy)}% on the closed-world one, the highest of the models tested. Its weakest answer is unknown ({pct(overall("jev", OWA).recall.unknown)}% recall against {pct(overall("jev", OWA).recall.true)}% on true); its accuracy falls from {pct(jd[0].accuracy)}% at depth 0 to its lowest, {pct(jmin.accuracy)}%, at depth {jmin.value}{jmin.value !== "5" ? `, and is ${pct(jd[5].accuracy)}% at depth 5` : ""}. Paraphrased rules cost it {pts(axisRow("jev", OWA, "paraphrased", "False").accuracy - axisRow("jev", OWA, "paraphrased", "True").accuracy)} points. Those are the places to test first on your own data. <a href={urls.model("jev")}>Jev's full results</a>.</p>
     )}
   </section>
 
-  <section class="wrap section" aria-labelledby="oda-h">
+  <section class="wrap section sec-prose" aria-labelledby="oda-h">
     <h2 class="display" id="oda-h">Evaluating the OpenAI Decisions API</h2>
     <p>OpenAI's Decisions API, announced at DevDay on 29 September 2026 and in limited preview, is built on a version of GPT-6 Luna (<a href={DECISIONS_API.sources.decoder.url}>{DECISIONS_API.sources.decoder.label}</a>). We have not tested the API itself, but we ran GPT-6 Luna in the same shape of task: reasoning off, one request per problem, a fixed list of answers.{lunaO && lunaD5 && ` It answered ${pct(lunaO.accuracy)}% of open-world problems correctly overall and ${pct(lunaD5.accuracy)}% at proof depth 5.`} That is a preview, not a verdict: OpenAI uses a specialized version of Luna, and its accuracy may differ. When you evaluate the API on your own decisions, the same checks apply: accuracy by difficulty, recall on every answer, paired comparisons on the same items, and a second run to check consistency. <a href={urls.comparison("jev-vs-gpt-6-luna")}>Jev vs GPT-6 Luna, and what it means for the OpenAI Decisions API</a>. Before relying on any confidence it gives, check whether that confidence separates right answers from wrong ones on hard problems: <a href={urls.preview()}>our preview of GPT-6 Luna's log-probabilities</a> shows why.</p>
   </section>

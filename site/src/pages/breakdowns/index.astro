@@ -13,16 +13,23 @@ const live = models.filter((m) => isComplete(m.id, OWA));
     <h1 class="display xl">{intro.breakdowns.title}</h1>
     <p class="deck">{intro.breakdowns.intro}</p>
   </section>
-  <section class="wrap section tight" aria-labelledby="d5-h">
+  <section class="wrap section sec-split tight" aria-labelledby="d5-h">
+    <div class="sec-head">
     <h2 class="display sm" id="d5-h">At the deep end: accuracy at proof depth 5</h2>
+    </div>
+    <div class="sec-body">
     <ul class="around-list">
       {live.map((m) => { const r = axisRow(m.id, OWA, "depth", "5"); return r && <li><EngineName engine={m} href={urls.model(m.id)} /><span>{pct(r.lo)} to {pct(r.hi)} (95%), open world</span><span class="av">{pct(r.accuracy)}%</span></li>; })}
     </ul>
     <p class="note">Fully scored models only. GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model.</p>
+    </div>
   </section>
-  <section class="wrap section" aria-labelledby="all-h">
+  <section class="wrap section sec-split" aria-labelledby="all-h">
+    <div class="sec-head">
     <h2 class="display" id="all-h">Every breakdown, with each model's weakest slice</h2>
     <p class="lede">Open-world task; weakest and strongest slices of at least 50 items.</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Breakdown</th>{live.map((m) => <th scope="col"><EngineName engine={m} /></th>)}</tr></thead>
@@ -40,6 +47,7 @@ const live = models.filter((m) => isComplete(m.id, OWA));
           <div class="dim-card-f">{g.axes.some((a) => a.key === "depth") ? "controlled" : "descriptive"}{g.axes.length > 1 ? ` · ${g.axes.length} breakdowns` : ""}</div>
         </a>
       ))}
+    </div>
     </div>
   </section>
   <AnthusNote />

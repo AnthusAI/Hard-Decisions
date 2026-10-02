@@ -60,8 +60,11 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     {waiting.length > 0 && <p class="note">Not yet scored: {listOf(waiting.map((m) => m.label))}. {waiting.length === 1 ? "It appears" : "They appear"} here once scored, never as zero.</p>}
   </section>
 
-  <section class="wrap section tight" aria-labelledby="ov-h">
+  <section class="wrap section sec-split tight" aria-labelledby="ov-h">
+    <div class="sec-head">
     <h2 class="display" id="ov-h">Overall: {listOf(ids.map(L))}</h2>
+    </div>
+    <div class="sec-body">
     {taskOrder.map((s) => (
       <Fragment>
         <h3>{TASK_INFO[s].long}</h3>
@@ -75,11 +78,15 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
         ); })}
       </Fragment>
     ))}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="depth-h">
+  <section class="wrap section sec-split" aria-labelledby="depth-h">
+    <div class="sec-head">
     <h2 class="display" id="depth-h">{a.label} vs {bNames} by proof depth</h2>
     <p class="lede">Each point is about 300 problems that need that many inference steps, with its 95% interval.</p>
+    </div>
+    <div class="sec-body">
     <div class="two-up">
       {taskOrder.map((s) => (
         <figure class="hero-fig">
@@ -97,6 +104,7 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     ); }))}
     <p class="note">Paired differences: positive means {a.label} was more accurate on the same items.</p>
     {taskOrder.map((s) => <Fragment><h3>Accuracy by depth, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "depth", ids)} ids={ids} slug={s} valueHead="Proof depth" caption={`By depth, ${TASK_INFO[s].short}`} /></Fragment>)}
+    </div>
   </section>
 
   {bs.map((b) => <ModelDepthExamples id={b.id} />)}
@@ -104,9 +112,12 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
   {c.b.includes(LUNA) && <DecisionsApi />}
 
   {isKev && (
-    <section class="wrap section" aria-labelledby="size-help-h">
+    <section class="wrap section sec-split" aria-labelledby="size-help-h">
+      <div class="sec-head">
       <h2 class="display" id="size-help-h">Does a bigger Kev help?</h2>
       <p class="lede">The Kev sizes are built the same way on bigger base models. Every size we have scored is listed, smallest first; a size that is not scored yet appears here when it is.</p>
+      </div>
+      <div class="sec-body">
       <div class="table-scroll">
         <table class="cell-table">
           <thead><tr><th scope="col">Size</th><th scope="col">Parameters</th>{taskOrder.map((s) => <th scope="col" class="num">{TASK_INFO[s].short}</th>)}<th scope="col" class="num">Depth 0, open world</th><th scope="col" class="num">Depth 5, open world</th><th scope="col" class="num">Memory peak</th></tr></thead>
@@ -127,11 +138,15 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
       })()}
       {waiting.filter((m) => m.family === "kev").length > 0 && <p class="note">{listOf(waiting.filter((m) => m.family === "kev").map((m) => m.label))}: no answers recorded yet. It joins this table when scored.</p>}
       {sizePred.map((l) => <p class="pred-line">{l.text}. <a href={urls.predictions(l.section)}>See How we measured</a>.</p>)}
+      </div>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="where-h">
+  <section class="wrap section sec-split" aria-labelledby="where-h">
+    <div class="sec-head">
     <h2 class="display" id="where-h">Where each one is better</h2>
+    </div>
+    <div class="sec-body">
     {bs.map((b) => taskOrder.map((s) => { const x = pair(s, a.id, b.id) ? sides(s, b.id) : null; return x && (
       <p><strong>{TASK_INFO[s].short}, {a.label} vs {b.label}.</strong> {a.label} is clearly ahead on {x.aWins.length ? listOf(x.aWins) : "no slice"}.{" "}
         {x.bWins.length ? <Fragment>{b.label} is clearly ahead on {listOf(x.bWins.map((w) => `${w.label} (${pts(-w.r.diff)} points)`))}.</Fragment> : `${b.label} is not clearly ahead on any depth or answer class.`}{" "}
@@ -140,11 +155,15 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     <p class="note">A slice counts as clearly ahead when its paired 95% interval excludes zero.</p>
     {taskOrder.map((s) => <Fragment><h3>True, false and unknown, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "reference_label", ids)} ids={ids} slug={s} valueHead="Correct answer" caption={`By correct answer, ${TASK_INFO[s].short}`} /></Fragment>)}
     {taskOrder.map((s) => <Fragment><h3>Paraphrased vs templated rules, {TASK_INFO[s].short.toLowerCase()}</h3><AccTable rows={axisTable(s, "paraphrased", ids)} ids={ids} slug={s} valueHead="Wording" caption={`By wording, ${TASK_INFO[s].short}`} /></Fragment>)}
+    </div>
   </section>
 
-  <section class="wrap section" id="side-by-side" aria-labelledby="sbs-h">
+  <section class="wrap section sec-split" id="side-by-side" aria-labelledby="sbs-h">
+    <div class="sec-head">
     <h2 class="display" id="sbs-h">Answer by answer: {listOf(ids.map(L))} on the same problems</h2>
     <p class="lede">Each matrix counts every problem by its correct answer (rows) and what the model said (columns), on exactly the same items.</p>
+    </div>
+    <div class="sec-body">
     <ConfusionLegend />
     {taskOrder.map((s) => { const mxs = ids.map((id) => matrixOf(id, s)).filter(Boolean); return mxs.length > 0 && (
       <Fragment>
@@ -153,28 +172,44 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
         <p class="note">{mxs.map((mx) => leanSentence(mx)).join(". ")}.</p>
       </Fragment>
     ); })}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="errs-h">
+  <section class="wrap section sec-split" aria-labelledby="errs-h">
+    <div class="sec-head">
     <h2 class="display" id="errs-h">Where {bNames} {bs.length === 1 ? "errs" : "err"}</h2>
     <p class="lede">Accuracy alone hides which answers a model gets wrong. Rows are the correct answer; columns are what the model said.</p>
+    </div>
+    <div class="sec-body">
     {bs.map((b) => <ModelErrors id={b.id} named />)}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="axes-h">
+  <section class="wrap section sec-split" aria-labelledby="axes-h">
+    <div class="sec-head">
     <h2 class="display" id="axes-h">{bNames} across every breakdown</h2>
     <p class="lede">For each property of the problems, the weakest and strongest value on the open-world task (slices of at least 50 items). Only depth was controlled; the rest are descriptive.</p>
+    </div>
+    <div class="sec-body">
     <BreakdownSpread ids={bIds} />
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="cons-h">
+  <section class="wrap section sec-split" aria-labelledby="cons-h">
+    <div class="sec-head">
     <h2 class="display" id="cons-h">Consistency and calibration</h2>
+    </div>
+    <div class="sec-body">
     {bs.map((b) => <Fragment>{bs.length > 1 && <h3>{b.label}</h3>}<ModelConsistency id={b.id} /></Fragment>)}
     <p class="more-link"><a href={urls.page("repeatability")}>Consistency and calibration for every model, Jev included</a></p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="run-h">
+  <section class="wrap section sec-split" aria-labelledby="run-h">
+    <div class="sec-head">
     <h2 class="display" id="run-h">Size, hardware and speed</h2>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Kind</th><th scope="col">Parameters</th><th scope="col">Ran on</th><th scope="col">Median time per decision</th><th scope="col">Memory peak</th></tr></thead>
@@ -187,9 +222,10 @@ const sizePred = predictionLines(["kev-4b"]).filter((l) => /Kev-4B and Kev-9B/.t
     </div>
     <p class="note">Times are open-world, one request at a time. Hosted models were timed over the network against the vendor's servers and open models on one laptop, so speed is not like for like across the two. <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
     {bs.map((b) => <ModelFacts id={b.id} heading={b.label} />)}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="about-h">
+  <section class="wrap section sec-prose" aria-labelledby="about-h">
     <h2 class="display sm" id="about-h">The models, and what we predicted</h2>
     {ids.map((id) => <p><EngineName engine={modelById[id]} href={id === a.id ? urls.model(id) : undefined} /> {aboutModel(id)}</p>)}
     <PredLine ids={bIds} />

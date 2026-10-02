@@ -27,17 +27,24 @@ const ju = jev ? onUnknown("jev") : null;
     <p class="deck">{intro.aligning.intro}</p>
   </section>
 
-  <section class="wrap section tight" aria-labelledby="two-h">
+  <section class="wrap section sec-split tight" aria-labelledby="two-h">
+    <div class="sec-head">
     <h2 class="display" id="two-h">Two rules for what cannot be proved</h2>
     <p class="lede">Under the open-world rule, a statement nothing supports is unknown. Under the closed-world rule, it is false. The two tasks state their rule in the question, and each model got the rule for its task.</p>
+    </div>
+    <div class="sec-body">
     <div class="ex-grid">
       <div class="ex-v ex-v1"><span class="ex-l">{TASK_INFO[OWA].long}</span><p class="ex-text">{taskBySlug[OWA].question}</p></div>
       <div class="ex-v"><span class="ex-l">{TASK_INFO[CWA].long}</span><p class="ex-text">{taskBySlug[CWA].question}</p></div>
     </div>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="ow-h">
+  <section class="wrap section sec-split" aria-labelledby="ow-h">
+    <div class="sec-head">
     <h2 class="display" id="ow-h">Accuracy under each rule</h2>
+    </div>
+    <div class="sec-body">
     <ul class="around-list">
       {both.map((m) => (
         <li><EngineName engine={m} href={urls.model(m.id)} /><span>open world {pct(overall(m.id, OWA).accuracy)}%, closed world {pct(overall(m.id, CWA).accuracy)}%</span><span class="av">{pts(overall(m.id, CWA).accuracy - overall(m.id, OWA).accuracy)}</span></li>
@@ -48,11 +55,15 @@ const ju = jev ? onUnknown("jev") : null;
     <OverallTable slug={OWA} caption="Open-world results" />
     <h3>{TASK_INFO[CWA].long}</h3>
     <OverallTable slug={CWA} caption="Closed-world results" />
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="unk-h">
+  <section class="wrap section sec-split" aria-labelledby="unk-h">
+    <div class="sec-head">
     <h2 class="display" id="unk-h">Does the model follow the rule it was given?</h2>
     <p class="lede">On the open-world task, {int(both.length ? onUnknown(both[0].id).n : 0)} items have unknown as the correct answer. What each model said on them:</p>
+    </div>
+    <div class="sec-body">
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col" class="num">Said unknown</th><th scope="col" class="num">Said true</th><th scope="col" class="num">Said false</th></tr></thead>
@@ -62,16 +73,17 @@ const ju = jev ? onUnknown("jev") : null;
       </table>
     </div>
     {ignores.length > 0 && <p>{listOf(ignores.map((m) => m.label))} {ignores.length === 1 ? "answers" : "answer"} these items as if the closed-world rule applied, even though the question defines unknown and offers it: {listOf(ignores.map((m) => { const u = onUnknown(m.id); return `${m.label} said false on ${pct(u.false)}%`; }))}. That is not a reasoning failure so much as a different decision from the one asked for, and it is the kind of misalignment that a single accuracy number hides.</p>}
+    </div>
   </section>
 
   {jev && (
-    <section class="wrap section" aria-labelledby="jev-h">
+    <section class="wrap section sec-prose" aria-labelledby="jev-h">
       <h2 class="display" id="jev-h">Aligning Jev</h2>
       <p>Jev scored {pct(overall("jev", OWA).accuracy)}% under the open-world rule and {pct(overall("jev", CWA).accuracy)}% under the closed-world one{jevBest ? ", the highest of the models here under both" : ""}. On unknown items it said true {pct(ju.true)}% of the time and false {pct(ju.false)}%{ju.true > ju.false ? `: when it errs on "not enough information", it leans toward yes` : ""}. If your decision treats "cannot tell" as its own outcome, that is the error to test and correct for first. <a href={urls.model("jev")}>Jev's full results</a>.</p>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="how-h">
+  <section class="wrap section sec-prose" aria-labelledby="how-h">
     <h2 class="display" id="how-h">How to check alignment on your own decisions</h2>
     <ol class="checklist">
       <li>Write the decision rule down, including what "unknown" or "not enough information" means, and put it in the instructions the model gets.</li>

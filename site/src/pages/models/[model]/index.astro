@@ -55,9 +55,12 @@ const answerMix = (slug) => {
     </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="depth-h">
+  <section class="wrap section sec-split" aria-labelledby="depth-h">
+    <div class="sec-head">
     <h2 class="display" id="depth-h">{m.label} accuracy by proof depth</h2>
     <p class="lede">Each point is about 300 problems that need that many inference steps.{ref && ` Jev is drawn for reference.`}</p>
+    </div>
+    <div class="sec-body">
     <div class="two-up">
       {taskOrder.filter((s) => overall(id, s)).map((s) => (
         <figure class="hero-fig">
@@ -70,25 +73,37 @@ const answerMix = (slug) => {
     {taskOrder.filter((s) => overall(id, s)).map((s) => (
       <Fragment><h3>{TASK_INFO[s].long}</h3><AccTable rows={axisTable(s, "depth", chartIds)} ids={chartIds} slug={s} valueHead="Proof depth" caption={`${m.label} by depth, ${TASK_INFO[s].short}`} /></Fragment>
     ))}
+    </div>
   </section>
 
   <ModelDepthExamples id={id} />
 
-  <section class="wrap section" aria-labelledby="class-h">
+  <section class="wrap section sec-split" aria-labelledby="class-h">
+    <div class="sec-head">
     <h2 class="display" id="class-h">True, false and unknown: where {m.label} errs</h2>
     <p class="lede">Accuracy alone hides which answers a model gets wrong. Rows are the correct answer; columns are what {m.label} said.</p>
+    </div>
+    <div class="sec-body">
     <ModelErrors id={id} />
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="axes-h">
+  <section class="wrap section sec-split" aria-labelledby="axes-h">
+    <div class="sec-head">
     <h2 class="display" id="axes-h">{m.label} across every breakdown</h2>
     <p class="lede">For each property of the problems, {m.label}'s weakest and strongest value on the open-world task (slices of at least 50 items). Only depth was controlled; the rest are descriptive.</p>
+    </div>
+    <div class="sec-body">
     <BreakdownSpread ids={[id]} />
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="pair-h">
+  <section class="wrap section sec-split" aria-labelledby="pair-h">
+    <div class="sec-head">
     <h2 class="display" id="pair-h">{id === "jev" ? "Jev against every other model" : `${m.label} against Jev, on the same problems`}</h2>
     <p class="lede">Paired differences: both models answered exactly the same items, so the gap has its own 95% interval. Positive numbers mean Jev was more accurate.{(id === "jev" || id === "openai-gpt-6-luna-effort-none") && " GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model."}</p>
+    </div>
+    <div class="sec-body">
     {taskOrder.map((s) => {
       const others = id === "jev" ? models.filter((x) => x.id !== "jev" && pair(s, "jev", x.id)) : (pair(s, "jev", id) ? [m] : []);
       return others.map((x) => { const rows = pair(s, "jev", x.id); const ov = rows.find((r) => r.axis === "overall"); return (
@@ -99,21 +114,30 @@ const answerMix = (slug) => {
       ); });
     })}
     {cmps.length > 0 && <p class="more-link">Each rival in full: {cmps.map((c, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a></Fragment>)}</p>}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="cons-h">
+  <section class="wrap section sec-split" aria-labelledby="cons-h">
+    <div class="sec-head">
     <h2 class="display" id="cons-h">Consistency and calibration</h2>
+    </div>
+    <div class="sec-body">
     <ModelConsistency id={id} />
     <p class="more-link"><a href={urls.page("repeatability")}>Consistency and calibration for every model</a></p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="size-h">
+  <section class="wrap section sec-split" aria-labelledby="size-h">
+    <div class="sec-head">
     <h2 class="display" id="size-h">Size, hardware and speed</h2>
+    </div>
+    <div class="sec-body">
     <ModelFacts id={id} />
     <p class="note">{m.hosted ? "Hosted: timed over the network against the vendor's servers, so its latency is not like for like with a model on a laptop." : "Run on one Apple M1 Max laptop with 32 GB of unified memory; memory is the physical footprint of the process holding the model."} <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
+    </div>
   </section>
 
-  <section class="wrap section tight" aria-labelledby="pred-h">
+  <section class="wrap section sec-prose tight" aria-labelledby="pred-h">
     <h2 class="display sm" id="pred-h">What we predicted about {m.label}</h2>
     <PredLine ids={[id]} />
   </section>

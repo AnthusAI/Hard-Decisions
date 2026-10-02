@@ -11,28 +11,28 @@ import { intro } from "../../lib/content.js";
     <p class="deck">{intro.about.intro}</p>
   </section>
 
-  <section class="wrap section">
+  <section class="wrap section sec-prose">
     <h2 class="display">Who makes this</h2>
     <p>Hard-Decisions is made by <a href={ANTHUS.url}>{ANTHUS.name}</a>, {ANTHUS.who}. The work is self-funded.{REPO ? <Fragment> The repository is <a href={REPO}>public on GitHub</a>.</Fragment> : ""} It follows the design of its sibling, <a href={SIBLING.url}>{SIBLING.name}</a>, which measures whether the same models change their decisions when a text changes who a person is.</p>
   </section>
 
-  <section class="wrap section">
+  <section class="wrap section sec-prose">
     <h2 class="display">The models and how we reached them</h2>
     {models.map((m) => <Fragment><h3><a href={urls.model(m.id)}>{m.label}</a></h3><p>{aboutModel(m.id)}</p></Fragment>)}
     {[...pendingModels, ...notRunModels].map((m) => <Fragment><h3>{m.label}</h3><p>{aboutModel(m.id)}{m.notRun ? "" : " No answers are recorded yet."}</p></Fragment>)}
   </section>
 
-  <section class="wrap section">
+  <section class="wrap section sec-prose">
     <h2 class="display">The dataset</h2>
     <p>ProofWriter (Tafjord, Dalvi and Clark, 2021) is published by AI2 under CC BY 4.0. The example problems shown on this site are quoted from it. <a href={urls.measured()}>How we sampled and scored it</a>.</p>
   </section>
 
-  <section class="wrap section">
+  <section class="wrap section sec-prose">
     <h2 class="display">Reporting an error in a result</h2>
     <p>{REPO ? <Fragment><a href={`${REPO}/issues`}>Open an issue at the GitHub repository</a>. </Fragment> : ""}For general contact, visit the contact page on <a href={ANTHUS.url}>anth.us</a>.</p>
   </section>
 
-  <section class="wrap section">
+  <section class="wrap section sec-prose">
     <h2 class="display">Analytics and privacy</h2>
     <p>The site uses Google Analytics. To turn off tracking for your browser, visit any page with <code>?notrack=1</code> added to the address. Add <code>?notrack=0</code> to turn it back on.</p>
   </section>

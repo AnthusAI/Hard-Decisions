@@ -22,9 +22,12 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
     {rt && <p class="finding"><span class="finding-num">{pct(rt.agreement)}%</span><span class="finding-txt">of Jev's open-world answers were the same when asked twice: {int(rt.n - rt.changed)} of {int(rt.n)}, with {rt.changed} changed. Gwet's AC1, which corrects for agreement by chance, is {fmt(rt.ac1, 3)} (interval {fmt(rt.ac1_lo, 3)} to {fmt(rt.ac1_hi, 3)}).</span></p>}
   </section>
 
-  <section class="wrap section" aria-labelledby="rt-h">
+  <section class="wrap section sec-split" aria-labelledby="rt-h">
+    <div class="sec-head">
     <h2 class="display" id="rt-h">Test-retest agreement</h2>
     <p class="lede">The second run is a full rerun of every item under the same protocol, one request at a time. Agreement is the share of items with the same answer both times. AC1 corrects for chance; Cohen's kappa is shown beside it but understates agreement when a model gives one answer to most items.</p>
+    </div>
+    <div class="sec-body">
     {withRetest.length > 0 && (
       <div class="table-scroll">
         <table class="cell-table">
@@ -51,20 +54,24 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
       </Fragment>
     ))}
     {a4 && a4.predictions[2] && /held/.test(a4.predictions[2].status) && <p>So far, changes concentrate on deeper proofs: the problems a model finds hardest are also the ones it answers least consistently.</p>}
+    </div>
   </section>
 
   {a4 && (
-    <section class="wrap section" aria-labelledby="a4-h">
+    <section class="wrap section sec-prose" aria-labelledby="a4-h">
       <h2 class="display sm" id="a4-h">What we predicted</h2>
       <ul class="how-list">{a4.predictions.map((p) => <li><span class={`verdict ${STATUS_CLASS[p.status]}`}>{STATUS_WORDS[p.status]}</span> “{p.text}” {p.checks.slice(1).join(" ")}</li>)}</ul>
       <p class="more-link"><a href={urls.predictions("repeatability")}>Every prediction and its rule</a></p>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="cal-h">
+  <section class="wrap section sec-split" aria-labelledby="cal-h">
+    <div class="sec-head">
     <h2 class="display" id="cal-h">Calibration: do the probabilities mean what they say?</h2>
     <p class="lede">Several models return a probability with each answer. A well-calibrated model that says 80% is right about 80% of the time. We grouped each model's answers by the probability it gave its own answer and counted how often it was right.</p>
     <p class="footnote">Not preregistered and not part of the harness's report: computed by this site from the saved answers, for fully scored models only. Expected calibration error (ECE) is the average gap between stated probability and accuracy, weighted by how many answers fall in each group.</p>
+    </div>
+    <div class="sec-body">
     {calibrated.map((m) => taskOrder.map((s) => { const c = derived(m.id, s) && derived(m.id, s).calibration; return c && (
       <Fragment>
         <h3>{m.label}, {TASK_INFO[s].short.toLowerCase()}: stated {pct(c.mean_confidence)}%, right {pct(c.accuracy)}%, ECE {pct(c.ece)} points</h3>
@@ -79,6 +86,7 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
       </Fragment>
     ); }))}
     {noProbs.length > 0 && <p class="note">{listOf(noProbs.map((m) => m.setting ? `${m.label} (${m.setting})` : m.label))}: we asked for the answer only, as for every model, so no confidence was recorded in the scored run. A separate preregistered probe read GPT-6 Luna's log-probabilities: <a href={urls.preview()}>see its calibration on the OpenAI Decisions API preview page</a>.</p>}
+    </div>
   </section>
   <AnthusNote lead="Consistency and calibration decide whether a decision model's output can be audited and thresholded. They are worth measuring on your own decisions before you rely on them." />
 </Base>

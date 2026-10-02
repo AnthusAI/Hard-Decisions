@@ -66,9 +66,12 @@ const description = intro.home.intro;
   </section>
 
   {shallow && deep && (
-    <section class="wrap section" aria-labelledby="depth-means-h">
+    <section class="wrap section sec-split" aria-labelledby="depth-means-h">
+      <div class="sec-head">
       <h2 class="display" id="depth-means-h">What proof depth means</h2>
       <p class="lede">Every problem is a short text of facts and if-then rules, plus a statement to judge as true, false or unknown. Proof depth counts how many rules you have to chain together to reach the answer. Two real problems from the benchmark:</p>
+      </div>
+      <div class="sec-body">
       <div class="home-depth">
         {[shallow, deep].map((e) => { const u = used(e); return (
           <div class="home-depth-card">
@@ -88,12 +91,16 @@ const description = intro.home.intro;
         ); })}
       </div>
       <p class="note">Highlighted lines are the ones the proof uses; the rest are distractors. These are the shortest problems at their depth, so easier than typical. <a href={urls.depthMeans()}>What proof depth means, with a worked example at every depth</a>.</p>
+      </div>
     </section>
   )}
 
-  <section class="wrap section" aria-labelledby="overall-h">
+  <section class="wrap section sec-split" aria-labelledby="overall-h">
+    <div class="sec-head">
     <h2 class="display" id="overall-h">Overall accuracy on both tasks</h2>
     <p class="lede">The same 1,800 problems per task for every model. Models are ordered by accuracy; a model still being scored is listed last and marked partial.</p>
+    </div>
+    <div class="sec-body">
     {taskOrder.map((slug) => (
       <Fragment>
         <h3>{TASK_INFO[slug].long}</h3>
@@ -101,22 +108,30 @@ const description = intro.home.intro;
         <OverallTable slug={slug} caption={`Overall accuracy, ${TASK_INFO[slug].long}`} />
       </Fragment>
     ))}
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="depth-h">
+  <section class="wrap section sec-split" aria-labelledby="depth-h">
+    <div class="sec-head">
     <h2 class="display" id="depth-h">Every model gets worse as proofs get deeper</h2>
     {claim && <p class="claim">{claim.sentence}</p>}
     <p class="lede">Proof depth is the number of rules that must be chained to reach the answer. It is the one difficulty axis the sample controls.</p>
+    </div>
+    <div class="sec-body">
     <ul class="around-list">
       {models.filter((m) => m.complete).map((m) => { const d = depthDrop(m.id, OWA); return d && (
         <li><EngineName engine={m} href={urls.model(m.id)} /><span>{pct(d.d0.accuracy)}% at depth 0, {pct(d.d5.accuracy)}% at depth 5</span><span class="av">{pts(-d.drop)}</span></li>
       ); })}
     </ul>
     <p class="note">Open-world task, change from depth 0 to depth 5 in points. <a href={urls.axis("depth")}>Accuracy by proof depth</a> has every depth, both tasks and the paired gaps.</p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="cmp-h">
+  <section class="wrap section sec-split" aria-labelledby="cmp-h">
+    <div class="sec-head">
     <h2 class="display" id="cmp-h">Head-to-head</h2>
+    </div>
+    <div class="sec-body">
     <div class="dim-grid">
       {liveComparisons.map((c) => (
         <a class="dim-card" href={urls.comparison(c.slug)}>
@@ -127,11 +142,15 @@ const description = intro.home.intro;
       ))}
     </div>
     <p class="more-link">GPT-6 Luna is the model behind OpenAI's new Decisions API: <a href={urls.preview()}>a preview of its accuracy and confidence on deep reasoning</a>.</p>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="where-h">
+  <section class="wrap section sec-split" aria-labelledby="where-h">
+    <div class="sec-head">
     <h2 class="display" id="where-h">Where they fail</h2>
     <p class="lede">Accuracy by every property ProofWriter records. Only proof depth was controlled when the problems were sampled; the others move with depth and with each other, so they describe where errors fall rather than what causes them.</p>
+    </div>
+    <div class="sec-body">
     <div class="dim-grid">
       {groups.map((g) => { const l = axisLead(g.axes[0].key); return (
         <a class="dim-card" href={urls.group(g.slug)}>
@@ -141,10 +160,14 @@ const description = intro.home.intro;
         </a>
       ); })}
     </div>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="more-h">
+  <section class="wrap section sec-split" aria-labelledby="more-h">
+    <div class="sec-head">
     <h2 class="display" id="more-h">How we measured, consistency, speed and size</h2>
+    </div>
+    <div class="sec-body">
     <div class="dim-grid">
       <a class="dim-card" href={urls.measured()}>
         <div class="dim-card-h">{intro.measured.title}</div>
@@ -162,19 +185,24 @@ const description = intro.home.intro;
         <div class="dim-card-f">Latency · parameters · memory</div>
       </a>
     </div>
+    </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="teams-h">
+  <section class="wrap section sec-split" aria-labelledby="teams-h">
+    <div class="sec-head">
     <h2 class="display" id="teams-h">For teams evaluating or tuning a decision model</h2>
+    </div>
+    <div class="sec-body">
     <div class="dim-grid">
       <a class="dim-card" href={urls.page("evaluating-decision-models")}><div class="dim-card-h">{intro.evaluating.title}</div><p>{intro.evaluating.intro}</p></a>
       <a class="dim-card" href={urls.page("fine-tuning-decision-models")}><div class="dim-card-h">{intro.finetuning.title}</div><p>{intro.finetuning.intro}</p></a>
       <a class="dim-card" href={urls.page("aligning-decision-models")}><div class="dim-card-h">{intro.aligning.title}</div><p>{intro.aligning.intro}</p></a>
     </div>
+    </div>
   </section>
 
   {(pendingModels.length > 0 || notRunModels.length > 0) && (
-    <section class="wrap section tight" aria-labelledby="pending-h">
+    <section class="wrap section sec-prose tight" aria-labelledby="pending-h">
       <h2 class="display sm" id="pending-h">Not on the board yet</h2>
       <ul class="miss-list">
         {pendingModels.map((m) => <li><span class="hatch"></span><span><strong>{m.label}</strong>: {m.status[OWA].answered ? `${int(m.status[OWA].answered)} of ${int(m.status[OWA].of)} open-world problems answered; scoring pending.` : "preregistered; no answers recorded yet."}</span></li>)}
