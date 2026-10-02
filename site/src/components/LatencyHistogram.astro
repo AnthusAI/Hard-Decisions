@@ -1,0 +1,43 @@
+---
+// Time per decision for several models, both tasks pooled, as overlaid histograms on a log scale
+// (10 bins per decade). Static SVG; the numbers are in the Time and money tables beside it.
+import { data, modelById, latency, taskOrder, int } from "../lib/site.js";
+const { ids, label } = Astro.props;
+const W = 640, H = 280, ml = 48, mr = 16, mt = 16, mb = 42;
+const series = ids.map((id) => {
+  const hs = taskOrder.map((s) => latency(id, s)).filter((l) => l && l.hist);
+  if (!hs.length) return null;
+  const counts = hs[0].hist.counts.map((_, i) => hs.reduce((t, h) => t + h.hist.counts[i], 0));
+  const all = hs.reduce((t, h) => t + h.n, 0);
+  const p50 = (data.pooledLatency && data.pooledLatency[id] || {}).p50 ?? hs[0].p50;
+  return { m: modelById[id], edges: hs[0].hist.edges, counts, n: all, over10: hs.reduce((t, h) => t + (h.split ? h.split.at_least_10s : 0), 0), p50 };
+}).filter(Boolean);
+const edges = series.length ? series[0].edges : [];
+const lo = Math.log10(60), hi = Math.log10(250000);
+const x = (ms) => ml + ((Math.log10(ms) - lo) / (hi - lo)) * (W - ml - mr);
+const top = Math.max(1, ...series.flatMap((s) => s.counts));
+const step = top > 1500 ? 500 : top > 600 ? 250 : 100;
+const ymax = Math.ceil(top / step) * step;
+const y = (v) => mt + (1 - v / ymax) * (H - mt - mb);
+const ticks = [[100, "0.1 s"], [300, "0.3 s"], [1000, "1 s"], [3000, "3 s"], [10000, "10 s"], [30000, "30 s"], [100000, "100 s"]];
+const fmt = (ms) => (ms >= 1000 ? `${(ms / 1000).toFixed(1)} s` : `${Math.round(ms)} ms`);
+const desc = series.map((s) => `${s.m.label}: median ${fmt(s.p50)}, ${int(s.over10)} of ${int(s.n)} decisions at ten seconds or more`).join(". ");
+---
+{series.length > 0 && (
+<figure class="depth-fig">
+  <svg class="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${label}. ${desc}.`}>
+    <g class="grid">{Array.from({ length: ymax / step + 1 }, (_, i) => i * step).map((v) => <line x1={ml} x2={W - mr} y1={y(v)} y2={y(v)} />)}</g>
+    {Array.from({ length: ymax / step + 1 }, (_, i) => i * step).map((v) => <text class="tick" x={ml - 8} y={y(v) + 4} text-anchor="end">{int(v)}</text>)}
+    {ticks.map(([ms, t]) => <text class="tick" x={x(ms)} y={H - mb + 18} text-anchor="middle">{t}</text>)}
+    <text class="axis-label" x={(ml + W - mr) / 2} y={H - 4} text-anchor="middle">time per decision (log scale)</text>
+    {series.map((s) => s.counts.map((c, i) => c > 0 && edges[i] >= 60 && (
+      <rect x={x(edges[i]) + 0.5} width={Math.max(1, x(edges[i + 1]) - x(edges[i]) - 1)} y={y(c)} height={y(0) - y(c)} fill={`var(--eng-${s.m.slug})`} opacity="0.8" />
+    )))}
+    <line class="floor-line" x1={x(10000)} x2={x(10000)} y1={mt} y2={y(0)} stroke-dasharray="5 4" />
+    {series.filter((s) => s.over10 > 0).map((s) => (
+      <text class="floor-label" x={x(10000) + 6} y={mt + 14} text-anchor="start">{int(s.over10)} {s.m.label} decisions ≥ 10 s</text>
+    ))}
+    {series.map((s, k) => <text class="row-sub" x={x(s.p50)} y={mt + 34 + k * 16} text-anchor="middle" fill={`var(--eng-${s.m.slug})`} style={`fill:var(--eng-${s.m.slug})`}>{s.m.label} median {fmt(s.p50)}</text>)}
+  </svg>
+</figure>
+)}

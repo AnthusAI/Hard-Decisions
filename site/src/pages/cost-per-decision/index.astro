@@ -4,6 +4,8 @@
 import Base from "../../layouts/Base.astro";
 import EngineName from "../../components/EngineName.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
+import Legend from "../../components/Legend.astro";
+import DepthBars from "../../components/DepthBars.astro";
 import { data, models, allModels, urls, taskOrder, TASK_INFO, pct, int, costOf, latency, OWA, listOf } from "../../lib/site.js";
 import { intro } from "../../lib/content.js";
 
@@ -75,6 +77,8 @@ const ratioCorrect = jev && dearest && dearest.m.id !== "jev" ? dearest.c.total.
     <p class="lede">The same cost per million decisions, split by how many inference steps each problem needs. A model that does the same work on every problem costs the same at every depth; one that spends more computation on problems it finds hard costs more where it does so.</p>
     </div>
     <div class="sec-body">
+    <Legend ids={priced.map((x) => x.m.id)} slug={OWA} />
+    <div class="depth-pair">{taskOrder.map((s) => <div class="depth-panel"><p class="depth-panel-t">{TASK_INFO[s].long}</p><DepthBars ids={priced.map((x) => x.m.id)} slug={s} metric="cost" /></div>)}</div>
     <div class="table-scroll">
       <table class="cell-table">
         <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>

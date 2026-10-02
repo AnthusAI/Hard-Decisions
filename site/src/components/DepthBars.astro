@@ -1,0 +1,37 @@
+---
+// Grouped bars by proof depth for one task: average time per decision ("time") or list-price cost
+// per million decisions ("cost"), one bar per model. Static SVG; the numbers are in the table beside it.
+import { modelById, latency, costOf, TASK_INFO, taskOrder } from "../lib/site.js";
+const { ids, slug, metric } = Astro.props;
+const W = 520, H = 250, ml = 52, mr = 12, mt = 22, mb = 40;
+const rowsOf = (id, sl = slug) => metric === "time" ? ((latency(id, sl) || {}).by_depth || []).map((r) => ({ d: r.depth, v: r.mean / 1000 }))
+  : ((((costOf(id) || {}).tasks || {})[sl] || {}).by_depth || []).map((r) => ({ d: r.depth, v: r.usd_per_million }));
+const series = ids.map((id) => ({ m: modelById[id], rows: rowsOf(id) })).filter((s) => s.rows.length);
+// One scale for every task, so panels side by side compare at a glance.
+const top = Math.max(0.001, ...ids.flatMap((id) => taskOrder.flatMap((sl) => rowsOf(id, sl).map((r) => r.v))));
+const nice = (v) => { const p = 10 ** Math.floor(Math.log10(v)); return [1, 2, 2.5, 5, 10].map((k) => k * p).find((k) => k >= v / 4) ; };
+const step = nice(top), ymax = Math.ceil(top / step) * step;
+const y = (v) => mt + (1 - v / ymax) * (H - mt - mb);
+const slot = (W - ml - mr) / 6, bw = Math.min(26, (slot * 0.8) / Math.max(1, series.length));
+const x = (d, k) => ml + slot * d + slot / 2 + (k - (series.length - 1) / 2) * bw;
+const lab = (v) => metric === "time" ? (v >= 1 ? `${v.toFixed(1)}s` : `${(v * 1000).toFixed(0)}ms`) : `$${Math.round(v)}`;
+const tick = (v) => metric === "time" ? `${v} s` : `$${v}`;
+const name = `${metric === "time" ? "Average seconds per decision" : "List-price cost per million decisions"} by proof depth, ${TASK_INFO[slug].short.toLowerCase()} task`;
+const desc = series.map((s) => `${s.m.label}: ${s.rows.map((r) => `depth ${r.d} ${lab(r.v)}`).join(", ")}`).join(". ");
+---
+{series.length > 0 && (
+<figure class="depth-fig">
+  <svg class="chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${name}. ${desc}.`}>
+    <g class="grid">{Array.from({ length: Math.round(ymax / step) + 1 }, (_, i) => i * step).map((v) => <line x1={ml} x2={W - mr} y1={y(v)} y2={y(v)} />)}</g>
+    {Array.from({ length: Math.round(ymax / step) + 1 }, (_, i) => i * step).map((v) => <text class="tick" x={ml - 8} y={y(v) + 4} text-anchor="end">{tick(+v.toFixed(3))}</text>)}
+    {[0, 1, 2, 3, 4, 5].map((d) => <text class="tick" x={ml + slot * d + slot / 2} y={H - mb + 18} text-anchor="middle">{d}</text>)}
+    <text class="axis-label" x={(ml + W - mr) / 2} y={H - 4} text-anchor="middle">proof depth (inference steps)</text>
+    {series.map((s, k) => s.rows.map((r) => (
+      <g>
+        <rect x={x(r.d, k) - bw / 2 + 1} width={bw - 2} y={y(r.v)} height={y(0) - y(r.v)} fill={`var(--eng-${s.m.slug})`} />
+        <text class="tick" x={x(r.d, k)} y={y(r.v) - 4} text-anchor="middle" style="font-size:9.5px">{lab(r.v)}</text>
+      </g>
+    )))}
+  </svg>
+</figure>
+)}
