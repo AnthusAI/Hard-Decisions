@@ -413,6 +413,53 @@ const lunaMisses = existsSync(lunaMissesPath)
 const modelExamplesPath = join(ROOT, "studies", "model-examples.json");
 const modelExamples = existsSync(modelExamplesPath)
   ? (({ engines, selection }) => ({ file: rel(modelExamplesPath), modified: mtime(modelExamplesPath), selection, engines }))(JSON.parse(readFileSync(modelExamplesPath, "utf8"))) : null;
+// ---------------------------------------------------------------------------------------------
+// API cost: every engine with a list price in engines.yaml, priced from the token usage its vendor
+// reported on each scored answer (answers/<engine>/<task>.jsonl.gz). List prices, not invoices.
+// ---------------------------------------------------------------------------------------------
+function readCost() {
+  const out = {};
+  const q = (xs, p) => xs[Math.floor(p * (xs.length - 1))];
+  for (const [e, f] of Object.entries(facts)) {
+    const lp = f && f.list_price;
+    if (!lp) continue;
+    const per = {};
+    for (const task of tasks) {
+      const path = join(ROOT, "answers", e, `${task.slug}.jsonl.gz`);
+      if (!existsSync(path)) continue;
+      const rows = gz(path).filter((r) => r.usage && r.usage.input_tokens != null);
+      if (!rows.length) continue;
+      const inp = rows.map((r) => r.usage.input_tokens).sort((a, b) => a - b);
+      const outp = rows.map((r) => r.usage.output_tokens || 0).sort((a, b) => a - b);
+      const sum = (xs) => xs.reduce((a, b) => a + b, 0);
+      const usd = (sum(inp) * lp.input_usd_per_mtok + sum(outp) * lp.output_usd_per_mtok) / 1e6;
+      const s = perTask[task.slug].studies.engines[e];
+      const correct = s ? Math.round(s.overall.accuracy * s.overall.n) : null;
+      const depthOf = Object.fromEntries(task._items.map((i) => [i.id, i.metadata.depth]));
+      const by_depth = [0, 1, 2, 3, 4, 5].map((d) => {
+        const g = rows.filter((r) => depthOf[r.id] === d);
+        if (!g.length) return null;
+        const u = g.reduce((a, r) => a + r.usage.input_tokens * lp.input_usd_per_mtok + (r.usage.output_tokens || 0) * lp.output_usd_per_mtok, 0) / 1e6;
+        return { depth: d, requests: g.length, usd_per_million: u / g.length * 1e6 };
+      }).filter(Boolean);
+      per[task.slug] = { file: rel(path), requests: rows.length, input_tokens: sum(inp), output_tokens: sum(outp), usd,
+        input_p50: q(inp, 0.5), input_p90: q(inp, 0.9), input_max: inp.at(-1), output_p50: q(outp, 0.5),
+        accuracy: s ? s.overall.accuracy : null, correct, usd_per_million: usd / rows.length * 1e6,
+        usd_per_million_correct: correct ? usd / correct * 1e6 : null, by_depth };
+    }
+    if (!Object.keys(per).length) continue;
+    const all = Object.values(per);
+    const tot = (k) => all.reduce((a, b) => a + (b[k] || 0), 0);
+    const total = { requests: tot("requests"), input_tokens: tot("input_tokens"), output_tokens: tot("output_tokens"), usd: tot("usd"), correct: tot("correct") };
+    total.usd_per_million = total.usd / total.requests * 1e6;
+    total.usd_per_million_correct = total.correct ? total.usd / total.correct * 1e6 : null;
+    total.accuracy = total.correct / total.requests;
+    out[e] = { price: lp, tasks: per, total };
+  }
+  return out;
+}
+const cost = readCost();
+
 const memory = {};
 for (const m of manifests) {
   if (!m.memory) continue;
@@ -434,7 +481,7 @@ const data = {
     note: "Built from the working tree: results scored after the named commit are included.",
     warnings,
   },
-  axes, machine, facts, memory,
+  axes, machine, facts, memory, cost,
   tasks: tasks.map(({ _items, ...t }) => t),
   results: perTask,
   // Load averages only: the manifests also name the busiest other processes on the machine, which

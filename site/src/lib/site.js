@@ -99,6 +99,7 @@ export const urls = {
   measured: () => join("how-we-measured"),
   predictions: (section = null) => `${join("how-we-measured")}#${section ? `predictions-${section}` : "predictions"}`,
   speed: () => join("speed-size-and-memory"),
+  cost: () => join("cost-per-decision"),
   preview: () => join("openai-decisions-api-preview"),
   depthMeans: () => join("what-proof-depth-means"),
   page: (slug) => join(slug),
@@ -151,6 +152,7 @@ export const recallAt = (id, slug, depth, label) => {
   return c ? { ...c, recall: c.correct / c.n } : null;
 };
 export const memoryOf = (id) => data.memory[id] || null;
+export const costOf = (id) => (data.cost && data.cost[id]) || null;
 
 // Models scored on a task, best first; complete ones before partial ones.
 export function ranked(slug) {

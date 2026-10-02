@@ -1,0 +1,120 @@
+---
+// What each hosted model cost on the benchmark: list price times the tokens its own API reported on
+// every scored answer (data.cost, from scripts/collect.mjs). Open models have no API cost.
+import Base from "../../layouts/Base.astro";
+import EngineName from "../../components/EngineName.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { data, models, allModels, urls, taskOrder, TASK_INFO, pct, int, costOf, latency, OWA, listOf } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+
+const priced = models.filter((m) => costOf(m.id)).map((m) => ({ m, c: costOf(m.id) }))
+  .sort((a, b) => a.c.total.usd_per_million - b.c.total.usd_per_million);
+const unpriced = models.filter((m) => !costOf(m.id));
+const money = (x) => (x >= 10 ? `$${Math.round(x).toLocaleString("en-US")}` : x >= 1 ? `$${x.toFixed(2)}` : `$${x.toFixed(3)}`);
+const rate = (x) => (x === 0 ? "free" : `$${x < 0.1 ? x.toFixed(3) : x.toFixed(2)}`);
+const jev = priced.find((x) => x.m.id === "jev");
+const dearest = priced.at(-1);
+const ratio = jev && dearest && dearest.m.id !== "jev" ? dearest.c.total.usd_per_million / jev.c.total.usd_per_million : null;
+const ratioCorrect = jev && dearest && dearest.m.id !== "jev" ? dearest.c.total.usd_per_million_correct / jev.c.total.usd_per_million_correct : null;
+---
+<Base title={intro.cost.title} description={intro.cost.intro} path={urls.cost()} current={{ page: "cost" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Cost per decision" }]}>
+  <section class="wrap hero">
+    <p class="kicker">API cost · list price · per decision</p>
+    <h1 class="display xl">{intro.cost.title}</h1>
+    <p class="deck">{intro.cost.intro}</p>
+    {ratio && <p class="finding"><span class="finding-num">{ratio.toFixed(1)}×</span><span class="finding-txt"><EngineName engine={dearest.m} href={urls.model(dearest.m.id)} /> cost {ratio.toFixed(1)} times as much as <EngineName engine={jev.m} href={urls.model("jev")} /> per decision on the same problems ({money(dearest.c.total.usd_per_million)} against {money(jev.c.total.usd_per_million)} per million decisions), and {ratioCorrect.toFixed(1)} times as much per correct decision, because it was also less accurate.</span></p>}
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="c-h">
+    <div class="sec-head">
+    <h2 class="display" id="c-h">Cost per decision, both tasks</h2>
+    <p class="lede">Each model's published list price times the input and output tokens its own API reported on each of its {int(priced[0] ? priced[0].c.total.requests : 0)} scored answers. A correct decision is one that matched the gold answer; the cost per correct decision spreads the cost of the wrong ones over the right ones.</p>
+    </div>
+    <div class="sec-body">
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">List price per million tokens, input / output</th><th scope="col" class="num">Tokens billed, input / output</th><th scope="col" class="num">Cost of these runs</th><th scope="col" class="num">Per million decisions</th><th scope="col" class="num">Accuracy</th><th scope="col" class="num">Per million correct decisions</th></tr></thead>
+        <tbody>{priced.map(({ m, c }) => (
+          <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} />{m.setting && <span class="hl">{m.setting}</span>}</th>
+            <td>{rate(c.price.input_usd_per_mtok)} / {rate(c.price.output_usd_per_mtok)}</td>
+            <td class="num">{int(c.total.input_tokens)} / {int(c.total.output_tokens)}</td>
+            <td class="num">{money(c.total.usd)}</td>
+            <td class="num strong">{money(c.total.usd_per_million)}</td>
+            <td class="num">{pct(c.total.accuracy)}%</td>
+            <td class="num strong">{money(c.total.usd_per_million_correct)}</td></tr>
+        ))}</tbody>
+      </table>
+    </div>
+    <p class="note">Prices: {priced.map(({ m, c }) => `${m.label}, ${c.price.source}`).join("; ")}. Output tokens that a price lists as free cost nothing even where the API reports them.</p>
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="t-h">
+    <div class="sec-head">
+    <h2 class="display" id="t-h">By task</h2>
+    <p class="lede">The open-world task (true, false or unknown) and the closed-world task (true or false) use the same problems, so their texts are the same length; the difference in cost comes from the answers.</p>
+    </div>
+    <div class="sec-body">
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col" class="num">Decisions</th><th scope="col" class="num">Cost</th><th scope="col" class="num">Per million decisions</th><th scope="col" class="num">Accuracy</th><th scope="col" class="num">Per million correct decisions</th></tr></thead>
+        <tbody>{priced.map(({ m, c }) => taskOrder.filter((s) => c.tasks[s]).map((s) => { const t = c.tasks[s]; return (
+          <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th><td>{TASK_INFO[s].short}</td>
+            <td class="num">{int(t.requests)}</td><td class="num">{money(t.usd)}</td><td class="num strong">{money(t.usd_per_million)}</td>
+            <td class="num">{t.accuracy != null ? `${pct(t.accuracy)}%` : "—"}</td><td class="num">{t.usd_per_million_correct != null ? money(t.usd_per_million_correct) : "—"}</td></tr>
+        ); }))}</tbody>
+      </table>
+    </div>
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="d-h">
+    <div class="sec-head">
+    <h2 class="display" id="d-h">Cost by proof depth</h2>
+    <p class="lede">The same cost per million decisions, split by how many inference steps each problem needs. A model that does the same work on every problem costs the same at every depth; one that spends more computation on problems it finds hard costs more where it does so.</p>
+    </div>
+    <div class="sec-body">
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Task</th>{[0, 1, 2, 3, 4, 5].map((d) => <th scope="col" class="num">Depth {d}</th>)}</tr></thead>
+        <tbody>{priced.map(({ m, c }) => taskOrder.filter((s) => c.tasks[s] && c.tasks[s].by_depth).map((s) => (
+          <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th><td>{TASK_INFO[s].short}</td>
+            {c.tasks[s].by_depth.map((r) => <td class="num">{money(r.usd_per_million)}</td>)}</tr>
+        )))}</tbody>
+      </table>
+    </div>
+    {priced.some((x) => x.m.id === "glide") && <p class="note">Fastino describes GLiDE as producing "a fast probability distribution," then allocating "additional reasoning when the leading result is uncertain," to "spend more computation on difficult decisions" (<a href="https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model">Fastino</a>). TypeSafe describes Jev as generating all outputs "in a single query," in parallel (<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe</a>).</p>}
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="tok-h">
+    <div class="sec-head">
+    <h2 class="display" id="tok-h">Tokens per request</h2>
+    <p class="lede">Every model got the same text and question, but each vendor counts tokens its own way, so compare the dollars, not the token counts across models. Within one model, the spread shows whether some requests cost much more than others.</p>
+    </div>
+    <div class="sec-body">
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col" class="num">Input tokens, median</th><th scope="col" class="num">90th percentile</th><th scope="col" class="num">Largest</th><th scope="col" class="num">Output tokens, median</th></tr></thead>
+        <tbody>{priced.map(({ m, c }) => taskOrder.filter((s) => c.tasks[s]).map((s) => { const t = c.tasks[s]; return (
+          <tr><th scope="row"><EngineName engine={m} href={urls.model(m.id)} /></th><td>{TASK_INFO[s].short}</td>
+            <td class="num">{int(t.input_p50)}</td><td class="num">{int(t.input_p90)}</td><td class="num">{int(t.input_max)}</td><td class="num">{int(t.output_p50)}</td></tr>
+        ); }))}</tbody>
+      </table>
+    </div>
+    {priced.some((x) => x.m.id === "glide") && <p class="note">GLiDE's spread is its thinking: Fastino describes GLiDE as spending more computation when its first answer is uncertain, and those requests report several times the input tokens of the rest, which are billed. Its slow requests are the same ones on the <a href={urls.speed()}>speed page</a>{latency("glide", OWA) ? `, where 90% of its open-world decisions took under ${(latency("glide", OWA).p90 / 1000).toFixed(1)} seconds` : ""}.</p>}
+    </div>
+  </section>
+
+  <section class="wrap section sec-prose" aria-labelledby="n-h">
+    <h2 class="display sm" id="n-h">What these numbers leave out</h2>
+    <ul class="how-list">
+      <li><strong>List prices, not invoices.</strong> Each cost is the vendor's published price times the tokens its API reported; volume discounts, free tiers and minimums are not included. Requests that failed and were retried are not counted.</li>
+      <li><strong>Open models have no API cost.</strong> {unpriced.length > 0 && `${listOf(unpriced.map((m) => m.label))} ran on our own laptop, so there is no per-decision price to compare. `}Running them means paying for hardware and its time instead; <a href={urls.speed()}>their size, memory and speed</a> show what that takes.</li>
+      <li><strong>The benchmark only.</strong> These are the scored runs. Reruns for timing and repeatability, and the GPT-6 Luna log-probability probe, are not included.</li>
+      <li><strong>Your text, your cost.</strong> Cost scales with the length of what you send. These problems average a few hundred tokens; a longer text costs more on every model.</li>
+    </ul>
+  </section>
+  <AnthusNote />
+</Base>
