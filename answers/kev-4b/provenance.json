@@ -1,0 +1,50 @@
+{
+  "base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "engine": "kev-4b",
+  "launcher": "var/start_kev_size.py jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101 12 (MLX memory and wired 12 GiB, cache 256 MiB)",
+  "models": {
+    "models": [
+      {
+        "backend": "mlx",
+        "base": "Qwen/Qwen3.5-4B-Base",
+        "cuda_graphs": null,
+        "description": "Kev pointer head on Qwen/Qwen3.5-4B-Base, serving jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101 at temperature 2.41",
+        "device": "mps",
+        "dtype": "bfloat16",
+        "lora": 16,
+        "name": "kev-latest",
+        "prefix_cache": {
+          "cached_states": 0,
+          "hits": 0,
+          "min_state_tokens": 0,
+          "misses": 0,
+          "size": 0
+        },
+        "release_date": "2026-10-01",
+        "run": "jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101",
+        "temperature": 2.406050072164233
+      },
+      {
+        "backend": "mlx",
+        "base": "Qwen/Qwen3.5-4B-Base",
+        "cuda_graphs": null,
+        "description": "Kev pointer head on Qwen/Qwen3.5-4B-Base, serving jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101 at temperature 2.41",
+        "device": "mps",
+        "dtype": "bfloat16",
+        "lora": 16,
+        "name": "jev-latest",
+        "prefix_cache": {
+          "cached_states": 0,
+          "hits": 0,
+          "min_state_tokens": 0,
+          "misses": 0,
+          "size": 0
+        },
+        "release_date": "2026-10-01",
+        "run": "jaredpalmer/kev-4b@139fdd94f1b6a6ad80cc15e08fcb99cac885a101",
+        "temperature": 2.406050072164233
+      }
+    ]
+  },
+  "server_revision": "c9c1f855505336ac32092a5f68305d397f7fcc3e"
+}

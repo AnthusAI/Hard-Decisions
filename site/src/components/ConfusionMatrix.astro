@@ -1,0 +1,28 @@
+---
+// A visual confusion matrix, kept a real table: rows are the correct answer, columns what the model
+// said. Each cell is shaded by its share of the row, green on the diagonal (right answers) and red
+// off it (errors), and keeps its count. The compact variant is for small multiples.
+import { modelById, TASK_INFO, int, pct } from "../lib/site.js";
+import { matrixOf, levelOf } from "../lib/confusion.js";
+const { id, slug, depth = null, compact = false, caption = null, showRecall = !compact } = Astro.props;
+const mx = matrixOf(id, slug, depth);
+const m = modelById[id];
+const cap = caption || `${m.label}${m.setting ? ` (${m.setting})` : ""}, ${TASK_INFO[slug].short.toLowerCase().replace(" ", "-")} task${depth !== null ? `, depth ${depth}` : ""}`;
+---
+{mx && (
+  <div class="table-scroll">
+    <table class:list={["cm", { compact }]} data-engine={id} data-task={slug} data-depth={depth === null ? "all" : depth}>
+      <caption class:list={[{ sr: !compact }]}>{cap}</caption>
+      <thead><tr><th scope="col" class="cm-corner">Correct ↓ · said →</th>{mx.cols.map((c) => <th scope="col" class="num">{c}</th>)}{showRecall && <th scope="col" class="num">Recall</th>}</tr></thead>
+      <tbody>{mx.rows.map((r) => (
+        <tr data-gold={r.gold} data-n={r.n}>
+          <th scope="row">{r.gold}</th>
+          {mx.cols.map((c) => { const share = r.n ? r.cells[c] / r.n : 0; const lv = levelOf(share); return (
+            <td class:list={["num", "cm-c", c === r.gold ? "cm-ok" : "cm-no", `lv${lv}`]} data-said={c} data-count={r.cells[c]} title={`${r.cells[c]} of ${r.n} (${pct(share)}%)`}>{int(r.cells[c])}</td>
+          ); })}
+          {showRecall && <td class="num">{r.recall === null ? "—" : `${pct(r.recall)}%`}</td>}
+        </tr>
+      ))}</tbody>
+    </table>
+  </div>
+)}

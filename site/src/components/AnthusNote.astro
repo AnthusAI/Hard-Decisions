@@ -1,0 +1,12 @@
+---
+// Who makes this and the one way to reach us: the words Biased-Decisions uses on its About page.
+import { ANTHUS, urls } from "../lib/site.js";
+const { lead = null } = Astro.props;
+---
+<aside class="wrap section anthus" aria-labelledby="anthus-h">
+  <div class="anthus-box">
+    <h2 class="display sm" id="anthus-h">Who makes this</h2>
+    {lead && <p>{lead}</p>}
+    <p>Hard-Decisions is made by <a href={ANTHUS.url}>{ANTHUS.name}</a>, {ANTHUS.who}. The work is self-funded. For general contact, visit the contact page on <a href={ANTHUS.url}>anth.us</a>. <a href={urls.page("about")}>About this site</a>.</p>
+  </div>
+</aside>

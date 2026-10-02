@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from hard_decisions import answering, proofwriter, report, sampling, scoring
-from hard_decisions.record import engines_with_records, read_record, record_path
+from hard_decisions.record import append_manifest, engines_with_records, read_record, record_path
 from hard_decisions.tasks import ROOT, Task, all_slugs
 
 SEMANTICS_SLUG = {"OWA": "proofwriter-owa", "CWA": "proofwriter-cwa"}
@@ -105,21 +105,99 @@ def _engine(name: str):
     if name == "laya":
         from hard_decisions.engines.laya import LayaEngine
         return LayaEngine()
+    if name == "glide":
+        from hard_decisions.engines.glide import GlideEngine
+        return GlideEngine()
     if name.startswith("kev"):
         from hard_decisions.engines.typesafe_compat import TypesafeCompatibleEngine
         return TypesafeCompatibleEngine(name, KEV_URL)
-    raise SystemExit(f"unknown engine {name!r}; available: jev, laya, kev-<size>")
+    if ":" in name:
+        from hard_decisions.engines.llm import ChatClassifierEngine, spec_for
+        vendor, model = name.split(":", 1)
+        return ChatClassifierEngine(spec_for(vendor, model))
+    raise SystemExit(f"unknown engine {name!r}; available: jev, glide, laya, kev-<size>, <vendor>:<model>")
+
+
+def _machine() -> dict:
+    import platform
+    info = {"platform": platform.platform(), "python": platform.python_version()}
+    if sys.platform == "darwin":
+        import subprocess
+        for key, name in (("model", "hw.model"), ("cpu", "machdep.cpu.brand_string"), ("memory_bytes", "hw.memsize")):
+            out = subprocess.run(["sysctl", "-n", name], capture_output=True, text=True).stdout.strip()
+            info[key] = int(out) if key == "memory_bytes" and out.isdigit() else out
+    return info
+
+
+def _footprint(pid: int) -> Optional[dict]:
+    """Current and peak physical footprint of a process (macOS ``footprint``), in MB. Unlike RSS this
+    counts GPU (Metal) memory, which is where MLX and MPS keep model weights on Apple silicon."""
+    import re
+    import subprocess
+    if sys.platform != "darwin":
+        return None
+    out = subprocess.run(["footprint", "-p", str(pid)], capture_output=True, text=True).stdout
+    found = {}
+    for key in ("phys_footprint", "phys_footprint_peak"):
+        m = re.search(rf"^\s*{key}:\s*([\d.]+)\s*(KB|MB|GB)", out, re.M)
+        if m:
+            found[f"{key}_mb"] = round(float(m.group(1)) * {"KB": 1 / 1024, "MB": 1, "GB": 1024}[m.group(2)], 1)
+    return {"pid": pid, **found} if found else None
+
+
+def _engine_memory(engine_name: str) -> Optional[dict]:
+    """Memory of the process holding the model: the Kev server for Kev, this process for in-process
+    engines (Laya). Hosted engines have none to measure. The peak covers the process's whole life,
+    including loading, so a server should be started fresh for the model being measured."""
+    import subprocess
+    if engine_name.startswith("kev"):
+        port = KEV_URL.rsplit(":", 1)[-1].strip("/")
+        pids = subprocess.run(["lsof", "-t", f"-iTCP:{port}", "-sTCP:LISTEN"], capture_output=True,
+                              text=True).stdout.split()
+        return _footprint(int(pids[0])) if pids else None
+    if engine_name in LOCAL_ENGINES:
+        return _footprint(os.getpid())
+    return None
+
+
+def _machine_load() -> dict:
+    """Load average and the busiest other processes, so a run made on a busy machine is visible in
+    its manifest. Command names only, no arguments."""
+    import subprocess
+    out = subprocess.run(["ps", "-Ao", "pid=,pcpu=,comm="], capture_output=True, text=True).stdout
+    busy = []
+    for line in out.splitlines():
+        parts = line.split(None, 2)
+        if len(parts) == 3 and parts[1].replace(".", "", 1).isdigit() and int(parts[0]) != os.getpid():
+            if float(parts[1]) >= 25:
+                busy.append({"pcpu": float(parts[1]), "command": parts[2].rsplit("/", 1)[-1]})
+    return {"loadavg": [round(x, 2) for x in os.getloadavg()],
+            "busy_processes": sorted(busy, key=lambda b: -b["pcpu"])[:8]}
+
+
+def _code_version() -> dict:
+    import subprocess
+    run = lambda *a: subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True).stdout.strip()  # noqa: E731
+    return {"commit": run("rev-parse", "HEAD"), "dirty": bool(run("status", "--porcelain", "--untracked-files=no"))}
 
 
 def cmd_answer(args) -> int:
     task = Task.load(args.task)
     items = task.load_items()
-    path = record_path(args.engine, task.slug)
+    engine = _engine(args.engine)
+    path = record_path(engine.name, task.slug, tree="timing" if args.timing else "answers")
     todo = answering.pending(items, path, args.limit)
     texts = {i["id"]: i["text"] for i in items}
-    print(f"{args.engine} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
-    if args.engine == "jev":
-        print(f"price: {answering.estimate(task, todo, read_record(path), texts)}")
+    print(f"{engine.name} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
+    if args.engine in answering.SYSTEM_ONE_RATES:
+        rate = answering.SYSTEM_ONE_RATES[args.engine]
+        print(f"price: {answering.estimate(task, todo, read_record(path), texts, rate=rate)}")
+    elif ":" in args.engine:
+        price = answering.estimate_llm(engine.spec, task, todo, read_record(path), texts)
+        print(f"price: {price if price else 'unknown: add ' + engine.spec.model + ' to hard_decisions/pricing.py'}")
+        if price is None and args.confirm:
+            print("refusing: a paid engine must be priced before it runs", file=sys.stderr)
+            return 2
     else:
         print("price: $0 (open weights, runs locally)")
     if not args.confirm:
@@ -128,7 +206,15 @@ def cmd_answer(args) -> int:
     if args.max_requests is None or len(todo) > args.max_requests:
         print(f"refusing: --max-requests must be given and at least {len(todo)}", file=sys.stderr)
         return 2
-    stats = asyncio.run(answering.run(_engine(args.engine), task, todo, path, concurrency=args.concurrency))
+    started_at, load_at_start = answering.utc_now(), _machine_load()
+    stats = asyncio.run(answering.run(engine, task, todo, path, concurrency=args.concurrency))
+    append_manifest(path, {"engine": engine.name, "task": task.slug, "tree": path.parts[-3],
+                           "started_at": started_at, "finished_at": answering.utc_now(),
+                           "requested": len(todo), "answered": stats["answered"], "failed": stats["failed"],
+                           "concurrency": args.concurrency, "machine": _machine(), "code": _code_version(),
+                           "kev_url": KEV_URL if args.engine.startswith("kev") else None,
+                           "memory": _engine_memory(engine.name),
+                           "load": {"start": load_at_start, "end": _machine_load()}})
     print(f"answered {stats['answered']}, failed {stats['failed']} (rerun to retry failures)")
     return 0 if not stats["failed"] else 1
 
@@ -147,8 +233,13 @@ def cmd_score(args) -> int:
 
 
 def cmd_replay(args) -> int:
+    from hard_decisions import agreement
     for slug in all_slugs():
-        for path in scoring.replay(Task.load(slug)):
+        task = Task.load(slug)
+        for path in scoring.replay(task):
+            print(f"wrote {path.relative_to(ROOT)}")
+        path = agreement.replay(task)
+        if path:
             print(f"wrote {path.relative_to(ROOT)}")
     return 0
 
@@ -181,6 +272,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     p.add_argument("--confirm", action="store_true")
     p.add_argument("--max-requests", type=int)
     p.add_argument("--concurrency", type=int, default=8)
+    p.add_argument("--timing", action="store_true",
+                   help="write to timing/ (a rerun for latency only; never scored) instead of answers/")
     p.set_defaults(func=cmd_answer)
     p = sub.add_parser("score")
     p.add_argument("engine")

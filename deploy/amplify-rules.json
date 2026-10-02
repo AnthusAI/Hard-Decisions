@@ -1,0 +1,4 @@
+[
+  {"source": "/index.html", "target": "/", "status": "301", "condition": null},
+  {"source": "/<*>", "target": "/404.html", "status": "404", "condition": null}
+]

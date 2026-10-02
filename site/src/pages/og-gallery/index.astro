@@ -1,0 +1,35 @@
+---
+// Every social card at phone-feed size, for review. Not linked from any page; noindex.
+import Base from "../../layouts/Base.astro";
+import { allCards } from "../../lib/cards.js";
+import { urls } from "../../lib/site.js";
+
+const cards = allCards();
+const templates = [...new Set(cards.map((c) => c.template))];
+const TITLES = { home: "Home", hub: "Lists", model: "One model", compare: "Comparisons", axis: "Breakdowns", topic: "Topics" };
+---
+<Base title="Share a result from the benchmark" description="Every page's social card, for review." path={`${urls.home()}og-gallery/`} noindex>
+  <section class="wrap hero">
+    <p class="kicker">Review</p>
+    <h1 class="display xl">Share a result from the benchmark</h1>
+    <p class="deck">These images preview each page when it is shared. Choose a preview to open the page behind it. Each includes a written description for readers who cannot see the image.</p>
+  </section>
+  {templates.map((t) => (
+    <section class="wrap section sec-split">
+      <div class="sec-head">
+      <h2 class="display sm">{TITLES[t] || t}</h2>
+      </div>
+      <div class="sec-body">
+      <ul class="og-gallery">
+        {cards.filter((c) => c.template === t).map((c) => (
+          <li>
+            <a href={c.path}><img src={c.url} width="1200" height="630" alt={c.alt} loading="lazy" decoding="async"></a>
+            <p class="note"><a href={c.path}><code>{c.path}</code></a></p>
+            <p class="note">{c.alt}</p>
+          </li>
+        ))}
+      </ul>
+      </div>
+    </section>
+  ))}
+</Base>

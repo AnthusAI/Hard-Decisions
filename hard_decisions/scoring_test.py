@@ -89,3 +89,42 @@ def test_estimate_prefers_measured_usage(tmp_path):
     recorded = [{"id": i["id"], "usage": {"input_tokens": 100}} for i in items[:4]]
     measured = answering.estimate(task, items, recorded, {i["id"]: i["text"] for i in items})
     assert "measured" in measured.basis
+
+
+def test_pairs_use_jev_as_reference():
+    assert scoring.pairs(["claude", "jev", "laya"]) == [("jev", "claude"), ("jev", "laya")]
+    assert scoring.pairs(["a", "b", "c"]) == [("a", "b"), ("a", "c"), ("b", "c")]
+
+
+def test_report_n_shows_each_engine_when_counts_differ():
+    assert report._n([12, 12]) == "12"
+    assert report._n([300, 12]) == "300/12"
+
+
+def test_rows_carry_start_time_and_runs_write_a_manifest(tmp_path):
+    from hard_decisions.record import append_manifest, manifest_path
+    root, items = make_root(tmp_path, n=4)
+    task = Task.load("proofwriter-owa", root=root)
+    path = record_path("oracle", task.slug, root=root, tree="timing")
+    assert path.parts[-3] == "timing"
+    asyncio.run(answering.run(Oracle(), task, items, path))
+    rows = read_record(path)
+    assert len(rows) == 4 and all(r["started_at"].endswith("+00:00") for r in rows)
+    append_manifest(path, {"concurrency": 1})
+    assert manifest_path(path).name == "proofwriter-owa.runs.jsonl"
+    assert scoring.score("oracle", task, root=root) == []   # timing records are never scored
+
+
+def test_engines_section_takes_largest_measured_memory(tmp_path):
+    from hard_decisions.record import append_manifest
+    (tmp_path / "engines.yaml").write_text(yaml.safe_dump({
+        "machine": {"model": "TestMac", "memory": "8 GB"},
+        "kev-x": {"kind": "open decision model", "parameters": "1B"},
+        "hosted-y": {"kind": "hosted decision model", "parameters": "undisclosed"}}))
+    for tree, peak in (("answers", 3072.0), ("timing", 4096.0)):
+        append_manifest(tmp_path / tree / "kev-x" / "t.jsonl.gz",
+                        {"memory": {"phys_footprint_mb": 1024.0, "phys_footprint_peak_mb": peak}})
+    lines = report.engines_section(tmp_path)
+    kev = next(l for l in lines if l.startswith("| kev-x"))
+    assert kev.endswith("| 1.0 GB | 4.0 GB |")
+    assert next(l for l in lines if l.startswith("| hosted-y")).endswith("n/a (hosted) |")

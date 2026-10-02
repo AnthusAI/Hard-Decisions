@@ -1,0 +1,30 @@
+---
+// One task's overall results: every scored model, best first (fully scored ones first), with its
+// 95% interval, macro-F1, per-class recall and the floors.
+import EngineName from "./EngineName.astro";
+import { ranked, models, study, taskBySlug, urls, pct, fmt, int, statusWords } from "../lib/site.js";
+const { slug, caption } = Astro.props;
+const t = taskBySlug[slug];
+const rows = ranked(slug);
+const first = rows.find((r) => r.complete);
+const unscored = models.filter((m) => !study(m.id, slug));
+---
+<div class="table-scroll">
+  <table class="cell-table overall-table">
+    <caption class="sr">{caption}</caption>
+    <thead><tr><th scope="col">Model</th><th scope="col" class="num">Accuracy</th><th scope="col" class="num">95% interval</th><th scope="col" class="num">Macro-F1</th>{t.options.map((o) => <th scope="col" class="num">Recall: {o}</th>)}<th scope="col" class="num">Items</th></tr></thead>
+    <tbody>
+      {rows.map(({ m, r, complete }) => (
+        <tr class={complete ? null : "row-miss"}>
+          <th scope="row"><EngineName engine={m} href={urls.model(m.id)} />{!complete && <span class="hl-in"> partial</span>}</th>
+          <td class="num strong">{pct(r.accuracy)}%</td>
+          <td class="num ci-t">{pct(r.lo)}–{pct(r.hi)}</td>
+          <td class="num">{fmt(r.macro_f1, 3)}</td>
+          {t.options.map((o) => <td class="num">{pct(r.recall[o])}%</td>)}
+          <td class="num">{int(r.n)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="note">Chance is {pct(1 / t.options.length)}%; always giving the most common answer scores {first ? pct(first.r.best_constant) : "—"}% on these items. Recall is the share of items with that correct answer that the model got right.{rows.some((x) => x.m.id === "openai-gpt-6-luna-effort-none") && " GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model."}{rows.filter((x) => !x.complete).map((x) => ` ${x.m.label}: ${statusWords(x.m.id, slug)}.`).join("")}{unscored.map((m) => ` ${m.label} is not listed: ${statusWords(m.id, slug)}.`).join("")}</p>

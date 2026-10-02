@@ -1,0 +1,9 @@
+{"axis": "overall", "ci_high": 0.33055555555555555, "ci_low": 0.2788888888888889, "diff": 0.305, "engine_a": "jev", "engine_b": "kev-4b", "n": 1800, "task": "proofwriter-cwa", "value": "all"}
+{"axis": "depth", "ci_high": 0.18, "ci_low": 0.09666666666666666, "diff": 0.13666666666666666, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "0"}
+{"axis": "depth", "ci_high": 0.31, "ci_low": 0.19333333333333333, "diff": 0.25333333333333335, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "1"}
+{"axis": "depth", "ci_high": 0.43666666666666665, "ci_low": 0.32, "diff": 0.37666666666666665, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "2"}
+{"axis": "depth", "ci_high": 0.3566666666666667, "ci_low": 0.22666666666666666, "diff": 0.29, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "3"}
+{"axis": "depth", "ci_high": 0.38666666666666666, "ci_low": 0.24666666666666667, "diff": 0.31333333333333335, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "4"}
+{"axis": "depth", "ci_high": 0.5233333333333333, "ci_low": 0.39666666666666667, "diff": 0.46, "engine_a": "jev", "engine_b": "kev-4b", "n": 300, "task": "proofwriter-cwa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.16444444444444445, "ci_low": 0.10444444444444445, "diff": 0.13555555555555557, "engine_a": "jev", "engine_b": "kev-4b", "n": 900, "task": "proofwriter-cwa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.51, "ci_low": 0.4388888888888889, "diff": 0.47444444444444445, "engine_a": "jev", "engine_b": "kev-4b", "n": 900, "task": "proofwriter-cwa", "value": "true"}

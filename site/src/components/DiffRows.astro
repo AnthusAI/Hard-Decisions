@@ -1,0 +1,25 @@
+---
+// A paired difference (model A minus model B on the same items) per slice, with its 95% interval,
+// on a scale that always shows zero.
+import { pts, int } from "../lib/site.js";
+const { rows, label, labelOf = (r) => r.value } = Astro.props;
+const lo = Math.min(-0.1, ...rows.map((r) => r.ci_low)), hi = Math.max(0.1, ...rows.map((r) => r.ci_high));
+const span = hi - lo;
+const X = (v) => (100 * (v - lo) / span).toFixed(2);
+---
+<div class="dots diffs" role="group" aria-label={label}>
+  <div class="dots-scale" aria-hidden="true"><span style={`left:${X(lo)}%`}>{pts(lo, 0)}</span><span style={`left:${X(0)}%`}>0</span><span style={`left:${X(hi)}%`}>{pts(hi, 0)}</span></div>
+  {rows.map((r) => (
+    <div class="dots-row">
+      <div class="dots-label"><span class="dl-v">{labelOf(r)}</span><span class="dl-n">{int(r.n)} items</span></div>
+      <div class="dots-track" style="--rows:1">
+        <span class="dots-zero" style={`left:${X(0)}%`}></span>
+        <span class="dots-line" style="top:4px">
+          <span class="dots-ci" style={`left:${X(r.ci_low)}%;width:${(100 * (r.ci_high - r.ci_low) / span).toFixed(2)}%;background:var(--ink-2)`}></span>
+          <span class="dots-dot diff-dot" style={`left:${X(r.diff)}%`} title={`${pts(r.diff)} points (${pts(r.ci_low)} to ${pts(r.ci_high)})`}></span>
+        </span>
+      </div>
+      <span class="diff-v">{pts(r.diff)}</span>
+    </div>
+  ))}
+</div>

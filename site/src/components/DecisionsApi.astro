@@ -1,0 +1,33 @@
+---
+// What the GPT-6 Luna results mean for OpenAI's Decisions API, which is built on a version of Luna.
+// Facts and sources were fact-checked on 2026-10-01 (lib/content.js DECISIONS_API). The numbers come
+// from the scored rows. This preview is not a test of the API itself, and nothing here says whether
+// the API returns a confidence score.
+import { data, urls, OWA, CWA, pct, pts, overall, axisRow, pairRow, latency, listOf } from "../lib/site.js";
+import { DECISIONS_API } from "../lib/content.js";
+const LUNA = "openai-gpt-6-luna-effort-none";
+const S = DECISIONS_API.sources;
+const o = overall(LUNA, OWA), c = overall(LUNA, CWA);
+const d0 = axisRow(LUNA, OWA, "depth", "0"), d5 = axisRow(LUNA, OWA, "depth", "5");
+const j5 = axisRow("jev", OWA, "depth", "5");
+const gap5 = pairRow(OWA, "jev", LUNA, "depth", "5");
+const timed = latency(LUNA, OWA);
+const P = data.probe;
+const top = P && P.tasks[OWA] ? P.tasks[OWA].bands.find((b) => b.from >= 0.99) : null;
+const masses = P ? [OWA, CWA].filter((s) => P.tasks[s]).map((s) => P.tasks[s].mean_disclosed_mass) : [];
+---
+<section class="wrap section sec-prose" id="decisions-api" aria-labelledby="decisions-api-h">
+  <h2 class="display" id="decisions-api-h">What this means for the OpenAI Decisions API</h2>
+  <p class="lede">At OpenAI DevDay on 29 September 2026, OpenAI announced the Decisions API, in limited preview with broader availability "in the coming days". OpenAI says it "uses a version of GPT-6 Luna": the model picks among answers the developer defines in advance, to classify, route or choose an agent's next action (<a href={S.decoder.url}>{S.decoder.label}</a>, <a href={S.axios.url}>{S.axios.label}</a>).</p>
+  <p>That is the shape of task we ran: GPT-6 Luna with reasoning off, one request per problem, and a fixed list of answers enforced with a strict JSON schema. So these results preview the accuracy a Luna-based decision model gets on multi-step reasoning.{o && c && <Fragment> GPT-6 Luna answered {pct(o.accuracy)}% of open-world problems and {pct(c.accuracy)}% of closed-world ones correctly.</Fragment>}{d0 && d5 && <Fragment> On the open-world task it scored {pct(d0.accuracy)}% when the answer is stated outright (depth 0) and {pct(d5.accuracy)}% when it takes five chained inferences{j5 && gap5 && <Fragment>, where Jev scored {pct(j5.accuracy)}% ({pts(gap5.diff)} points on the same items)</Fragment>}.</Fragment>} If your decisions need several steps of reasoning, the depth results above are the ones to read.</p>
+  <p class="footnote">These are not results for the Decisions API itself. OpenAI uses a specialized version of Luna, and its accuracy may differ. As of 1 October 2026 OpenAI had published no Decisions API documentation. We will benchmark the API itself when we can get access.</p>
+  <p>On speed, OpenAI's own chart shows 150 ms per decision for the Decisions API, against 1.6 s for Luna through the regular API (<a href={S.decoder.url}>{S.decoder.label}</a>). Those are OpenAI's figures, not our measurements{timed ? "" : "; we have not timed GPT-6 Luna"}.</p>
+
+  <h3>Confidence and log-probabilities: things to know</h3>
+  <ul class="how-list">
+    <li><strong>The scored benchmark recorded no confidence.</strong> We asked every model for its answer only. A separate, preregistered probe then read GPT-6 Luna's log-probabilities on all 3,600 items{P && top ? `: when Luna stated 99% or more, it was right ${pct(top.accuracy)}% of the time on open-world problems` : ""}. <a href={urls.preview()}>The full preview, with a verbatim request and response</a>.</li>
+    <li><strong>With reasoning off, Luna exposes its log-probabilities.</strong> It returns the chosen answer's log-probability and the most likely alternatives{P ? `, which cover ${listOf(masses.map((m) => `${pct(m)}%`))} of the probability on average (open world, closed world)` : ""}. With reasoning on, the request is refused: "'logprobs' is not supported with this model". OpenAI's guide says to remove <code>logprobs</code> and <code>top_logprobs</code> when reasoning effort is not none (<a href={S.guide.url}>{S.guide.label}</a>; <a href={S.luna.url}>{S.luna.label}</a>).</li>
+    <li><strong>Overconfidence.</strong> OpenAI's <a href={S.gpt4.url}>{S.gpt4.label}</a> found the pre-trained model well calibrated, and that post-training reduced calibration markedly (its Figure 8). In our experience, where OpenAI models do expose log-probabilities, they tend to be too overconfident to calibrate into a useful confidence.</li>
+    <li><strong>Why log-probabilities are limited with reasoning on: our suspicion, with no proof.</strong> Researchers recovered the final layer of production OpenAI models from API log-probabilities and logit bias, and OpenAI changed its API in response (<a href={S.carlini.url}>{S.carlini.label}</a>; see also <a href={S.finlayson.url}>{S.finlayson.label}</a>). OpenAI also chose not to show o1's raw chain of thought, citing user experience, competitive advantage and chain-of-thought monitoring (<a href={S.o1.url}>{S.o1.label}</a>). None of this shows why Luna's log-probabilities are limited.</li>
+  </ul>
+</section>

@@ -1,0 +1,10 @@
+---
+import Marker from "./Marker.astro";
+import { modelById, statusWords } from "../lib/site.js";
+const { ids, slug = null } = Astro.props;
+---
+<ul class="legend">
+  {ids.map((id) => { const m = modelById[id]; const w = slug ? statusWords(id, slug) : null; return (
+    <li><Marker engine={m} size={12} /><span class="lg-name">{m.label}</span>{m.setting && <span class="lg-note">({m.setting})</span>}{w && <span class="lg-note">({w})</span>}</li>
+  ); })}
+</ul>

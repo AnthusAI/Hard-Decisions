@@ -1,0 +1,97 @@
+# Published facts about every engine in this benchmark, with sources. RESULTS.md's engine table is built from
+# this file plus the memory measured in each run's manifest (answers/ and timing/ *.runs.jsonl).
+# Weight sizes are the pinned revisions' files on the Hugging Face Hub (API, read 2026-10-01).
+
+jev:
+  kind: hosted decision model
+  maker: TypeSafe
+  parameters: undisclosed
+  architecture: undisclosed
+  weights: not available (hosted)
+  where_run: TypeSafe API (typesafe-sdk); version recorded per row (jev-1.13.0)
+  hardware: not applicable (hosted)
+  price: $42 per billion input tokens; output free
+
+glide:
+  kind: hosted decision model
+  maker: Fastino Labs
+  parameters: undisclosed
+  architecture: undisclosed ("thinking" decision model that adds reasoning when its first distribution is uncertain)
+  context_tokens: 40000
+  weights: not available (hosted)
+  where_run: Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev)
+  hardware: not applicable (hosted)
+  price: $0.30 per million input tokens; output free
+  source: https://docs.fastino.ai/concepts/glide
+
+laya:
+  kind: open decision model
+  maker: Convai Innovations
+  parameters: 421M
+  architecture: ModernBERT-large encoder with decision heads, trained with RLCD
+  context_tokens: 512
+  weights: 0.84 GB (model.safetensors, convaiinnovations/laya repo root)
+  precision: as loaded by the laya package (PyTorch)
+  where_run: this machine, laya 0.3.21 package, PyTorch on MPS
+  hardware: not stated by the maker
+  source: https://huggingface.co/convaiinnovations/laya (model card checkpoint table)
+
+kev-0.8b:
+  kind: open decision model
+  maker: Jared Palmer (individual)
+  parameters: 0.8B base (Qwen3.5-0.8B-Base) + rank-16 LoRA adapter and pointer head
+  architecture: Qwen3.5 hybrid (Gated DeltaNet + attention) base, frozen; LoRA r16; pointer head
+  weights: 1.75 GB base (Qwen/Qwen3.5-0.8B-Base@dc7cdfe2) + 0.05 GB adapter and head (jaredpalmer/kev-0.8b@54f4f877)
+  precision: bfloat16 (MLX), fp32 pointer head
+  where_run: this machine, Kev server c9c1f855 on MLX
+  hardware: '"Any Apple Silicon Mac, L4" (Kev README)'
+  source: https://github.com/jaredpalmer/kev
+
+kev-4b:
+  kind: open decision model
+  maker: Jared Palmer (individual)
+  parameters: 4B base (Qwen3.5-4B-Base) + rank-16 LoRA adapter (33.8M trainable) and pointer head
+  architecture: as kev-0.8b
+  weights: 9.32 GB base (Qwen/Qwen3.5-4B-Base@1001bb4d) + 0.14 GB adapter and head (jaredpalmer/kev-4b@139fdd94)
+  precision: bfloat16 (MLX), fp32 pointer head
+  where_run: this machine, Kev server c9c1f855 on MLX
+  hardware: '"32 GB Mac, L40S, H100" (Kev README)'
+  source: https://huggingface.co/jaredpalmer/kev-4b
+
+kev-9b:
+  kind: open decision model
+  maker: Jared Palmer (individual)
+  parameters: 9B base (Qwen3.5-9B-Base) + rank-16 LoRA adapter and pointer head
+  architecture: as kev-0.8b
+  weights: 19.31 GB base (Qwen/Qwen3.5-9B-Base@68c46c4b) + 0.18 GB adapter and head (jaredpalmer/kev-9b@b5d8c18e)
+  precision: bfloat16 (MLX), fp32 pointer head
+  where_run: this machine, Kev server c9c1f855 on MLX
+  hardware: '"32 GB Mac, L40S, H100" (Kev README)'
+  source: https://huggingface.co/jaredpalmer/kev-9b
+
+kev-27b:
+  kind: open decision model (not run)
+  maker: Jared Palmer (individual)
+  parameters: 27B, every weight fine-tuned from Qwen3.8-27B (post-trained)
+  weights: 51.26 GB full weights (jaredpalmer/kev-27b)
+  hardware: '"B200, H200, H100 80 GB; 96-128 GB Mac (expected)" (Kev README, later revision)'
+  not_run: does not fit this 32 GB machine; would need a rented 80 GB GPU
+  source: https://huggingface.co/jaredpalmer/kev-27b
+
+openai-gpt-6-luna-effort-none:
+  kind: hosted LLM, used as a classifier with reasoning off
+  maker: OpenAI
+  parameters: undisclosed
+  architecture: undisclosed
+  context_tokens: 1050000
+  weights: not available (hosted)
+  where_run: OpenAI Chat Completions API, reasoning_effort none, strict JSON schema
+  hardware: not applicable (hosted)
+  price: $0.10 input / $0.50 output per million tokens
+  source: https://developers.openai.com/api/docs/models/gpt-6-luna
+
+machine:
+  description: the machine every local engine ran on
+  model: MacBookPro18,4 (Apple M1 Max)
+  memory: 32 GB unified memory
+  note: on Apple silicon, model weights live in GPU (Metal) memory, which a process's RSS does not count; memory figures here are macOS physical footprint (footprint -p), current and peak, where peak includes loading.

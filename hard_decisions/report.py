@@ -20,8 +20,67 @@ def _floor(value) -> str:
     return "-" if value is None else _pct(value)
 
 
+def _n(ns: List[int]) -> str:
+    """One count when every engine answered the same items, else each engine's count in column order."""
+    return str(ns[0]) if len(set(ns)) == 1 else "/".join(str(n) for n in ns)
+
+
 def _cell(row: dict) -> str:
     return f"{_pct(row['accuracy'])} [{_pct(row['ci_low'])}-{_pct(row['ci_high'])}]"
+
+
+def _num(value, digits=3) -> str:
+    return "-" if value is None else f"{value:.{digits}f}"
+
+
+def _retest_section(task: Task, studies: Path) -> List[str]:
+    path = studies / "retest" / f"{task.slug}.jsonl"
+    if not path.exists():
+        return []
+    rows = _rows(path)
+    overall = [r for r in rows if r["axis"] == "overall"]
+    lines = ["### Test-retest repeatability (run 1 = scored record, run 2 = rerun in `timing/`)", "",
+             "Agreement is the share of items with the same answer both times. AC1 is Gwet's chance-corrected "
+             "agreement (95% bootstrap interval); Cohen's kappa is shown for comparison and understates agreement "
+             "when an engine gives one answer to most items. Probability shift is the absolute change in run 1's "
+             "chosen option's probability.", "",
+             "| engine | n | agreement | AC1 | kappa | changed | accuracy run 1 / run 2 | prob shift mean / max |",
+             "|---|---|---|---|---|---|---|---|"]
+    for r in overall:
+        lines.append(f"| {r['engine']} | {r['n']} | {_pct(r['agreement'])} | {r['ac1']:.3f} "
+                     f"[{r['ac1_low']:.3f}-{r['ac1_high']:.3f}] | {r['kappa']:.3f} | {r['changed']} | "
+                     f"{_pct(r['accuracy_run1'])} / {_pct(r['accuracy_run2'])} | "
+                     f"{_num(r['prob_shift_mean'])} / {_num(r['prob_shift_max'])} |")
+    depths = sorted({r["value"] for r in rows if r["axis"] == "depth"}, key=int)
+    engines = [r["engine"] for r in overall]
+    lines += ["", "Share of answers that changed, by proof depth:", "",
+              "| depth | " + " | ".join(engines) + " |", "|---|" + "---|" * len(engines)]
+    for d in depths:
+        cells = []
+        for e in engines:
+            m = next((r for r in rows if r["engine"] == e and r["axis"] == "depth" and r["value"] == d), None)
+            cells.append("-" if m is None else f"{_pct(m['change_rate'])} ({m['changed']})")
+        lines.append(f"| {d} | " + " | ".join(cells) + " |")
+    return lines + [""]
+
+
+def _latency_section(task: Task, root: Path) -> List[str]:
+    """Per-request wall time from the reruns in ``timing/``, all made one request at a time."""
+    from hard_decisions.record import read_record
+    lines = []
+    for path in sorted((root / "timing").glob(f"*/{task.slug}.jsonl.gz")):
+        values = sorted(r["latency_ms"] for r in read_record(path) if r.get("latency_ms") is not None)
+        if not values:
+            continue
+        q = lambda p: values[int(p * (len(values) - 1))]  # noqa: E731
+        lines.append(f"| {path.parent.name} | {len(values)} | {q(0.5):.0f} | {q(0.9):.0f} | {values[-1]:.0f} | "
+                     f"{sum(values) / 60000:.1f} |")
+    if not lines:
+        return []
+    return ["### Latency per decision (reruns in `timing/`, one request at a time)", "",
+            "Wall time around each request as measured by the harness: network included for hosted engines; "
+            "local engines on the machine named in each run's `.runs.jsonl` manifest.", "",
+            "| engine | n | p50 ms | p90 ms | max ms | total minutes |", "|---|---|---|---|---|---|"] + lines + [""]
 
 
 def task_section(task: Task, studies: Path) -> List[str]:
@@ -57,14 +116,17 @@ def task_section(task: Task, studies: Path) -> List[str]:
         lines += [f"### By {heading}", "", "| value | n | " + " | ".join(engines) + " | best constant |",
                   "|---|---|" + "---|" * (len(engines) + 1)]
         for value in values:
-            cells, n, floor = [], 0, None
+            cells, ns, floor = [], [], None
             for e, rows in engines.items():
                 match = next((r for r in rows if r["axis"] == axis and r["value"] == value), None)
                 cells.append(_cell(match) if match else "-")
-                if match:
-                    n, floor = match["n"], match["best_constant"]
-            lines.append(f"| {value} | {n} | " + " | ".join(cells) + f" | {_floor(floor)} |")
+                ns.append(match["n"] if match else 0)
+                if match and floor is None:
+                    floor = match["best_constant"]
+            lines.append(f"| {value} | {_n(ns)} | " + " | ".join(cells) + f" | {_floor(floor)} |")
         lines.append("")
+    lines += _retest_section(task, studies)
+    lines += _latency_section(task, studies.parent)
     pairs = sorted(p for p in studies.glob(f"{task.slug}-*-vs-*.jsonl"))
     if pairs:
         lines += ["### Paired differences (same items; accuracy difference in points)", "",
@@ -77,11 +139,58 @@ def task_section(task: Task, studies: Path) -> List[str]:
     return lines
 
 
+def _measured_memory(root: Path) -> Dict[str, dict]:
+    """Largest current and peak footprint recorded for each engine across its run manifests."""
+    found: Dict[str, dict] = {}
+    for path in list((root / "answers").glob("*/*.runs.jsonl")) + list((root / "timing").glob("*/*.runs.jsonl")):
+        for entry in _rows(path):
+            memory = entry.get("memory") or {}
+            if not memory:
+                continue
+            best = found.setdefault(path.parent.name, {})
+            for key in ("phys_footprint_mb", "phys_footprint_peak_mb"):
+                if memory.get(key) is not None:
+                    best[key] = max(best.get(key, 0), memory[key])
+    return found
+
+
+def _gb(mb) -> str:
+    return "-" if mb is None else f"{mb / 1024:.1f} GB"
+
+
+def engines_section(root: Path) -> List[str]:
+    import yaml
+    path = root / "engines.yaml"
+    if not path.exists():
+        return []
+    facts = yaml.safe_load(path.read_text(encoding="utf-8"))
+    machine = facts.pop("machine", {})
+    measured = _measured_memory(root)
+    lines = ["## Engines", "",
+             f"Local engines ran on {machine.get('model', 'this machine')} with {machine.get('memory', '?')}. "
+             "Memory is the physical footprint of the process holding the model (the Kev server, or the harness "
+             "for Laya), measured with macOS `footprint` at the end of each run: in use after answering, and the "
+             "peak over the process's life, which includes loading. RSS would miss it: model weights sit in GPU "
+             "memory. Sources and pinned revisions are in `engines.yaml`.", "",
+             "| engine | kind | parameters | weights on disk | where it ran | maker's stated hardware | "
+             "memory in use | memory peak |", "|---|---|---|---|---|---|---|---|"]
+    for name, f in facts.items():
+        m = measured.get(name, {})
+        hosted = "hosted" in str(f.get("kind", ""))
+        not_run = "not run" in str(f.get("kind", ""))
+        mem = ("n/a (hosted)", "n/a (hosted)") if hosted else ("not run", "not run") if not_run else (
+            _gb(m.get("phys_footprint_mb")), _gb(m.get("phys_footprint_peak_mb")))
+        lines.append(f"| {name} | {f.get('kind', '-')} | {f.get('parameters', '-')} | {f.get('weights', '-')} | "
+                     f"{f.get('where_run', f.get('not_run', '-'))} | {f.get('hardware', '-')} | {mem[0]} | {mem[1]} |")
+    return lines + [""]
+
+
 def render(*, root: Path = ROOT) -> str:
     lines = ["# Results", "",
              "Generated by `hd report` from `studies/*.jsonl`; do not edit by hand. Each task is a sample "
              "of the ProofWriter test set built by `hd build` (see `tasks/*/build.json` for its parameters "
              "and strata).", ""]
+    lines += engines_section(Path(root))
     for slug in all_slugs(root):
         lines += task_section(Task.load(slug, root=root), Path(root) / "studies")
     return "\n".join(lines).rstrip() + "\n"

@@ -1,0 +1,146 @@
+---
+import Base from "../../../layouts/Base.astro";
+import DepthChart from "../../../components/DepthChart.astro";
+import Legend from "../../../components/Legend.astro";
+import AccTable from "../../../components/AccTable.astro";
+import DiffRows from "../../../components/DiffRows.astro";
+import ModelErrors from "../../../components/ModelErrors.astro";
+import ModelConsistency from "../../../components/ModelConsistency.astro";
+import ModelFacts from "../../../components/ModelFacts.astro";
+import BreakdownSpread from "../../../components/BreakdownSpread.astro";
+import PredLine from "../../../components/PredLine.astro";
+import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
+import EngineName from "../../../components/EngineName.astro";
+import AnthusNote from "../../../components/AnthusNote.astro";
+import { models, modelById, urls, axes, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, gb, overall, axisTable, axisSpread, valueLabel,
+  pair, isComplete, statusWords, retest, latency, derived, memoryOf, aboutModel, kindOf, whereRun, ranked, data, L } from "../../../lib/site.js";
+import { modelTitle, modelQuery, comparisonsFor } from "../../../lib/content.js";
+import { depthDrop } from "../../../lib/cards.js";
+
+export function getStaticPaths() {
+  // Jev, the reference model, has its own page; every other model's page is its comparison with Jev.
+  return models.filter((m) => m.id === "jev").map((m) => ({ params: { model: m.slug }, props: { m } }));
+}
+const { m } = Astro.props;
+const id = m.id;
+const ref = id === "jev" ? null : modelById.jev && modelById.jev.measured ? "jev" : null;
+const chartIds = ref ? [id, ref] : [id];
+const facts = m.facts || {};
+const mem = memoryOf(id);
+const cmps = comparisonsFor(id);
+const place = (slug) => { const r = ranked(slug).filter((x) => x.complete); const i = r.findIndex((x) => x.m.id === id); return i >= 0 ? `${i + 1} of ${r.length}` : null; };
+const dd = (slug) => (isComplete(id, slug) ? depthDrop(id, slug) : null);
+const title = modelTitle(m);
+const answerMix = (slug) => {
+  const o = overall(id, slug);
+  if (!o || !o.confusion) return null;
+  const said = {};
+  for (const row of Object.values(o.confusion)) for (const [k, v] of Object.entries(row)) said[k] = (said[k] || 0) + v;
+  return Object.entries(said).filter(([, v]) => v > 0).map(([k, v]) => ({ k, share: v / o.n }));
+};
+---
+<Base title={title} description={`${m.label}: accuracy on 3,600 ProofWriter reasoning problems.`} path={urls.model(id)} current={{ page: "model", engine: id }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Models", href: urls.models() }, { label: m.label }]}>
+  <section class="wrap hero eng-hero">
+    <p class="kicker">Model · {kindOf(id)}</p>
+    <h1 class="display xl eng-title">{title}</h1>
+    <p class="deck">{aboutModel(id)}</p>
+    {taskOrder.some((s) => statusWords(id, s)) && <p class="footnote">{taskOrder.filter((s) => statusWords(id, s)).map((s) => `${TASK_INFO[s].short}: ${statusWords(id, s)}.`).join(" ")} Numbers marked partial cover only the items scored so far, and change when scoring finishes.</p>}
+    <div class="eng-stats">
+      {taskOrder.map((s) => { const o = overall(id, s); return (
+        <div><span class="stat-k">{TASK_INFO[s].short}</span><span class="stat-v">{o ? `${pct(o.accuracy)}%` : "—"}</span>
+          <span class="stat-s">{o ? <Fragment>{pct(o.lo)} to {pct(o.hi)} (95%) on {int(o.n)} problems{isComplete(id, s) ? (place(s) ? `; place ${place(s)}` : "") : "; partial"}</Fragment> : statusWords(id, s)}</span></div>
+      ); })}
+      {dd(OWA) && <div><span class="stat-k">Depth 0 to depth 5</span><span class="stat-v">{pts(-dd(OWA).drop)}</span><span class="stat-s">points on the open-world task, {pct(dd(OWA).d0.accuracy)}% to {pct(dd(OWA).d5.accuracy)}%</span></div>}
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="depth-h">
+    <div class="sec-head">
+    <h2 class="display" id="depth-h">{m.label} accuracy by proof depth</h2>
+    <p class="lede">Each point is about 300 problems that need that many inference steps.{ref && ` Jev is drawn for reference.`}</p>
+    </div>
+    <div class="sec-body">
+    <div class="two-up">
+      {taskOrder.filter((s) => overall(id, s)).map((s) => (
+        <figure class="hero-fig">
+          <figcaption><span class="fig-t">{TASK_INFO[s].long}</span></figcaption>
+          <Legend ids={chartIds} slug={s} />
+          <DepthChart slug={s} ids={chartIds} compact label={`${m.label} accuracy by proof depth, ${TASK_INFO[s].short}`} />
+        </figure>
+      ))}
+    </div>
+    {taskOrder.filter((s) => overall(id, s)).map((s) => (
+      <Fragment><h3>{TASK_INFO[s].long}</h3><AccTable rows={axisTable(s, "depth", chartIds)} ids={chartIds} slug={s} valueHead="Proof depth" caption={`${m.label} by depth, ${TASK_INFO[s].short}`} /></Fragment>
+    ))}
+    </div>
+  </section>
+
+  <ModelDepthExamples id={id} />
+
+  <section class="wrap section sec-split" aria-labelledby="class-h">
+    <div class="sec-head">
+    <h2 class="display" id="class-h">True, false and unknown: where {m.label} errs</h2>
+    <p class="lede">Accuracy alone hides which answers a model gets wrong. Rows are the correct answer; columns are what {m.label} said.</p>
+    </div>
+    <div class="sec-body">
+    <ModelErrors id={id} />
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="axes-h">
+    <div class="sec-head">
+    <h2 class="display" id="axes-h">{m.label} across every breakdown</h2>
+    <p class="lede">For each property of the problems, {m.label}'s weakest and strongest value on the open-world task (slices of at least 50 items). Only depth was controlled; the rest are descriptive.</p>
+    </div>
+    <div class="sec-body">
+    <BreakdownSpread ids={[id]} />
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="pair-h">
+    <div class="sec-head">
+    <h2 class="display" id="pair-h">{id === "jev" ? "Jev against every other model" : `${m.label} against Jev, on the same problems`}</h2>
+    <p class="lede">Paired differences: both models answered exactly the same items, so the gap has its own 95% interval. Positive numbers mean Jev was more accurate.{(id === "jev" || id === "openai-gpt-6-luna-effort-none") && " GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model."}</p>
+    </div>
+    <div class="sec-body">
+    {taskOrder.map((s) => {
+      const others = id === "jev" ? models.filter((x) => x.id !== "jev" && pair(s, "jev", x.id)) : (pair(s, "jev", id) ? [m] : []);
+      return others.map((x) => { const rows = pair(s, "jev", x.id); const ov = rows.find((r) => r.axis === "overall"); return (
+        <Fragment>
+          <h3>Jev minus {x.label}, {TASK_INFO[s].short.toLowerCase()}: {pts(ov.diff)} points overall ({pts(ov.ci_low)} to {pts(ov.ci_high)}){!isComplete(x.id, s) && ", partial"}</h3>
+          <DiffRows rows={rows.filter((r) => r.axis === "depth")} labelOf={(r) => `depth ${r.value}`} label={`Jev minus ${x.label} by depth, ${TASK_INFO[s].short}`} />
+        </Fragment>
+      ); });
+    })}
+    {cmps.length > 0 && <p class="more-link">Each rival in full: {cmps.map((c, i) => <Fragment>{i ? " · " : ""}<a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a></Fragment>)}</p>}
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="cons-h">
+    <div class="sec-head">
+    <h2 class="display" id="cons-h">Consistency and calibration</h2>
+    </div>
+    <div class="sec-body">
+    <ModelConsistency id={id} />
+    <p class="more-link"><a href={urls.page("repeatability")}>Consistency and calibration for every model</a></p>
+    </div>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="size-h">
+    <div class="sec-head">
+    <h2 class="display" id="size-h">Size, hardware and speed</h2>
+    </div>
+    <div class="sec-body">
+    <ModelFacts id={id} />
+    <p class="note">{m.hosted ? "Hosted: timed over the network against the vendor's servers, so its latency is not like for like with a model on a laptop." : "Run on one Apple M1 Max laptop with 32 GB of unified memory; memory is the physical footprint of the process holding the model."} <a href={urls.speed()}>Speed, size and memory for every model</a>.</p>
+    </div>
+  </section>
+
+  <section class="wrap section sec-prose tight" aria-labelledby="pred-h">
+    <h2 class="display sm" id="pred-h">What we predicted about {m.label}</h2>
+    <PredLine ids={[id]} />
+  </section>
+
+  <AnthusNote />
+</Base>

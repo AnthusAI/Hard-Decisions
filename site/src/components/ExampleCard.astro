@@ -1,0 +1,25 @@
+---
+// One problem a model answered: right or wrong, the statement, the correct answer and the model's,
+// and the problem text with its gold proof in a fold-out.
+import ResultIcon from "./ResultIcon.astro";
+import StepChain from "./StepChain.astro";
+import { urls, pct, OWA } from "../lib/site.js";
+const { ex, task, depth } = Astro.props;
+const proof = ex.proof;
+const chainEx = proof && proof.steps && proof.steps.length ? { depth: proof.steps.length, steps: proof.steps, statement: ex.statement, stated_fact: null } : null;
+const noProof = task === OWA && ex.gold === "unknown"
+  ? "No proof: neither the statement nor its negation follows."
+  : "No proof to show: under the closed world this answer holds because something cannot be derived.";
+---
+<article class:list={["xc", ex.correct ? "ok" : "no"]} data-correct={ex.correct ? "1" : "0"} data-id={ex.id}>
+  <div class="xc-head"><ResultIcon correct={ex.correct} /><p class="xc-st">{ex.statement}</p></div>
+  <p class="xc-ans">Correct answer: <strong>{ex.gold}</strong> · Model said: <strong>{ex.choice ?? "no valid answer"}</strong>{ex.probability != null && <Fragment> ({pct(ex.probability)}% sure{ex.probability_source === "probe" && <Fragment>, <a href={urls.preview()} title="From the separate log-probability probe, which asked this problem again and gave the same answer">probe</a></Fragment>})</Fragment>}</p>
+  {ex.paraphrased && <span class="xc-tag">paraphrased</span>}
+  <details>
+    <summary>The problem and its proof</summary>
+    <p class="xc-theory">{ex.theory}</p>
+    {proof && proof.stated ? <p class="note">Stated in the text: "{proof.stated}"</p>
+      : chainEx ? <Fragment>{ex.gold === "false" && task === OWA && <p class="note">The proof that the statement's negation follows:</p>}<StepChain ex={chainEx} compact={false} /></Fragment>
+      : <p class="note">{noProof}</p>}
+  </details>
+</article>

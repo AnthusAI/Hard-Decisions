@@ -1,0 +1,43 @@
+---
+// What one model got right and wrong at each proof depth: its accuracy, then four problems whose
+// right/wrong mix matches that accuracy in 25% steps (studies/model-examples.json).
+import AccuracyMeter from "./AccuracyMeter.astro";
+import ExampleCard from "./ExampleCard.astro";
+import { data, modelById, urls, OWA, CWA, taskBySlug, TASK_INFO, pct } from "../lib/site.js";
+const { id } = Astro.props;
+const m = modelById[id];
+const ME = data.modelExamples;
+const rowsFor = (slug) => (ME && ME.engines[id] && ME.engines[id][slug]) || [];
+const chance = (slug) => 1 / taskBySlug[slug].options.length;
+const sid = `examples-${m.slug}`;
+---
+{rowsFor(OWA).length > 0 && (
+  <section class="wrap section sec-split mde" id={sid} aria-labelledby={`${sid}-h`} data-engine={id}>
+    <div class="sec-head">
+    <h2 class="display" id={`${sid}-h`}>What {m.label} got right and wrong, depth by depth</h2>
+    <p class="lede">At each proof depth, {m.label}'s accuracy on every problem at that depth, then four of those problems. The share of right and wrong among the four matches the accuracy, rounded to the nearest quarter, so they show what its success and failure look like, not a separate score. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
+    <p class="note">How the four are chosen: {ME.selection}{/GPT-6 Luna/.test(ME.selection) && " (GPT-6 Luna ran with reasoning off, under the same one-request protocol as every model.)"}</p>
+    </div>
+    <div class="sec-body">
+    {[OWA].map((slug) => rowsFor(slug).map((r) => (
+      <div class="mde-row" data-task={slug} data-depth={r.depth} data-accuracy={r.accuracy} data-right={r.right_shown} data-wrong={r.wrong_shown}>
+        <div class="mde-head"><h3>Depth {r.depth}, {TASK_INFO[slug].short.toLowerCase().replace(" ", "-")} task</h3><span class="mde-pct">{pct(r.accuracy)}%</span></div>
+        <AccuracyMeter accuracy={r.accuracy} chance={chance(slug)} n={r.n} right={r.right_shown} wrong={r.wrong_shown} showValue={false} label={`${m.label} at depth ${r.depth}`} />
+        <div class="mde-grid">{r.examples.map((ex) => <ExampleCard ex={ex} task={slug} depth={r.depth} />)}</div>
+      </div>
+    )))}
+    {rowsFor(CWA).length > 0 && (
+      <details class="mde-cw">
+        <summary>The closed-world task (true or false), depth by depth</summary>
+        {rowsFor(CWA).map((r) => (
+          <div class="mde-row" data-task={CWA} data-depth={r.depth} data-accuracy={r.accuracy} data-right={r.right_shown} data-wrong={r.wrong_shown}>
+            <div class="mde-head"><h3>Depth {r.depth}, closed-world task</h3><span class="mde-pct">{pct(r.accuracy)}%</span></div>
+            <AccuracyMeter accuracy={r.accuracy} chance={chance(CWA)} n={r.n} right={r.right_shown} wrong={r.wrong_shown} showValue={false} label={`${m.label} at depth ${r.depth}, closed world`} />
+            <div class="mde-grid">{r.examples.map((ex) => <ExampleCard ex={ex} task={CWA} depth={r.depth} />)}</div>
+          </div>
+        ))}
+      </details>
+    )}
+    </div>
+  </section>
+)}

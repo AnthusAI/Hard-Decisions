@@ -1,0 +1,113 @@
+---
+// What proof depth means, with one worked example per depth (studies/depth-examples.json). The
+// examples are the shortest theory at each depth, chosen blind to the answers: easier than typical,
+// so they illustrate depth and say nothing about the accuracy gap.
+import Base from "../../layouts/Base.astro";
+import DepthExample from "../../components/DepthExample.astro";
+import StepChain from "../../components/StepChain.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import { urls, OWA, CWA, taskBySlug, TASK_INFO, pct, int, axisRow, models, isComplete, L } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+import { depthData, depthExamples, depthHeading, theoryId, answersOf } from "../../lib/depth.js";
+import { coinFlipClaim } from "../../lib/insights.js";
+
+const owa = depthExamples(OWA), cwa = depthExamples(CWA);
+const claim = coinFlipClaim();
+const ex1 = owa.find((e) => e.depth === 1);
+const allRight = (e) => answersOf(e).every((a) => a.correct);
+const nRight = owa.filter(allRight).length;
+const full = models.filter((m) => isComplete(m.id, OWA));
+const sameTheory = owa.filter((e, i) => i > 0 && theoryId(e) === theoryId(owa[i - 1]));
+---
+<Base title={intro.depthMeans.seoTitle} description={intro.depthMeans.intro} path={urls.depthMeans()} current={{ page: "depth-means" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "Breakdowns", href: urls.breakdowns() }, { label: "What proof depth means" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Explainer · multi-hop reasoning examples</p>
+    <h1 class="display xl">{intro.depthMeans.title}</h1>
+    <p class="deck">{intro.depthMeans.intro}</p>
+    <nav class="reg-links" aria-label="On this page">{owa.map((e) => <a href={`#depth-${e.depth}`}>Depth {e.depth}</a>)}<a href="#closed-world">Closed world</a></nav>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="basics-h">
+    <div class="sec-head">
+    <h2 class="display" id="basics-h">Facts, rules and new facts</h2>
+    <p class="lede">Every problem in this benchmark is a short text and a statement to judge. The text has two kinds of sentence.</p>
+    </div>
+    <div class="sec-body">
+    <dl class="defs">
+      <div><dt>A fact</dt><dd>Something stated as true about someone: "Erin is furry."</dd></div>
+      <div><dt>A rule</dt><dd>An "if this, then that": "If Erin is furry then Erin is not rough." Rules can need more than one condition: "Kind, young people are blue."</dd></div>
+      <div><dt>Applying a rule</dt><dd>When every condition of a rule is a fact, its conclusion becomes a new fact: from "Erin is furry" and that rule, "Erin is not rough".</dd></div>
+      <div><dt>A chain</dt><dd>A new fact can meet the condition of another rule, which gives another new fact, and so on.</dd></div>
+    </dl>
+    </div>
+  </section>
+
+  <section class="wrap section sec-prose" aria-labelledby="depth-h">
+    <h2 class="display" id="depth-h">What proof depth counts</h2>
+    <p>Proof depth is how many rule applications the longest chain in the proof needs. At depth 0 the statement is written in the text. At depth 1 one rule gets you there. At depth 5 five rules must be applied one after another, each feeding the next.</p>
+    <p>Each extra step is another chance to go wrong: to miss a condition, apply a rule that does not fit, or lose track of a fact derived two steps earlier. A model that answers in one pass, without writing the steps down, has to do all of that internally. That is why accuracy falls with depth on <a href={urls.axis("depth")}>the proof-depth breakdown</a>, and why depth is the difficulty axis the benchmark controls: about 300 problems at each depth on each task.</p>
+    <p>Depth is not the length of the text. {sameTheory.length > 0 && `The depth ${sameTheory[0].depth - 1} and depth ${sameTheory[0].depth} examples below share one text of ${sameTheory[0].facts.length} facts and ${sameTheory[0].rules.length} rules; only the statement changes.`} Longer texts mostly add distractors: facts and rules the proof never uses.</p>
+  </section>
+
+  <section class="wrap section sec-split" aria-labelledby="worlds-h">
+    <div class="sec-head">
+    <h2 class="display" id="worlds-h">Open world and closed world: where false and unknown come from</h2>
+    </div>
+    <div class="sec-body">
+    <p>The examples below are all true: their statement can be proved. The other answers depend on which rule the task uses for what cannot be proved.</p>
+    <dl class="defs">
+      <div><dt>{TASK_INFO[OWA].long}</dt><dd>{TASK_INFO[OWA].about} A false needs a proof too, of the statement's negation; unknown is what is left when neither side can be proved.</dd></div>
+      <div><dt>{TASK_INFO[CWA].long}</dt><dd>{TASK_INFO[CWA].about} "Not" in a rule's condition holds when the unnegated fact cannot be derived, so answering a closed-world question can mean checking that something cannot be proved.</dd></div>
+    </dl>
+    </div>
+  </section>
+
+  <section class="wrap section sec-prose" aria-labelledby="sel-h">
+    <h2 class="display" id="sel-h">How these examples were chosen</h2>
+    <p class="footnote"><strong>These are the shortest problems at each depth, so they are easier than typical problems at their depth.</strong> {nRight} of the {owa.length} open-world examples were answered correctly by every model. They show what depth means; they do not show the accuracy gap. For that, read <a href={urls.axis("depth")}>accuracy by proof depth</a>, where each depth is about 300 problems.</p>
+    <p>The selection is fixed and blind to the answers. From the preregistered sample: {depthData ? depthData.selection.replace(/``/g, "") : ""}</p>
+  </section>
+
+  {owa.map((e, i) => (
+    <section class="wrap section sec-split" id={`depth-${e.depth}`} aria-labelledby={`depth-${e.depth}-h`}>
+      <div class="sec-head">
+      <h2 class="display" id={`depth-${e.depth}-h`}>{depthHeading(e)}</h2>
+      </div>
+      <div class="sec-body">
+      <DepthExample ex={e} prev={i > 0 ? owa[i - 1] : null} />
+      {axisRow("jev", OWA, "depth", String(e.depth)) && <p class="note">Across all {int(axisRow("jev", OWA, "depth", String(e.depth)).n)} open-world problems at depth {e.depth}, not just this short one: {full.map((m) => `${L(m.id)} ${pct(axisRow(m.id, OWA, "depth", String(e.depth)).accuracy)}%`).join(", ")}.</p>}
+      </div>
+    </section>
+  ))}
+
+  <section class="wrap section sec-split" id="closed-world" aria-labelledby="cw-h">
+    <div class="sec-head">
+    <h2 class="display" id="cw-h">The same idea under the closed world</h2>
+    </div>
+    <div class="sec-body">
+    <p>Chosen by the same rule from the closed-world sample. The proofs work the same way; what changes is that "not" in a condition holds when something cannot be derived, and anything that cannot be derived is false.{cwa.some((e, i) => i > 0 && theoryId(e) === theoryId(cwa[i - 1])) && " Depths 4 and 5 again share one text."}</p>
+    <details class="cell">
+      <summary>Six closed-world examples, depth 0 to 5</summary>
+      {cwa.map((e, i) => (
+        <div class="cw-ex">
+          <h3>{depthHeading(e)} ({e.statement})</h3>
+          <DepthExample ex={e} prev={i > 0 ? cwa[i - 1] : null} />
+        </div>
+      ))}
+    </details>
+    </div>
+  </section>
+
+  <section class="wrap section sec-prose" aria-labelledby="next-h">
+    <h2 class="display" id="next-h">Where to go next</h2>
+    {claim && <p class="claim">{claim.sentence}</p>}
+    <ul class="how-list">
+      <li><a href={urls.axis("depth")}>Accuracy by proof depth</a>: every model, every depth, both tasks, with 95% intervals.</li>
+      <li><a href={urls.measured()}>How we measured</a>: the sample, the protocol and the scoring.</li>
+      <li><a href={urls.home()}>The benchmark</a>: how accuracy falls as reasoning gets deeper.</li>
+    </ul>
+  </section>
+
+  <AnthusNote />
+</Base>

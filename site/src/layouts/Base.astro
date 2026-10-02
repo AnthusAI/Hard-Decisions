@@ -1,0 +1,148 @@
+---
+// Every page: head metadata (canonical URL, description, Open Graph), the masthead, the caveats
+// panel and the colophon. The page body is static HTML; the only script opens #fragments.
+import "../styles/site.css";
+import steps from "../assets/steps.svg?raw";
+import { data, models, allModels, urls, absolute, groups, SITE_NAME, ANTHUS, REPO } from "../lib/site.js";
+import { honesty, intro, liveComparisons } from "../lib/content.js";
+import { cardFor } from "../lib/cards.js";
+
+const { title, description, path, current = {}, crumbs = [], noindex = false } = Astro.props;
+const site = Astro.site;
+const fullTitle = title ? `${title} · ${SITE_NAME}` : `${intro.home.title} · ${SITE_NAME}`;
+const canonical = absolute(path, site);
+const card = noindex ? null : cardFor(path);
+if (!noindex && !card) throw new Error(`no social card for ${path}`);
+const ogImage = card ? absolute(card.url, site) : null;
+const p = data.provenance;
+// The caveats panel: four or six cards (never five: the grid would leave an orphan), open on the
+// home page and folded to one line everywhere else.
+const caveatCount = { 4: "Four", 6: "Six" }[honesty.length];
+if (!caveatCount) throw new Error(`the caveats panel needs four or six cards, not ${honesty.length}`);
+const light = allModels.map((e) => `--eng-${e.slug}: ${e.color};`).join(" ");
+const dark = allModels.map((e) => `--eng-${e.slug}: ${e.color_dark || e.color};`).join(" ");
+const engineCss = `:root { ${light} }
+@media (prefers-color-scheme: dark) { :root { ${dark} } }
+@media print { :root { ${light} } }`;
+// Google Analytics 4, the same property as anth.us and Biased-Decisions (hostname splits the
+// reports). Production builds only.
+const GA_ID = "G-31SC26SDGX";
+const gtagInit = `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`;
+// Opt-out: visit any page with ?notrack=1 to set a localStorage flag that disables GA in this browser (?notrack=0 clears it).
+const optOut = String.raw`(function(){try{var k='anthus-no-analytics',q=location.search.match(/[?&]notrack=(\w+)/);if(q){if(q[1]==='1')localStorage.setItem(k,'1');else localStorage.removeItem(k)}if(localStorage.getItem(k)==='1')window['ga-disable-G-31SC26SDGX']=true}catch(e){}})();`;
+const on = (k) => (current.page === k ? "on" : null);
+const cur = (k) => (current.page === k ? "page" : undefined);
+const topics = [[urls.measured(), "How we measured"], [urls.depthMeans(), "What proof depth means"], [urls.predictions(), "Predictions"], [urls.page("repeatability"), "Consistency"], [urls.speed(), "Speed, size and memory"], [urls.preview(), "OpenAI Decisions API preview"],
+  [urls.page("evaluating-decision-models"), "Evaluating decision models"], [urls.page("fine-tuning-decision-models"), "Fine-tuning"],
+  [urls.page("aligning-decision-models"), "Aligning"], [urls.page("about"), "About"]];
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{fullTitle}</title>
+<meta name="description" content={card?.description || description}>
+<link rel="canonical" href={canonical}>
+{noindex && <meta name="robots" content="noindex">}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content={SITE_NAME}>
+<meta property="og:title" content={card ? card.headline : (title || SITE_NAME)}>
+<meta property="og:description" content={card?.description || description}>
+<meta property="og:url" content={canonical}>
+{card && <Fragment>
+<meta property="og:image" content={ogImage}>
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content={card.alt}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={card.headline}>
+<meta name="twitter:description" content={card?.description || description}>
+<meta name="twitter:image" content={ogImage}>
+<meta name="twitter:image:alt" content={card.alt}>
+</Fragment>}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f1f9fe" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1a22" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="icon" type="image/svg+xml" sizes="any" href={`${urls.home()}favicon.svg`}>
+<link rel="icon" type="image/png" sizes="32x32" href={`${urls.home()}favicon-32.png`}>
+<link rel="icon" type="image/png" sizes="16x16" href={`${urls.home()}favicon-16.png`}>
+<link rel="apple-touch-icon" sizes="180x180" href={`${urls.home()}apple-touch-icon.png`}>
+<link rel="alternate" type="application/json" href={urls.data()} title="Every result in one data file">
+<style is:inline set:html={engineCss}></style>
+{import.meta.env.PROD && <Fragment>
+<script is:inline set:html={optOut}></script>
+<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+<script is:inline set:html={gtagInit}></script>
+</Fragment>}
+</head>
+<body>
+<a class="skip" href="#app">Skip to content</a>
+<header class="masthead">
+  <div class="mast-inner">
+    <div class="wrap mast-row">
+      <a href={urls.home()} class="brand" aria-label="Hard Decisions">
+        <span><span class="brand-a">Hard</span><span class="brand-b">Decisions</span></span>
+        <span class="brand-icon" aria-hidden="true" set:html={steps}></span>
+      </a>
+      <nav class="topnav" aria-label="Site">
+        <a href={urls.models()} class={on("models")} aria-current={cur("models")}>Models</a>
+        <a href={urls.breakdowns()} class={on("breakdowns") || (current.page === "axis" ? "on" : null)} aria-current={cur("breakdowns")}>Breakdowns</a>
+        <a href={urls.measured()} class={on("measured")} aria-current={cur("measured")}>How we measured</a>
+        <a href={urls.page("about")} class={on("about")} aria-current={cur("about")}>About</a>
+      </nav>
+    </div>
+    <div class="wrap">
+      <nav class="rail" aria-label="Results by">
+        <a href={urls.breakdowns()} class={on("breakdowns")} aria-current={cur("breakdowns")}>All breakdowns</a>
+        <a href={urls.depthMeans()} class={on("depth-means")} aria-current={cur("depth-means")}>What depth means</a>
+        <span class="rail-sep" aria-hidden="true"></span>
+        {groups.map((g) => (
+          <a href={urls.group(g.slug)} class={current.group === g.slug ? "on" : null} aria-current={current.group === g.slug ? "page" : undefined}>{g.label}</a>
+        ))}
+      </nav>
+    </div>
+  </div>
+</header>
+<main id="app">
+  {crumbs.length > 0 && (
+    <nav class="wrap crumbs" aria-label="Breadcrumb">
+      <ol>
+        {crumbs.map((c, i) => (
+          <li>{i < crumbs.length - 1 || c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
+        ))}
+      </ol>
+    </nav>
+  )}
+  <slot />
+  <aside class="wrap honesty" aria-labelledby="honesty-h">
+    <details id="read-first" open={current.page === "overview"}>
+      <summary><h2 id="honesty-h" class="display sm">{caveatCount} things to know before you read the results</h2></summary>
+      <ol data-count={honesty.length}>
+        {honesty.map((x) => <li class="caveat"><strong>{x.title}</strong><span>{x.text}</span></li>)}
+      </ol>
+    </details>
+  </aside>
+</main>
+<footer class="colophon">
+  <div class="wrap colo">
+    <nav class="foot-nav" aria-label="Every page">
+      <div><span class="chips-h">Models</span><a href={urls.models()}>Every model</a><a href={urls.model("jev")}>Jev</a>{liveComparisons.map((c) => <a href={urls.comparison(c.slug)}>{c.title.split(":")[0]}</a>)}</div>
+      <div><span class="chips-h">Breakdowns</span>{groups.map((g) => <a href={urls.group(g.slug)}>{g.label}</a>)}</div>
+      <div><span class="chips-h">Topics</span>{topics.map(([h, l]) => <a href={h}>{l}</a>)}</div>
+    </nav>
+    <p class="release" data-release={p.version}>Version <strong>v{p.version}</strong>, <strong>unreleased</strong>.</p>
+    <p>Every number on this site is worked out from the models' saved answers, on <strong>{p.generated}</strong>, from the harness's working tree at commit <code>{p.record_commit_short || "unknown"}</code>{p.branch && <Fragment> on <code>{p.branch}</code></Fragment>}; results scored since that commit are included. You can download <a href={urls.data()}>every number in one data file</a>. <a href={urls.page("about")}>About this site</a>.</p>
+    <p class="fine">Hard-Decisions is MIT-licensed{REPO ? <Fragment> (<a href={REPO}>source</a>)</Fragment> : ""} and made by <a href={ANTHUS.url}>{ANTHUS.name}</a>. ProofWriter (Tafjord, Dalvi and Clark, 2021) is published by AI2 under CC BY 4.0. Typefaces: Jersey 25 and Montserrat, SIL Open Font License.</p>
+  </div>
+</footer>
+<script src="../scripts/client.js"></script>
+</body>
+</html>
