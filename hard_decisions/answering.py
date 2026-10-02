@@ -19,6 +19,8 @@ from hard_decisions.record import append_rows, read_record
 from hard_decisions.tasks import Task
 
 JEV_USD_PER_INPUT_TOKEN = 42 / 1e9   # TypeSafe's published price; output tokens are free
+GLIDE_USD_PER_INPUT_TOKEN = 0.30 / 1e6   # docs.fastino.ai/pricing, read 2026-10-02; output tokens $0
+SYSTEM_ONE_RATES = {"jev": JEV_USD_PER_INPUT_TOKEN, "glide": GLIDE_USD_PER_INPUT_TOKEN}
 DEFAULT_CHARS_PER_TOKEN = 3.6
 FALLBACK_OVERHEAD_TOKENS = 80          # wire framing around the text, replaced by measured usage
 
@@ -37,10 +39,11 @@ class Price:
     input_tokens: float
     usd: float
     basis: str
+    rate: float = JEV_USD_PER_INPUT_TOKEN
 
     def __str__(self) -> str:
         return (f"{self.requests} requests, ~{self.input_tokens:,.0f} input tokens, "
-                f"~${self.usd:.4f} at ${JEV_USD_PER_INPUT_TOKEN * 1e9:.0f} per billion input tokens ({self.basis})")
+                f"~${self.usd:.4f} at ${self.rate * 1e9:.0f} per billion input tokens ({self.basis})")
 
 
 def pending(items: Sequence[dict], path: Path, limit: Optional[int] = None) -> List[dict]:
@@ -50,7 +53,7 @@ def pending(items: Sequence[dict], path: Path, limit: Optional[int] = None) -> L
 
 
 def estimate(task: Task, items: Sequence[dict], recorded: Sequence[dict],
-             texts: Optional[Dict[str, str]] = None) -> Price:
+             texts: Optional[Dict[str, str]] = None, rate: float = JEV_USD_PER_INPUT_TOKEN) -> Price:
     """Price from measured usage when a record exists (tokens per character of item text plus the
     fixed question overhead), else from a characters-per-token guess."""
     question_chars = len(json.dumps(task.wire_questions()))
@@ -65,7 +68,7 @@ def estimate(task: Task, items: Sequence[dict], recorded: Sequence[dict],
         total = sum((len(i["text"]) + question_chars) / DEFAULT_CHARS_PER_TOKEN + FALLBACK_OVERHEAD_TOKENS
                     for i in items)
         basis = "estimated from text length; no usage recorded yet"
-    return Price(requests=len(items), input_tokens=total, usd=total * JEV_USD_PER_INPUT_TOKEN, basis=basis)
+    return Price(requests=len(items), input_tokens=total, usd=total * rate, basis=basis, rate=rate)
 
 
 @dataclass

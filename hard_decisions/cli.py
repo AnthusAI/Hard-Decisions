@@ -105,6 +105,9 @@ def _engine(name: str):
     if name == "laya":
         from hard_decisions.engines.laya import LayaEngine
         return LayaEngine()
+    if name == "glide":
+        from hard_decisions.engines.glide import GlideEngine
+        return GlideEngine()
     if name.startswith("kev"):
         from hard_decisions.engines.typesafe_compat import TypesafeCompatibleEngine
         return TypesafeCompatibleEngine(name, KEV_URL)
@@ -112,7 +115,7 @@ def _engine(name: str):
         from hard_decisions.engines.llm import ChatClassifierEngine, spec_for
         vendor, model = name.split(":", 1)
         return ChatClassifierEngine(spec_for(vendor, model))
-    raise SystemExit(f"unknown engine {name!r}; available: jev, laya, kev-<size>, <vendor>:<model>")
+    raise SystemExit(f"unknown engine {name!r}; available: jev, glide, laya, kev-<size>, <vendor>:<model>")
 
 
 def _machine() -> dict:
@@ -186,8 +189,9 @@ def cmd_answer(args) -> int:
     todo = answering.pending(items, path, args.limit)
     texts = {i["id"]: i["text"] for i in items}
     print(f"{engine.name} on {task.slug}: {len(todo)} items still to answer ({len(items) - len(todo)} done or skipped)")
-    if args.engine == "jev":
-        print(f"price: {answering.estimate(task, todo, read_record(path), texts)}")
+    if args.engine in answering.SYSTEM_ONE_RATES:
+        rate = answering.SYSTEM_ONE_RATES[args.engine]
+        print(f"price: {answering.estimate(task, todo, read_record(path), texts, rate=rate)}")
     elif ":" in args.engine:
         price = answering.estimate_llm(engine.spec, task, todo, read_record(path), texts)
         print(f"price: {price if price else 'unknown: add ' + engine.spec.model + ' to hard_decisions/pricing.py'}")
