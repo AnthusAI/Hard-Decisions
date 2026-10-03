@@ -1,7 +1,7 @@
 ---
 // A preview of the OpenAI Decisions API through GPT-6 Luna, the model OpenAI says it is built on.
-// Accuracy comes from the scored benchmark (studies/); confidence from the preregistered
-// log-probability probe (Amendment 6, probes/luna-logprobs/analysis.json), which is outside the
+// Accuracy comes from the scored benchmark (studies/); confidence from the
+// log-probability probe (probes/luna-logprobs/analysis.json), which is outside the
 // scored benchmark. The API itself is not tested here, and nothing here says whether it returns a
 // confidence score.
 import Base from "../../layouts/Base.astro";
@@ -10,12 +10,10 @@ import Legend from "../../components/Legend.astro";
 import AccTable from "../../components/AccTable.astro";
 import DiffRows from "../../components/DiffRows.astro";
 import EngineName from "../../components/EngineName.astro";
-import Predictions from "../../components/Predictions.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
 import ExampleCard from "../../components/ExampleCard.astro";
 import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, pts, fmt, int, overall, axisTable, pair, L, listOf } from "../../lib/site.js";
 import { intro, DECISIONS_API } from "../../lib/content.js";
-import { predictions } from "../../lib/predictions.js";
 
 const LUNA = "openai-gpt-6-luna-effort-none";
 const S = DECISIONS_API.sources;
@@ -29,10 +27,6 @@ const bandLabel = (b) => (b.from >= 0.99 ? "99% or more" : `${pct(b.from, 0)}% t
 const wrongEx = P ? P.examples.filter((e) => !e.correct) : [];
 const rightEx = P ? P.examples.filter((e) => e.correct) : [];
 const ex = wrongEx.find((e) => e.task === OWA) || wrongEx[0];
-const probeSec = predictions().find((s) => s.title === "Luna confidence probe");
-// The spot check, quoted from Amendment 6.
-const a6 = data.prereg.sections.find((s) => /^Amendment 6/.test(s.heading));
-const spot = a6 ? (/- \*\*A spot check[^]*?(?=\n- \*\*)/.exec(a6.text) || [""])[0].replace(/^- /, "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\s+/g, " ").trim() : "";
 const pretty = (o) => JSON.stringify(o, null, 2);
 const totalNotArgmax = P ? taskOrder.reduce((a, s) => a + (pt(s) ? pt(s).returned_not_most_probable : 0), 0) : 0;
 const totalResponses = P ? taskOrder.reduce((a, s) => a + (pt(s) ? pt(s).responses : 0), 0) : 0;

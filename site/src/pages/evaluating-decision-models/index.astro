@@ -5,7 +5,6 @@ import AnthusNote from "../../components/AnthusNote.astro";
 import { models, modelById, urls, OWA, CWA, TASK_INFO, taskBySlug, pct, pts, fmt, int, overall, axisRow, pairRow, retest, latency, isComplete, L, listOf } from "../../lib/site.js";
 import { intro, DECISIONS_API } from "../../lib/content.js";
 import { fullModels, lean, deepEnd } from "../../lib/insights.js";
-import { tally, predictions } from "../../lib/predictions.js";
 
 const full = fullModels();
 const owaDone = models.filter((m) => isComplete(m.id, OWA));
@@ -14,8 +13,6 @@ const jev = modelById.jev;
 const jl0 = pairRow(OWA, "jev", LUNA, "depth", "0"), jl5 = pairRow(OWA, "jev", LUNA, "depth", "5");
 const rt = retest("jev", OWA);
 const lunaO = overall(LUNA, OWA), lunaD5 = axisRow(LUNA, OWA, "depth", "5");
-const t = tally();
-const failed = predictions().flatMap((sec) => sec.predictions.filter((p) => p.status === "failed").map((p) => `“${p.text.split(/(?<=\.)\s/)[0]}”`));
 const jd = jev && isComplete("jev", OWA) ? [0, 1, 2, 3, 4, 5].map((d) => axisRow("jev", OWA, "depth", String(d))) : [];
 const jmin = jd.length ? jd.reduce((a, b) => (b.accuracy < a.accuracy ? b : a)) : null;
 ---

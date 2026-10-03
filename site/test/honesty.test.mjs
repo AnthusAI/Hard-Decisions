@@ -33,16 +33,11 @@ test("every breakdown other than depth says it is descriptive", () => {
   }
 });
 
-test("How we measured reports every prediction with a verdict, word for word", () => {
-  const page = content.find((p) => p.path === "/how-we-measured/");
-  const t = text(page.html);
-  for (const sec of DATA.prereg.sections) for (const pr of sec.predictions) {
-    const words = pr.text.replace(/`/g, "").slice(0, 60);
-    assert.ok(t.includes(words), `prediction not quoted: "${words}"`);
+test("no public page mentions the preregistration, its amendments or prediction verdicts (they live in the lab notes)", () => {
+  for (const p of content) {
+    const t = text(p.html);
+    assert.doesNotMatch(t, /preregist|Amendment \d|predictions? (held|failed)|What we predicted/i, p.path);
   }
-  const verdicts = (page.html.match(/class="verdict v-/g) || []).length;
-  const n = DATA.prereg.sections.reduce((a, s) => a + s.predictions.length, 0);
-  assert.ok(verdicts >= n, `${verdicts} verdicts for ${n} predictions`);
 });
 
 test("a model with no scored results never gets a page or a number", () => {

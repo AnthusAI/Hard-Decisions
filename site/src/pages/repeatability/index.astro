@@ -4,12 +4,10 @@ import EngineName from "../../components/EngineName.astro";
 import AnthusNote from "../../components/AnthusNote.astro";
 import { data, models, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, taskBySlug, pct, fmt, int, retest, latency, derived, isComplete, statusWords, L, listOf } from "../../lib/site.js";
 import { intro } from "../../lib/content.js";
-import { predictions, STATUS_WORDS, STATUS_CLASS } from "../../lib/predictions.js";
 
 const withRetest = models.filter((m) => taskOrder.some((s) => retest(m.id, s)));
 const without = models.filter((m) => !taskOrder.some((s) => retest(m.id, s)));
 const rt = retest("jev", OWA);
-const a4 = predictions().find((s) => s.title === "Repeatability");
 const calibrated = models.filter((m) => taskOrder.some((s) => derived(m.id, s) && derived(m.id, s).calibration));
 const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && !taskOrder.some((s) => derived(m.id, s) && derived(m.id, s).calibration));
 ---
@@ -53,7 +51,6 @@ const noProbs = models.filter((m) => taskOrder.some((s) => derived(m.id, s)) && 
         </div>
       </Fragment>
     ))}
-    {a4 && a4.predictions[2] && /held/.test(a4.predictions[2].status) && <p>So far, changes concentrate on deeper proofs: the problems a model finds hardest are also the ones it answers least consistently.</p>}
     </div>
   </section>
 

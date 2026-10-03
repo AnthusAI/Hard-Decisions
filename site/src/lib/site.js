@@ -100,7 +100,6 @@ export const urls = {
   // An axis lives on its group's page; on a page with several axes, at its own section.
   axis: (key) => { const g = groupOfAxis(key); return join("breakdowns", g.slug) + (g.axes.length > 1 ? `#${axisByKey[key].slug}` : ""); },
   measured: () => join("how-we-measured"),
-  predictions: (section = null) => `${join("how-we-measured")}#${section ? `predictions-${section}` : "predictions"}`,
   speed: () => join("speed-size-and-memory"),
   cost: () => join("cost-per-decision"),
   preview: () => join("openai-decisions-api-preview"),

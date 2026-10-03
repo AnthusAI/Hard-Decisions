@@ -5,7 +5,6 @@ import { createHash } from "node:crypto";
 import { data, models, modelById, urls, axes, groups, axisByKey, OWA, CWA, taskBySlug, pct, pts, int, fmt, overall, axisRow, isComplete,
   ranked, leader, latency, retest, axisSpread, valueLabel, L, listOf, costOf } from "./site.js";
 import { intro, liveComparisons, modelTitle } from "./content.js";
-import { predictions, tally, STATUS_WORDS } from "./predictions.js";
 import { coinFlipClaim } from "./insights.js";
 
 export const STAMP = `v${data.provenance.version} · ${data.provenance.generated}`;
@@ -156,12 +155,9 @@ function depth5Card(key) {
 
 function measuredCard() {
   const n = data.tasks.reduce((a, t) => a + t.n, 0);
-  const t = tally();
-  const total = Object.values(t).reduce((a, b) => a + b, 0) - (t["no claim"] || 0);
-  const held = (t.held || 0) + (t["held so far"] || 0);
-  return { template: "topic", headline: intro.measured.title, description: fit(`${intro.measured.intro} So far ${held} of ${total} predictions held.`), number: int(n),
+  return { template: "topic", headline: intro.measured.title, description: fit(intro.measured.intro), number: int(n),
     numberNote: `problems: ${int(taskBySlug[OWA].n)} per task, about 300 per proof depth`,
-    rows: [{ text: "One request per problem, the same question for every model" }, { text: `${held} of ${total} predictions held so far` }] };
+    rows: [{ text: "One request per problem, the same question for every model" }, { text: "Every score recomputed offline from the saved answers" }] };
 }
 
 // The probe's "when it says 99% or more" band, for Luna and for any engine on the same items.

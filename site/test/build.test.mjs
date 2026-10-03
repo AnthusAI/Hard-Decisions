@@ -159,5 +159,7 @@ test("the data file is published beside the pages", () => {
   const f = files.find((x) => x.endsWith("data/results.json"));
   assert.ok(f, "no data/results.json in dist");
   const d = JSON.parse(readFileSync(f, "utf8"));
-  assert.ok(Array.isArray(d.predictions) && d.predictions.length > 0);
+  assert.ok(d.results && d.tasks, "the data file carries the results");
+  assert.equal(d.prereg, undefined, "the preregistration stays in the lab notes, not the published data");
+  assert.equal(d.predictions, undefined, "no prediction verdicts in the published data");
 });

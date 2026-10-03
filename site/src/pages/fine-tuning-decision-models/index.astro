@@ -5,13 +5,11 @@ import AnthusNote from "../../components/AnthusNote.astro";
 import { models, modelById, urls, OWA, CWA, TASK_INFO, taskBySlug, pct, pts, int, overall, axisRow, isComplete, statusWords, L, listOf } from "../../lib/site.js";
 import { intro } from "../../lib/content.js";
 import { lean, deepEnd, paraphraseGap, negationGap } from "../../lib/insights.js";
-import { predictions, STATUS_WORDS } from "../../lib/predictions.js";
 
 const owaDone = models.filter((m) => isComplete(m.id, OWA));
 const cwaDone = models.filter((m) => isComplete(m.id, CWA));
 const open = models.filter((m) => !m.hosted);
 const kevs = models.filter((m) => m.family === "kev");
-const a3 = predictions().find((s) => s.title === "Kev-4B and Kev-9B");
 const neg = negationGap("jev", OWA);
 const negUp = !!(neg && neg.diff > 0);
 const prof = taskBySlug[OWA].profile.paraphrased || {};
