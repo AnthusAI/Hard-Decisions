@@ -41,8 +41,7 @@ const META = {
   "kev-0.8b": { label: "Kev-0.8B", slug: "kev-0-8b", color: "#8a5a00", color_dark: "#e6b94d", marker: "diamond-open", family: "kev", size: 0.8 },
   "kev-27b": { label: "Kev-27B", slug: "kev-27b", color: "#6b7280", color_dark: "#9ca3af", marker: "diamond", family: "kev", size: 27 },
   "gliner-2.5-decide": { label: "GLiNER2.5-Decide", slug: "gliner-2-5-decide", color: "#0f766e", color_dark: "#2dd4bf", marker: "circle-open", family: "gliner" },
-  "gliner-2.5-decide-labels-only": { label: "GLiNER2.5-Decide, labels only", slug: "gliner-2-5-decide-labels-only", color: "#5f9e96", color_dark: "#8fd6cc", marker: "circle-open", family: "gliner",
-    setting: "labels only" },
+  "gliner-2.5-decide-labels-only": { label: "GLiNER2.5-Decide, without instructions", slug: "gliner-2-5-decide-labels-only", color: "#5f9e96", color_dark: "#8fd6cc", marker: "circle-open", family: "gliner" },
   laya: { label: "Laya", slug: "laya", color: "#b5177a", color_dark: "#e05ba6", marker: "square", family: "laya" },
 };
 const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya", "kev-27b"];
@@ -102,6 +101,7 @@ export const urls = {
   measured: () => join("how-we-measured"),
   speed: () => join("speed-size-and-memory"),
   cost: () => join("cost-per-decision"),
+  asked: () => join("how-each-model-was-asked"),
   preview: () => join("openai-decisions-api-preview"),
   depthMeans: () => join("what-proof-depth-means"),
   page: (slug) => join(slug),

@@ -913,3 +913,19 @@ details.cell { scroll-margin-top: 140px; }
   .honesty ol[data-count="6"] { grid-template-columns: repeat(6, 1fr); }
   .compact-cards, .dim-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
 }
+
+/* Request and response examples */
+.req-card { border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); padding: 16px 18px; margin: 14px 0; }
+.req-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.req-verdict { display: inline-flex; gap: 8px; align-items: center; font-size: 15px; }
+.req-how { margin: 10px 0 4px; font-size: 14px; }
+.req-how code { overflow-wrap: anywhere; }
+.req-note { color: var(--ink-2); font-size: 15px; margin: 6px 0 12px; }
+.req-l { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 12px 0 4px; }
+.req-text { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono, ui-monospace, monospace); font-size: 13.5px; line-height: 1.5;
+  background: var(--surface-2); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; margin: 0; }
+.req-problem { margin: 8px 0 18px; font-size: 14.5px; }
+.req-probs { font-size: 14px; color: var(--ink-2); margin: 10px 0 0; }
+.req-raw { margin-top: 12px; }
+.req-raw summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+.req-raw pre.code { max-height: 420px; overflow: auto; font-size: 12.5px; }

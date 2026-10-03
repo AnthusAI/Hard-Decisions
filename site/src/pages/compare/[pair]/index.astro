@@ -19,7 +19,8 @@ import AnthusNote from "../../../components/AnthusNote.astro";
 import DecisionsApi from "../../../components/DecisionsApi.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
 import TimeAndMoney from "../../../components/TimeAndMoney.astro";
-import { modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
+import RequestExample from "../../../components/RequestExample.astro";
+import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
 import { liveComparisons } from "../../../lib/content.js";
 
@@ -191,6 +192,16 @@ function sides(slug, b) {
     <BreakdownSpread ids={bIds} />
     </div>
   </section>
+
+  {data.requestExamples && data.requestExamples.tasks[OWA] && (() => { const ex = data.requestExamples.tasks[OWA][0]; return (
+  <section class="wrap section sec-prose" aria-labelledby="asked-h">
+    <h2 class="display sm" id="asked-h">Exactly what {bNames} {bs.length === 1 ? "was" : "were"} asked</h2>
+    <p class="lede">One open-world problem at depth 0, as each model received it. The correct answer is <strong>{ex.gold}</strong>.</p>
+    <pre class="req-text req-problem">{ex.text}</pre>
+    {ids.filter((id) => ex.engines[id]).map((id) => <RequestExample id={id} ex={ex} />)}
+    <p class="more-link"><a href={urls.asked()}>Every model's request and response, on four problems</a></p>
+  </section>
+  ); })()}
 
   <TimeAndMoney ids={ids} />
 

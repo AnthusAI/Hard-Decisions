@@ -1,0 +1,28 @@
+---
+// Every model's exact request and recorded response for the same problems (studies/request-examples.json).
+import Base from "../../layouts/Base.astro";
+import AnthusNote from "../../components/AnthusNote.astro";
+import RequestExample from "../../components/RequestExample.astro";
+import { data, models, urls, TASK_INFO, taskOrder } from "../../lib/site.js";
+import { intro } from "../../lib/content.js";
+const RX = data.requestExamples;
+const order = models.map((m) => m.id);
+---
+<Base title={intro.asked.title} description={intro.asked.intro} path={urls.asked()} current={{ page: "asked" }}
+  crumbs={[{ label: "Benchmark", href: urls.home() }, { label: "How each model was asked" }]}>
+  <section class="wrap hero">
+    <p class="kicker">Requests and responses · every model</p>
+    <h1 class="display xl">{intro.asked.title}</h1>
+    <p class="deck">{intro.asked.intro}</p>
+    <p class="footnote">The problems shown are fixed by a rule, not chosen for their answers: for each task, the shortest problem at depth 0 and the shortest at depth 3 written in ProofWriter's templated wording. Each request is reproduced by the same code the benchmark used to send it, with keys and authentication left out; each response is the saved record.</p>
+  </section>
+  {RX && taskOrder.filter((s) => RX.tasks[s]).map((s) => RX.tasks[s].map((ex, k) => (
+    <section class="wrap section sec-prose" aria-labelledby={`ex-${s}-${k}`}>
+      <h2 class="display sm" id={`ex-${s}-${k}`}>{TASK_INFO[s].long}, depth {ex.depth}</h2>
+      <p class="lede">The problem, as every model saw it. The correct answer is <strong>{ex.gold}</strong>.</p>
+      <pre class="req-text req-problem">{ex.text}</pre>
+      {order.filter((id) => ex.engines[id]).map((id) => <RequestExample id={id} ex={ex} />)}
+    </section>
+  )))}
+  <AnthusNote />
+</Base>

@@ -443,6 +443,9 @@ const lunaMissesPath = join(ROOT, "studies", "luna-misses.json");
 const lunaMisses = existsSync(lunaMissesPath)
   ? { file: rel(lunaMissesPath), modified: mtime(lunaMissesPath), ...JSON.parse(readFileSync(lunaMissesPath, "utf8")) } : null;
 
+const requestExamplesPath = join(ROOT, "studies", "request-examples.json");
+const requestExamples = existsSync(requestExamplesPath)
+  ? { file: rel(requestExamplesPath), modified: mtime(requestExamplesPath), ...JSON.parse(readFileSync(requestExamplesPath, "utf8")) } : null;
 const modelExamplesPath = join(ROOT, "studies", "model-examples.json");
 const modelExamples = existsSync(modelExamplesPath)
   ? (({ engines, selection }) => ({ file: rel(modelExamplesPath), modified: mtime(modelExamplesPath), selection, engines }))(JSON.parse(readFileSync(modelExamplesPath, "utf8"))) : null;
@@ -525,6 +528,7 @@ const data = {
   probe,
   depthExamples,
   modelExamples,
+  requestExamples,
   lunaMisses,
 };
 

@@ -224,6 +224,8 @@ export function allCards() {
   out.push(finish(urls.page("repeatability"), repeatCard()));
   out.push(finish(urls.speed(), latencyCard()));
   out.push(finish(urls.cost(), costCard()));
+  out.push(finish(urls.asked(), { template: "topic", headline: intro.asked.title, description: fit(intro.asked.intro),
+    rows: [{ text: "Every model's request, field for field" }, { text: "The answer each one sent back, from the saved records" }] }));
   out.push(finish(urls.preview(), previewCard()));
   out.push(finish(urls.depthMeans(), depthMeansCard()));
   out.push(finish(urls.page("evaluating-decision-models"), depth5Card("evaluating")));

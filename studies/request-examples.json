@@ -1,0 +1,1631 @@
+{
+ "selection": "Each request is rebuilt with the harness's own code (the same functions the engines call), so it is the request that was sent, field for field; keys and auth headers are left out. Each response is the saved answer record for that problem from the scored run. The problems are fixed by a rule, not picked for their answers: per task, the shortest templated (not paraphrased) problem at depth 0 and the shortest at depth 3.",
+ "tasks": {
+  "proofwriter-owa": [
+   {
+    "id": "RelNeg-OWA-D1-2229-Q5",
+    "depth": 0,
+    "gold": "unknown",
+    "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big.",
+    "engines": {
+     "jev": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.typesafe.ai/v1/systemone",
+       "body": {
+        "model": "jev-latest",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Through TypeSafe's typesafe-sdk; jev-latest is the SDK's default model name."
+      },
+      "response": {
+       "model": "jev-1.13.0",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 1.0,
+         "probabilities": {
+          "false": 0.0,
+          "true": 0.0,
+          "unknown": 1.0
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 460,
+        "output_tokens": 38
+       },
+       "latency_ms": 204.39
+      },
+      "correct": true
+     },
+     "glide": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Fastino serves GLiDE on the same System One format as Jev, so this is Jev's request with a different address and model name."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9724408909000181,
+         "probabilities": {
+          "false": 0.007048396451747089,
+          "true": 0.010255356324117408,
+          "unknown": 0.9826962472241355
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 203,
+        "output_tokens": 1
+       },
+       "latency_ms": 608.13
+      },
+      "correct": true
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.openai.com/v1/chat/completions",
+       "body": {
+        "model": "gpt-6-luna",
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "none",
+        "messages": [
+         {
+          "role": "user",
+          "content": "The bear is green. Green things are not young.\n\nStatement: The bear is not big.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false, unknown."
+         }
+        ],
+        "response_format": {
+         "type": "json_schema",
+         "json_schema": {
+          "name": "decision",
+          "strict": true,
+          "schema": {
+           "type": "object",
+           "properties": {
+            "answer": {
+             "type": "string",
+             "enum": [
+              "true",
+              "false",
+              "unknown"
+             ]
+            }
+           },
+           "required": [
+            "answer"
+           ],
+           "additionalProperties": false
+          }
+         }
+        }
+       },
+       "note": "GPT-6 Luna with reasoning off (reasoning_effort none, its lowest setting), as a direct classifier. One chat message carries the problem, the question and every option with its meaning; the strict JSON schema only allows one of the options as the answer."
+      },
+      "response": {
+       "model": "gpt-6-luna",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "raw": null,
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 221,
+        "output_tokens": 11,
+        "stop_reason": "stop"
+       },
+       "latency_ms": 687.24
+      },
+      "correct": true
+     },
+     "kev-9b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-9B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9803,
+         "probabilities": {
+          "false": 0.0093,
+          "true": 0.0038,
+          "unknown": 0.9869
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 162,
+        "output_tokens": 63
+       },
+       "latency_ms": 1349.18
+      },
+      "correct": true
+     },
+     "kev-4b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-4B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9909,
+         "probabilities": {
+          "false": 0.0034,
+          "true": 0.0027,
+          "unknown": 0.9939
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 162,
+        "output_tokens": 63
+       },
+       "latency_ms": 593.34
+      },
+      "correct": true
+     },
+     "kev-0.8b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-0.8B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.1413,
+         "probabilities": {
+          "false": 0.4072,
+          "true": 0.1653,
+          "unknown": 0.4275
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 162,
+        "output_tokens": 63
+       },
+       "latency_ms": 91.23
+      },
+      "correct": true
+     },
+     "laya": {
+      "request": {
+       "how": "Python",
+       "call": "laya.load().system_one(state, questions)",
+       "body": {
+        "state": "The bear is green. Green things are not young.\n\nStatement: The bear is not big.",
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "The laya package on our laptop; it takes the same questions as Jev, with the problem as the state."
+      },
+      "response": {
+       "model": "laya-upstream:0.3.21",
+       "answers": {
+        "Decision": {
+         "action": {
+          "act_probability": 1.0
+         },
+         "answer_confidence": 0.5021,
+         "choice": "false",
+         "confidence": 0.2014,
+         "probabilities": {
+          "false": 0.5021,
+          "true": 0.0605,
+          "unknown": 0.4374
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 162,
+        "output_tokens": 0
+       },
+       "latency_ms": 705.34
+      },
+      "correct": false
+     },
+     "gliner-2.5-decide": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false",
+          "unknown"
+         ]
+        }
+       },
+       "note": "Fastino's hosted API for this model accepts a text and a list of answer labels, with no field for a question or for what each label means (the open-source package also accepts a short question as a prompt and a description per label; passed that way, our instructions made the model give the same answer to every problem). So the question and every option's meaning go into the text, after the problem, word for word as GPT-6 Luna received them, without Luna's line about replying in JSON. The labels are the three answers."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9209111332893372,
+         "probabilities": {
+          "false": 0.036921169608831406,
+          "true": 0.04216771200299263,
+          "unknown": 0.9209111332893372
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 108.95
+      },
+      "correct": true
+     },
+     "gliner-2.5-decide-labels-only": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false",
+          "unknown"
+         ]
+        }
+       },
+       "note": "The same model, asked without the instructions: the text is only the problem (the facts and rules, then the statement), and the labels are the three answers. Nothing tells the model what true, false or unknown mean. This is the bare form Fastino's hosted API documents."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.4924229383468628,
+         "probabilities": {
+          "false": 0.4924229383468628,
+          "true": 0.3129580020904541,
+          "unknown": 0.1946191042661667
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 131.71
+      },
+      "correct": false
+     }
+    }
+   },
+   {
+    "id": "RelNoneg-OWA-D3-1056-Q7",
+    "depth": 3,
+    "gold": "true",
+    "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red.",
+    "engines": {
+     "jev": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.typesafe.ai/v1/systemone",
+       "body": {
+        "model": "jev-latest",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Through TypeSafe's typesafe-sdk; jev-latest is the SDK's default model name."
+      },
+      "response": {
+       "model": "jev-1.13.0",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 1.0,
+         "probabilities": {
+          "false": 0.0,
+          "true": 1.0,
+          "unknown": 0.0
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 473,
+        "output_tokens": 38
+       },
+       "latency_ms": 174.18
+      },
+      "correct": true
+     },
+     "glide": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Fastino serves GLiDE on the same System One format as Jev, so this is Jev's request with a different address and model name."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.7493747169675863,
+         "probabilities": {
+          "false": 0.05035189736107074,
+          "true": 0.8495114098032578,
+          "unknown": 0.10013669283567149
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 3144,
+        "output_tokens": 1143
+       },
+       "latency_ms": 14481.15
+      },
+      "correct": true
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.openai.com/v1/chat/completions",
+       "body": {
+        "model": "gpt-6-luna",
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "none",
+        "messages": [
+         {
+          "role": "user",
+          "content": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false, unknown."
+         }
+        ],
+        "response_format": {
+         "type": "json_schema",
+         "json_schema": {
+          "name": "decision",
+          "strict": true,
+          "schema": {
+           "type": "object",
+           "properties": {
+            "answer": {
+             "type": "string",
+             "enum": [
+              "true",
+              "false",
+              "unknown"
+             ]
+            }
+           },
+           "required": [
+            "answer"
+           ],
+           "additionalProperties": false
+          }
+         }
+        }
+       },
+       "note": "GPT-6 Luna with reasoning off (reasoning_effort none, its lowest setting), as a direct classifier. One chat message carries the problem, the question and every option with its meaning; the strict JSON schema only allows one of the options as the answer."
+      },
+      "response": {
+       "model": "gpt-6-luna",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "raw": null,
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 234,
+        "output_tokens": 11,
+        "stop_reason": "stop"
+       },
+       "latency_ms": 649.78
+      },
+      "correct": false
+     },
+     "kev-9b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-9B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.8945,
+         "probabilities": {
+          "false": 0.039,
+          "true": 0.9297,
+          "unknown": 0.0314
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 175,
+        "output_tokens": 62
+       },
+       "latency_ms": 1293.24
+      },
+      "correct": true
+     },
+     "kev-4b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-4B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.204,
+         "probabilities": {
+          "false": 0.4349,
+          "true": 0.0958,
+          "unknown": 0.4693
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 175,
+        "output_tokens": 62
+       },
+       "latency_ms": 723.31
+      },
+      "correct": false
+     },
+     "kev-0.8b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-0.8B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.5516,
+         "probabilities": {
+          "false": 0.7011,
+          "true": 0.0665,
+          "unknown": 0.2324
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 175,
+        "output_tokens": 63
+       },
+       "latency_ms": 97.95
+      },
+      "correct": false
+     },
+     "laya": {
+      "request": {
+       "how": "Python",
+       "call": "laya.load().system_one(state, questions)",
+       "body": {
+        "state": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red.",
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "The laya package on our laptop; it takes the same questions as Jev, with the problem as the state."
+      },
+      "response": {
+       "model": "laya-upstream:0.3.21",
+       "answers": {
+        "Decision": {
+         "action": {
+          "act_probability": 1.0
+         },
+         "answer_confidence": 0.9614,
+         "choice": "false",
+         "confidence": 0.827,
+         "probabilities": {
+          "false": 0.9614,
+          "true": 0.0195,
+          "unknown": 0.019
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 177,
+        "output_tokens": 0
+       },
+       "latency_ms": 95.63
+      },
+      "correct": false
+     },
+     "gliner-2.5-decide": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red.\n\nUsing only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.\n\nOptions:\n- true: The statement follows from the facts and rules.\n- false: The negation of the statement follows from the facts and rules.\n- unknown: Neither the statement nor its negation follows from the facts and rules.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false",
+          "unknown"
+         ]
+        }
+       },
+       "note": "Fastino's hosted API for this model accepts a text and a list of answer labels, with no field for a question or for what each label means (the open-source package also accepts a short question as a prompt and a description per label; passed that way, our instructions made the model give the same answer to every problem). So the question and every option's meaning go into the text, after the problem, word for word as GPT-6 Luna received them, without Luna's line about replying in JSON. The labels are the three answers."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9415450692176819,
+         "probabilities": {
+          "false": 0.026757700368762016,
+          "true": 0.03169730305671692,
+          "unknown": 0.9415450692176819
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 111.81
+      },
+      "correct": false
+     },
+     "gliner-2.5-decide-labels-only": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false",
+          "unknown"
+         ]
+        }
+       },
+       "note": "The same model, asked without the instructions: the text is only the problem (the facts and rules, then the statement), and the labels are the three answers. Nothing tells the model what true, false or unknown mean. This is the bare form Fastino's hosted API documents."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.6029250025749207,
+         "probabilities": {
+          "false": 0.6029249429702759,
+          "true": 0.23353159427642822,
+          "unknown": 0.1635434329509735
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 61.46
+      },
+      "correct": false
+     }
+    }
+   }
+  ],
+  "proofwriter-cwa": [
+   {
+    "id": "RelNeg-CWA-D1-1770-Q6",
+    "depth": 0,
+    "gold": "false",
+    "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young.",
+    "engines": {
+     "jev": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.typesafe.ai/v1/systemone",
+       "body": {
+        "model": "jev-latest",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Through TypeSafe's typesafe-sdk; jev-latest is the SDK's default model name."
+      },
+      "response": {
+       "model": "jev-1.13.0",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 1.0,
+         "probabilities": {
+          "false": 1.0,
+          "true": 0.0
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 436,
+        "output_tokens": 31
+       },
+       "latency_ms": 138.68
+      },
+      "correct": true
+     },
+     "glide": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Fastino serves GLiDE on the same System One format as Jev, so this is Jev's request with a different address and model name."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.9838760180308329,
+         "probabilities": {
+          "false": 0.9919380090154164,
+          "true": 0.008061990984583519
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 185,
+        "output_tokens": 1
+       },
+       "latency_ms": 583.35
+      },
+      "correct": true
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.openai.com/v1/chat/completions",
+       "body": {
+        "model": "gpt-6-luna",
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "none",
+        "messages": [
+         {
+          "role": "user",
+          "content": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false."
+         }
+        ],
+        "response_format": {
+         "type": "json_schema",
+         "json_schema": {
+          "name": "decision",
+          "strict": true,
+          "schema": {
+           "type": "object",
+           "properties": {
+            "answer": {
+             "type": "string",
+             "enum": [
+              "true",
+              "false"
+             ]
+            }
+           },
+           "required": [
+            "answer"
+           ],
+           "additionalProperties": false
+          }
+         }
+        }
+       },
+       "note": "GPT-6 Luna with reasoning off (reasoning_effort none, its lowest setting), as a direct classifier. One chat message carries the problem, the question and every option with its meaning; the strict JSON schema only allows one of the options as the answer."
+      },
+      "response": {
+       "model": "gpt-6-luna",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "raw": null,
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 201,
+        "output_tokens": 11,
+        "stop_reason": "stop"
+       },
+       "latency_ms": 994.76
+      },
+      "correct": true
+     },
+     "kev-9b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-9B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.9256,
+         "probabilities": {
+          "false": 0.9628,
+          "true": 0.0372
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 145,
+        "output_tokens": 52
+       },
+       "latency_ms": 1027.51
+      },
+      "correct": true
+     },
+     "kev-4b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-4B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.9014,
+         "probabilities": {
+          "false": 0.9507,
+          "true": 0.0493
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 145,
+        "output_tokens": 52
+       },
+       "latency_ms": 961.56
+      },
+      "correct": true
+     },
+     "kev-0.8b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-0.8B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.3424,
+         "probabilities": {
+          "false": 0.6712,
+          "true": 0.3288
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 145,
+        "output_tokens": 52
+       },
+       "latency_ms": 82.15
+      },
+      "correct": true
+     },
+     "laya": {
+      "request": {
+       "how": "Python",
+       "call": "laya.load().system_one(state, questions)",
+       "body": {
+        "state": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young.",
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "The laya package on our laptop; it takes the same questions as Jev, with the problem as the state."
+      },
+      "response": {
+       "model": "laya-upstream:0.3.21",
+       "answers": {
+        "Decision": {
+         "action": {
+          "act_probability": 1.0
+         },
+         "answer_confidence": 0.9055,
+         "choice": "false",
+         "confidence": 0.5486,
+         "probabilities": {
+          "false": 0.9055,
+          "true": 0.0945
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 148,
+        "output_tokens": 0
+       },
+       "latency_ms": 917.83
+      },
+      "correct": true
+     },
+     "gliner-2.5-decide": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false"
+         ]
+        }
+       },
+       "note": "Fastino's hosted API for this model accepts a text and a list of answer labels, with no field for a question or for what each label means (the open-source package also accepts a short question as a prompt and a description per label; passed that way, our instructions made the model give the same answer to every problem). So the question and every option's meaning go into the text, after the problem, word for word as GPT-6 Luna received them, without Luna's line about replying in JSON. The labels are the three answers."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.5422529578208923,
+         "probabilities": {
+          "false": 0.5422529578208923,
+          "true": 0.45774707198143005
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 109.5
+      },
+      "correct": true
+     },
+     "gliner-2.5-decide-labels-only": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false"
+         ]
+        }
+       },
+       "note": "The same model, asked without the instructions: the text is only the problem (the facts and rules, then the statement), and the labels are the three answers. Nothing tells the model what true, false or unknown mean. This is the bare form Fastino's hosted API documents."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.5443795323371887,
+         "probabilities": {
+          "false": 0.4556204080581665,
+          "true": 0.5443795323371887
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 72.12
+      },
+      "correct": false
+     }
+    }
+   },
+   {
+    "id": "RelNeg-CWA-D3-7-Q7",
+    "depth": 3,
+    "gold": "true",
+    "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green.",
+    "engines": {
+     "jev": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.typesafe.ai/v1/systemone",
+       "body": {
+        "model": "jev-latest",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Through TypeSafe's typesafe-sdk; jev-latest is the SDK's default model name."
+      },
+      "response": {
+       "model": "jev-1.13.0",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 1.0,
+         "probabilities": {
+          "false": 0.0,
+          "true": 1.0
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 447,
+        "output_tokens": 31
+       },
+       "latency_ms": 189.9
+      },
+      "correct": true
+     },
+     "glide": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Fastino serves GLiDE on the same System One format as Jev, so this is Jev's request with a different address and model name."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.5098299737352565,
+         "probabilities": {
+          "false": 0.24508501313237172,
+          "true": 0.7549149868676283
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 196,
+        "output_tokens": 1
+       },
+       "latency_ms": 1567.2
+      },
+      "correct": true
+     },
+     "openai-gpt-6-luna-effort-none": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.openai.com/v1/chat/completions",
+       "body": {
+        "model": "gpt-6-luna",
+        "max_completion_tokens": 1024,
+        "reasoning_effort": "none",
+        "messages": [
+         {
+          "role": "user",
+          "content": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.\n\nReply with a JSON object {\"answer\": <option>} where <option> is exactly one of: true, false."
+         }
+        ],
+        "response_format": {
+         "type": "json_schema",
+         "json_schema": {
+          "name": "decision",
+          "strict": true,
+          "schema": {
+           "type": "object",
+           "properties": {
+            "answer": {
+             "type": "string",
+             "enum": [
+              "true",
+              "false"
+             ]
+            }
+           },
+           "required": [
+            "answer"
+           ],
+           "additionalProperties": false
+          }
+         }
+        }
+       },
+       "note": "GPT-6 Luna with reasoning off (reasoning_effort none, its lowest setting), as a direct classifier. One chat message carries the problem, the question and every option with its meaning; the strict JSON schema only allows one of the options as the answer."
+      },
+      "response": {
+       "model": "gpt-6-luna",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "raw": null,
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 212,
+        "output_tokens": 11,
+        "stop_reason": "stop"
+       },
+       "latency_ms": 984.45
+      },
+      "correct": false
+     },
+     "kev-9b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-9B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.7697,
+         "probabilities": {
+          "false": 0.1152,
+          "true": 0.8848
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 156,
+        "output_tokens": 52
+       },
+       "latency_ms": 1033.47
+      },
+      "correct": true
+     },
+     "kev-4b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-4B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.6713,
+         "probabilities": {
+          "false": 0.8357,
+          "true": 0.1643
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 156,
+        "output_tokens": 52
+       },
+       "latency_ms": 1158.15
+      },
+      "correct": false
+     },
+     "kev-0.8b": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "http://127.0.0.1:8009/v1/systemone",
+       "body": {
+        "model": "kev-latest",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "Kev's own server running Kev-0.8B on our laptop, answering Jev's System One format."
+      },
+      "response": {
+       "model": "kev-latest",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.8682,
+         "probabilities": {
+          "false": 0.9341,
+          "true": 0.0659
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 156,
+        "output_tokens": 52
+       },
+       "latency_ms": 84.25
+      },
+      "correct": false
+     },
+     "laya": {
+      "request": {
+       "how": "Python",
+       "call": "laya.load().system_one(state, questions)",
+       "body": {
+        "state": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green.",
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "The laya package on our laptop; it takes the same questions as Jev, with the problem as the state."
+      },
+      "response": {
+       "model": "laya-upstream:0.3.21",
+       "answers": {
+        "Decision": {
+         "action": {
+          "act_probability": 1.0
+         },
+         "answer_confidence": 0.878,
+         "choice": "false",
+         "confidence": 0.4648,
+         "probabilities": {
+          "false": 0.878,
+          "true": 0.122
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 159,
+        "output_tokens": 0
+       },
+       "latency_ms": 786.46
+      },
+      "correct": false
+     },
+     "gliner-2.5-decide": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green.\n\nUsing only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.\n\nOptions:\n- true: The statement holds under the closed-world assumption.\n- false: The statement does not hold under the closed-world assumption.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false"
+         ]
+        }
+       },
+       "note": "Fastino's hosted API for this model accepts a text and a list of answer labels, with no field for a question or for what each label means (the open-source package also accepts a short question as a prompt and a description per label; passed that way, our instructions made the model give the same answer to every problem). So the question and every option's meaning go into the text, after the problem, word for word as GPT-6 Luna received them, without Luna's line about replying in JSON. The labels are the three answers."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.569098174571991,
+         "probabilities": {
+          "false": 0.569098174571991,
+          "true": 0.43090182542800903
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 103.1
+      },
+      "correct": false
+     },
+     "gliner-2.5-decide-labels-only": {
+      "request": {
+       "how": "Python",
+       "call": "AutoExtractor.from_pretrained(\"fastino/GLiNER2.5-Decide\").classify_text(text, tasks, include_confidence=True)",
+       "body": {
+        "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green.",
+        "tasks": {
+         "Decision": [
+          "true",
+          "false"
+         ]
+        }
+       },
+       "note": "The same model, asked without the instructions: the text is only the problem (the facts and rules, then the statement), and the labels are the three answers. Nothing tells the model what true, false or unknown mean. This is the bare form Fastino's hosted API documents."
+      },
+      "response": {
+       "model": "fastino/GLiNER2.5-Decide@5a7adf7 gliner2-2.0.0 mps",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.7761543393135071,
+         "probabilities": {
+          "false": 0.22384561598300934,
+          "true": 0.7761543393135071
+         },
+         "type": "choice"
+        }
+       },
+       "usage": null,
+       "latency_ms": 57.18
+      },
+      "correct": true
+     }
+    }
+   }
+  ]
+ }
+}
