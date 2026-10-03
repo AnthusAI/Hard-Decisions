@@ -98,6 +98,10 @@ KEV_URL = os.environ.get("HD_KEV_URL", "http://127.0.0.1:8009")
 LOCAL_ENGINES = ("laya", "gliner-2.5-decide", "gliner-2.5-decide-labels-only")
 
 
+# GLiDE's runs: the launch-week run, and the rerun Fastino's CEO asked for (same request and protocol).
+GLIDE_RUNS = ("glide", "glide-rerun-2026-10-03")
+
+
 def _engine(name: str):
     if name == "jev":
         from hard_decisions.engines.jev import JevEngine
@@ -105,9 +109,9 @@ def _engine(name: str):
     if name == "laya":
         from hard_decisions.engines.laya import LayaEngine
         return LayaEngine()
-    if name == "glide":
+    if name in GLIDE_RUNS:
         from hard_decisions.engines.glide import GlideEngine
-        return GlideEngine()
+        return GlideEngine(name=name)
     if name in ("gliner-2.5-decide-hosted", "gliner-2.5-decide-hosted-labels-only"):
         from hard_decisions.engines.gliner_hosted import GlinerHostedEngine
         return GlinerHostedEngine(form="full" if name == "gliner-2.5-decide-hosted" else "labels")

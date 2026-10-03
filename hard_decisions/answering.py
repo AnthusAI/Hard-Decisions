@@ -24,6 +24,7 @@ GLIDE_USD_PER_INPUT_TOKEN = 0.30 / 1e6   # docs.fastino.ai/pricing, read 2026-10
 # read 2026-10-02; budgeted at the higher.
 GLINER_HOSTED_USD_PER_INPUT_TOKEN = 0.15 / 1e6
 SYSTEM_ONE_RATES = {"jev": JEV_USD_PER_INPUT_TOKEN, "glide": GLIDE_USD_PER_INPUT_TOKEN,
+                    "glide-rerun-2026-10-03": GLIDE_USD_PER_INPUT_TOKEN,
                     "gliner-2.5-decide-hosted": GLINER_HOSTED_USD_PER_INPUT_TOKEN,
                     "gliner-2.5-decide-hosted-labels-only": GLINER_HOSTED_USD_PER_INPUT_TOKEN}
 DEFAULT_CHARS_PER_TOKEN = 3.6

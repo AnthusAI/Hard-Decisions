@@ -39,9 +39,8 @@ def _as_dict(value: Any) -> dict:
 
 
 class GlideEngine:
-    name = "glide"
-
-    def __init__(self, client_factory=_default_client):
+    def __init__(self, client_factory=_default_client, name: str = "glide"):
+        self.name = name   # "glide" is the 2026-10-02 run; a rerun is recorded under its own name
         self._client_factory = client_factory
         self._client = None
 

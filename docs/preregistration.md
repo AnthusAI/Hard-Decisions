@@ -244,3 +244,14 @@ errors and were rerun once at concurrency 1; both answered.
   tokens), approved by the owner.
 - **Expectation:** the hosted answers match the local ones (as on 21 of 21 spot-check inputs); no prediction is
   made beyond that. Both forms are reported whatever they show.
+
+## Amendment 9: GLiDE rerun at Fastino's request (written before any rerun request)
+
+- **Why:** on 2026-10-03 Fastino's CEO asked us to re-evaluate GLiDE, saying Fastino had problems during the launch.
+  The 2026-10-02 run (`glide`) stays in the record unchanged; the rerun is recorded as `glide-rerun-2026-10-03`.
+- **Protocol:** identical to Amendment 7's run: Jev's System One request to `POST https://api.fastino.ai/v1/systemone`,
+  model `fastino/GLiDE`, all 1,800 items per task, eight requests in flight, no retries of an answer. The API reports
+  the model as `glide` both times, so the responses cannot show whether the model changed between runs.
+- **Spend:** about $0.80 at $0.30 per million input tokens, approved by the owner.
+- **Reported:** both runs side by side (accuracy overall and by depth, paired differences against Jev, latency, cost,
+  confidence) and how many answers changed between the runs. No prediction is made about the direction of change.
