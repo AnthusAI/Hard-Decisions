@@ -1,0 +1,204 @@
+{
+ "written": "2026-10-03, before any run on these items",
+ "purpose": "The simplest possible check of whether GLiNER2.5-Decide reads what a text says: minimal pairs that differ only by a negation, the same question asked of both. A model that reads the text must answer yes to one and no to the other.",
+ "forms": {
+  "card": "Local package, the model card's 'Question over a passage' form: text = passage, prompt = question, labels = [yes, no].",
+  "hosted": "Fastino's hosted API (no prompt field): message = passage, a blank line, then the question; task 'answer', labels = [yes, no].",
+  "local-message": "Local package, the same input as 'hosted' (to confirm hosted and local agree)."
+ },
+ "scoring": "Accuracy over the 32 items, and the share of the 16 pairs answered correctly on both sides. Chance: 50% accuracy, 25% of pairs.",
+ "items": [
+  {
+   "pair": 0,
+   "text": "Bob is white.",
+   "question": "Is Bob white?",
+   "gold": "yes"
+  },
+  {
+   "pair": 0,
+   "text": "Bob is not white.",
+   "question": "Is Bob white?",
+   "gold": "no"
+  },
+  {
+   "pair": 1,
+   "text": "The cat is big.",
+   "question": "Is the cat big?",
+   "gold": "yes"
+  },
+  {
+   "pair": 1,
+   "text": "The cat is not big.",
+   "question": "Is the cat big?",
+   "gold": "no"
+  },
+  {
+   "pair": 2,
+   "text": "Anne is kind.",
+   "question": "Is Anne kind?",
+   "gold": "yes"
+  },
+  {
+   "pair": 2,
+   "text": "Anne is not kind.",
+   "question": "Is Anne kind?",
+   "gold": "no"
+  },
+  {
+   "pair": 3,
+   "text": "The lion chases the dog.",
+   "question": "Does the lion chase the dog?",
+   "gold": "yes"
+  },
+  {
+   "pair": 3,
+   "text": "The lion does not chase the dog.",
+   "question": "Does the lion chase the dog?",
+   "gold": "no"
+  },
+  {
+   "pair": 4,
+   "text": "Erin is young.",
+   "question": "Is Erin young?",
+   "gold": "yes"
+  },
+  {
+   "pair": 4,
+   "text": "Erin is not young.",
+   "question": "Is Erin young?",
+   "gold": "no"
+  },
+  {
+   "pair": 5,
+   "text": "Bob is big. Bob is white. Charlie is nice.",
+   "question": "Is Bob white?",
+   "gold": "yes"
+  },
+  {
+   "pair": 5,
+   "text": "Bob is big. Bob is not white. Charlie is nice.",
+   "question": "Is Bob white?",
+   "gold": "no"
+  },
+  {
+   "pair": 6,
+   "text": "The cow is red. The cow eats the bear. The bear is cold.",
+   "question": "Does the cow eat the bear?",
+   "gold": "yes"
+  },
+  {
+   "pair": 6,
+   "text": "The cow is red. The cow does not eat the bear. The bear is cold.",
+   "question": "Does the cow eat the bear?",
+   "gold": "no"
+  },
+  {
+   "pair": 7,
+   "text": "Fiona is round. Gary is smart. Gary is green.",
+   "question": "Is Gary green?",
+   "gold": "yes"
+  },
+  {
+   "pair": 7,
+   "text": "Fiona is round. Gary is smart. Gary is not green.",
+   "question": "Is Gary green?",
+   "gold": "no"
+  },
+  {
+   "pair": 8,
+   "text": "The customer agreed to the new terms of service.",
+   "question": "Did the customer agree to the terms?",
+   "gold": "yes"
+  },
+  {
+   "pair": 8,
+   "text": "The customer did not agree to the new terms of service.",
+   "question": "Did the customer agree to the terms?",
+   "gold": "no"
+  },
+  {
+   "pair": 9,
+   "text": "The invoice was paid in full on March 3.",
+   "question": "Was the invoice paid?",
+   "gold": "yes"
+  },
+  {
+   "pair": 9,
+   "text": "The invoice was not paid on March 3.",
+   "question": "Was the invoice paid?",
+   "gold": "no"
+  },
+  {
+   "pair": 10,
+   "text": "The agent finished the migration and closed the ticket.",
+   "question": "Did the agent finish the migration?",
+   "gold": "yes"
+  },
+  {
+   "pair": 10,
+   "text": "The agent did not finish the migration and left the ticket open.",
+   "question": "Did the agent finish the migration?",
+   "gold": "no"
+  },
+  {
+   "pair": 11,
+   "text": "The patient is allergic to penicillin.",
+   "question": "Is the patient allergic to penicillin?",
+   "gold": "yes"
+  },
+  {
+   "pair": 11,
+   "text": "The patient is not allergic to penicillin.",
+   "question": "Is the patient allergic to penicillin?",
+   "gold": "no"
+  },
+  {
+   "pair": 12,
+   "text": "The package was delivered to the front door.",
+   "question": "Was the package delivered?",
+   "gold": "yes"
+  },
+  {
+   "pair": 12,
+   "text": "The package was not delivered.",
+   "question": "Was the package delivered?",
+   "gold": "no"
+  },
+  {
+   "pair": 13,
+   "text": "The contract allows early termination.",
+   "question": "Does the contract allow early termination?",
+   "gold": "yes"
+  },
+  {
+   "pair": 13,
+   "text": "The contract does not allow early termination.",
+   "question": "Does the contract allow early termination?",
+   "gold": "no"
+  },
+  {
+   "pair": 14,
+   "text": "The user confirmed the payment.",
+   "question": "Did the user confirm the payment?",
+   "gold": "yes"
+  },
+  {
+   "pair": 14,
+   "text": "The user did not confirm the payment.",
+   "question": "Did the user confirm the payment?",
+   "gold": "no"
+  },
+  {
+   "pair": 15,
+   "text": "The flight to Paris was cancelled.",
+   "question": "Was the flight cancelled?",
+   "gold": "yes"
+  },
+  {
+   "pair": 15,
+   "text": "The flight to Paris was not cancelled.",
+   "question": "Was the flight cancelled?",
+   "gold": "no"
+  }
+ ]
+}
