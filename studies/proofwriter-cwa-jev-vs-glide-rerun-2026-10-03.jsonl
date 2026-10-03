@@ -1,0 +1,9 @@
+{"axis": "overall", "ci_high": 0.22666666666666666, "ci_low": 0.18222222222222223, "diff": 0.20444444444444446, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 1800, "task": "proofwriter-cwa", "value": "all"}
+{"axis": "depth", "ci_high": 0.016666666666666666, "ci_low": -0.01, "diff": 0.0033333333333333335, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "0"}
+{"axis": "depth", "ci_high": 0.09666666666666666, "ci_low": 0.02, "diff": 0.056666666666666664, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "1"}
+{"axis": "depth", "ci_high": 0.29, "ci_low": 0.18666666666666668, "diff": 0.23666666666666666, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "2"}
+{"axis": "depth", "ci_high": 0.3, "ci_low": 0.18, "diff": 0.23666666666666666, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "3"}
+{"axis": "depth", "ci_high": 0.3, "ci_low": 0.18333333333333332, "diff": 0.24, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "4"}
+{"axis": "depth", "ci_high": 0.5133333333333333, "ci_low": 0.3933333333333333, "diff": 0.4533333333333333, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 300, "task": "proofwriter-cwa", "value": "5"}
+{"axis": "reference_label", "ci_high": 0.27, "ci_low": 0.20777777777777778, "diff": 0.24, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 900, "task": "proofwriter-cwa", "value": "false"}
+{"axis": "reference_label", "ci_high": 0.2, "ci_low": 0.1388888888888889, "diff": 0.1688888888888889, "engine_a": "jev", "engine_b": "glide-rerun-2026-10-03", "n": 900, "task": "proofwriter-cwa", "value": "true"}

@@ -21,7 +21,7 @@ from hard_decisions.engines.gliner_decide import REPO, REVISION  # noqa: E402
 from hard_decisions.proofwriter import CONFIGS, DEFAULT_ARCHIVE, candidate_for, render_text  # noqa: E402
 from hard_decisions.tasks import QUESTION_NAME, Task  # noqa: E402
 
-PER_DEPTH = 50
+PER_DEPTH = int(__import__("os").environ.get("GLINER_DEV_PER_DEPTH", "50"))
 SEED = 20261002
 
 

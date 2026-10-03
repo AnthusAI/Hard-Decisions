@@ -1,0 +1,2966 @@
+{
+ "summary": {
+  "card": {
+   "accuracy": 1.0,
+   "pairs_both_right": 1.0,
+   "pairs_same_answer_both_sides": 0.0
+  },
+  "hosted": {
+   "accuracy": 0.90625,
+   "pairs_both_right": 0.8125,
+   "pairs_same_answer_both_sides": 0.1875
+  },
+  "local-message": {
+   "accuracy": 0.90625,
+   "pairs_both_right": 0.8125,
+   "pairs_same_answer_both_sides": 0.1875
+  }
+ },
+ "model": "fastino/GLiNER2.5-Decide@5a7adf7",
+ "rows": [
+  {
+   "pair": 0,
+   "text": "Bob is white.",
+   "question": "Is Bob white?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "Bob is white.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Bob white?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9627674221992493
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Bob is white.\n\nIs Bob white?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.5473039746284485
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Bob is white.\n\nIs Bob white?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051803,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5445592403411865}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 8,
+      "completion_tokens": 22,
+      "total_tokens": 30,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "d4f72a6a-1747-42df-8818-fdfdb3caf1ee"
+     },
+     "token_usage": 30
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5445592403411865
+    }
+   }
+  },
+  {
+   "pair": 0,
+   "text": "Bob is not white.",
+   "question": "Is Bob white?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "Bob is not white.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Bob white?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9973739385604858
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Bob is not white.\n\nIs Bob white?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.601535439491272
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Bob is not white.\n\nIs Bob white?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051804,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.5996023416519165}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 9,
+      "completion_tokens": 22,
+      "total_tokens": 31,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "562ba733-04fd-46e5-b301-4e089f731727"
+     },
+     "token_usage": 31
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.5996023416519165
+    }
+   }
+  },
+  {
+   "pair": 1,
+   "text": "The cat is big.",
+   "question": "Is the cat big?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The cat is big.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is the cat big?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9688119292259216
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The cat is big.\n\nIs the cat big?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.5388970971107483
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The cat is big.\n\nIs the cat big?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051805,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.5403175354003906}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 10,
+      "completion_tokens": 22,
+      "total_tokens": 32,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "f0e875a2-950f-48d6-be64-f944d28f8d08"
+     },
+     "token_usage": 32
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.5403175354003906
+    }
+   }
+  },
+  {
+   "pair": 1,
+   "text": "The cat is not big.",
+   "question": "Is the cat big?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The cat is not big.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is the cat big?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9946789741516113
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The cat is not big.\n\nIs the cat big?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7376954555511475
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The cat is not big.\n\nIs the cat big?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051806,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.7364006042480469}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 11,
+      "completion_tokens": 22,
+      "total_tokens": 33,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "a7c6e298-702c-48dd-837c-39f5f8d01876"
+     },
+     "token_usage": 33
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.7364006042480469
+    }
+   }
+  },
+  {
+   "pair": 2,
+   "text": "Anne is kind.",
+   "question": "Is Anne kind?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "Anne is kind.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Anne kind?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.982964038848877
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Anne is kind.\n\nIs Anne kind?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.7842699885368347
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Anne is kind.\n\nIs Anne kind?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051806,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.7839884757995605}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 8,
+      "completion_tokens": 22,
+      "total_tokens": 30,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "b94fe08e-0158-413a-8e48-1f9c1e855535"
+     },
+     "token_usage": 30
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.7839884757995605
+    }
+   }
+  },
+  {
+   "pair": 2,
+   "text": "Anne is not kind.",
+   "question": "Is Anne kind?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "Anne is not kind.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Anne kind?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9988395571708679
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Anne is not kind.\n\nIs Anne kind?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.5953264236450195
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Anne is not kind.\n\nIs Anne kind?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051807,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.5972555875778198}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 9,
+      "completion_tokens": 22,
+      "total_tokens": 31,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "bff28b46-a851-497e-afcb-5eab51d9ffc5"
+     },
+     "token_usage": 31
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.5972555875778198
+    }
+   }
+  },
+  {
+   "pair": 3,
+   "text": "The lion chases the dog.",
+   "question": "Does the lion chase the dog?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The lion chases the dog.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the lion chase the dog?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9872592091560364
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The lion chases the dog.\n\nDoes the lion chase the dog?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.5630955100059509
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The lion chases the dog.\n\nDoes the lion chase the dog?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051807,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5636181831359863}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 14,
+      "completion_tokens": 22,
+      "total_tokens": 36,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "fb8ce507-b82b-4295-950c-0bab2d7183dc"
+     },
+     "token_usage": 36
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5636181831359863
+    }
+   }
+  },
+  {
+   "pair": 3,
+   "text": "The lion does not chase the dog.",
+   "question": "Does the lion chase the dog?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The lion does not chase the dog.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the lion chase the dog?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9990735054016113
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The lion does not chase the dog.\n\nDoes the lion chase the dog?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7089787721633911
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The lion does not chase the dog.\n\nDoes the lion chase the dog?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051808,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.7098243832588196}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 15,
+      "completion_tokens": 22,
+      "total_tokens": 37,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "00bf06f8-cb1c-4c7f-8692-21de5bc136da"
+     },
+     "token_usage": 37
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.7098243832588196
+    }
+   }
+  },
+  {
+   "pair": 4,
+   "text": "Erin is young.",
+   "question": "Is Erin young?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "Erin is young.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Erin young?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9773479700088501
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Erin is young.\n\nIs Erin young?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.5585199594497681
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Erin is young.\n\nIs Erin young?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051808,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5549529194831848}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 9,
+      "completion_tokens": 22,
+      "total_tokens": 31,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "a3542920-6357-4db9-86c6-941160f39304"
+     },
+     "token_usage": 31
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5549529194831848
+    }
+   }
+  },
+  {
+   "pair": 4,
+   "text": "Erin is not young.",
+   "question": "Is Erin young?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "Erin is not young.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Erin young?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9984793066978455
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Erin is not young.\n\nIs Erin young?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.6610495448112488
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Erin is not young.\n\nIs Erin young?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051809,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.6641048192977905}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 10,
+      "completion_tokens": 22,
+      "total_tokens": 32,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "b3e37fcf-fb26-4157-97a1-abf247ccef03"
+     },
+     "token_usage": 32
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.6641048192977905
+    }
+   }
+  },
+  {
+   "pair": 5,
+   "text": "Bob is big. Bob is white. Charlie is nice.",
+   "question": "Is Bob white?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "Bob is big. Bob is white. Charlie is nice.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Bob white?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.794193685054779
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Bob is big. Bob is white. Charlie is nice.\n\nIs Bob white?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.581748366355896
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Bob is big. Bob is white. Charlie is nice.\n\nIs Bob white?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051809,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5810654163360596}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 16,
+      "completion_tokens": 22,
+      "total_tokens": 38,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "834e3326-3052-4166-8ade-38eca331051a"
+     },
+     "token_usage": 38
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5810654163360596
+    }
+   }
+  },
+  {
+   "pair": 5,
+   "text": "Bob is big. Bob is not white. Charlie is nice.",
+   "question": "Is Bob white?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "Bob is big. Bob is not white. Charlie is nice.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Bob white?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9870858788490295
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Bob is big. Bob is not white. Charlie is nice.\n\nIs Bob white?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.6644846200942993
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Bob is big. Bob is not white. Charlie is nice.\n\nIs Bob white?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051810,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.6641048192977905}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 17,
+      "completion_tokens": 22,
+      "total_tokens": 39,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "51c80ad8-58cc-44e0-b5a5-e0ec92aed9c7"
+     },
+     "token_usage": 39
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.6641048192977905
+    }
+   }
+  },
+  {
+   "pair": 6,
+   "text": "The cow is red. The cow eats the bear. The bear is cold.",
+   "question": "Does the cow eat the bear?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The cow is red. The cow eats the bear. The bear is cold.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the cow eat the bear?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9629579782485962
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The cow is red. The cow eats the bear. The bear is cold.\n\nDoes the cow eat the bear?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6650828123092651
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The cow is red. The cow eats the bear. The bear is cold.\n\nDoes the cow eat the bear?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051810,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6675812005996704}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 23,
+      "completion_tokens": 22,
+      "total_tokens": 45,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "f2a25595-4b9b-45e3-b60b-f0c9973e7559"
+     },
+     "token_usage": 45
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6675812005996704
+    }
+   }
+  },
+  {
+   "pair": 6,
+   "text": "The cow is red. The cow does not eat the bear. The bear is cold.",
+   "question": "Does the cow eat the bear?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The cow is red. The cow does not eat the bear. The bear is cold.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the cow eat the bear?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9981741905212402
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The cow is red. The cow does not eat the bear. The bear is cold.\n\nDoes the cow eat the bear?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7455040216445923
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The cow is red. The cow does not eat the bear. The bear is cold.\n\nDoes the cow eat the bear?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051811,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.7439128756523132}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 25,
+      "completion_tokens": 22,
+      "total_tokens": 47,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "48d943bc-3a98-44eb-bd9a-ef4ef617b089"
+     },
+     "token_usage": 47
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.7439128756523132
+    }
+   }
+  },
+  {
+   "pair": 7,
+   "text": "Fiona is round. Gary is smart. Gary is green.",
+   "question": "Is Gary green?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "Fiona is round. Gary is smart. Gary is green.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Gary green?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9798791408538818
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Fiona is round. Gary is smart. Gary is green.\n\nIs Gary green?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6993488073348999
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Fiona is round. Gary is smart. Gary is green.\n\nIs Gary green?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051812,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6934729218482971}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 17,
+      "completion_tokens": 22,
+      "total_tokens": 39,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "21b9fe8f-6798-46fb-bb03-8ed1fcdbfe4e"
+     },
+     "token_usage": 39
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6934729218482971
+    }
+   }
+  },
+  {
+   "pair": 7,
+   "text": "Fiona is round. Gary is smart. Gary is not green.",
+   "question": "Is Gary green?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "Fiona is round. Gary is smart. Gary is not green.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is Gary green?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9878230094909668
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "Fiona is round. Gary is smart. Gary is not green.\n\nIs Gary green?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6097603440284729
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "Fiona is round. Gary is smart. Gary is not green.\n\nIs Gary green?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051812,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6089429259300232}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 18,
+      "completion_tokens": 22,
+      "total_tokens": 40,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "378f8944-0a11-4c3d-ae52-d52d85614a5b"
+     },
+     "token_usage": 40
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6089429259300232
+    }
+   }
+  },
+  {
+   "pair": 8,
+   "text": "The customer agreed to the new terms of service.",
+   "question": "Did the customer agree to the terms?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The customer agreed to the new terms of service.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the customer agree to the terms?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9985617995262146
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The customer agreed to the new terms of service.\n\nDid the customer agree to the terms?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6971592903137207
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The customer agreed to the new terms of service.\n\nDid the customer agree to the terms?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051813,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6980207562446594}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 18,
+      "completion_tokens": 22,
+      "total_tokens": 40,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "8f39d64e-950d-4008-81c7-02eee828177e"
+     },
+     "token_usage": 40
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6980207562446594
+    }
+   }
+  },
+  {
+   "pair": 8,
+   "text": "The customer did not agree to the new terms of service.",
+   "question": "Did the customer agree to the terms?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The customer did not agree to the new terms of service.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the customer agree to the terms?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9999083280563354
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The customer did not agree to the new terms of service.\n\nDid the customer agree to the terms?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.8076795339584351
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The customer did not agree to the new terms of service.\n\nDid the customer agree to the terms?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051813,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.8037906289100647}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 22,
+      "total_tokens": 42,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "85238e01-3c0c-4937-ba34-32c5782c7e31"
+     },
+     "token_usage": 42
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.8037906289100647
+    }
+   }
+  },
+  {
+   "pair": 9,
+   "text": "The invoice was paid in full on March 3.",
+   "question": "Was the invoice paid?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The invoice was paid in full on March 3.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the invoice paid?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.999798595905304
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The invoice was paid in full on March 3.\n\nWas the invoice paid?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6801044940948486
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The invoice was paid in full on March 3.\n\nWas the invoice paid?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051814,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6800292134284973}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 16,
+      "completion_tokens": 22,
+      "total_tokens": 38,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "d0d88cf7-61eb-47b2-b705-9f505177f263"
+     },
+     "token_usage": 38
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6800292134284973
+    }
+   }
+  },
+  {
+   "pair": 9,
+   "text": "The invoice was not paid on March 3.",
+   "question": "Was the invoice paid?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The invoice was not paid on March 3.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the invoice paid?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.999678373336792
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The invoice was not paid on March 3.\n\nWas the invoice paid?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.6745209097862244
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The invoice was not paid on March 3.\n\nWas the invoice paid?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051814,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.6740504503250122}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 15,
+      "completion_tokens": 22,
+      "total_tokens": 37,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "536e7604-5430-4932-b1fd-9c434db3a6ae"
+     },
+     "token_usage": 37
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.6740504503250122
+    }
+   }
+  },
+  {
+   "pair": 10,
+   "text": "The agent finished the migration and closed the ticket.",
+   "question": "Did the agent finish the migration?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The agent finished the migration and closed the ticket.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the agent finish the migration?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.999466598033905
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The agent finished the migration and closed the ticket.\n\nDid the agent finish the migration?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.8252022862434387
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The agent finished the migration and closed the ticket.\n\nDid the agent finish the migration?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051815,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.8244618773460388}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 17,
+      "completion_tokens": 22,
+      "total_tokens": 39,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "cf75051d-d925-4ab9-8d77-711d6462bf63"
+     },
+     "token_usage": 39
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.8244618773460388
+    }
+   }
+  },
+  {
+   "pair": 10,
+   "text": "The agent did not finish the migration and left the ticket open.",
+   "question": "Did the agent finish the migration?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The agent did not finish the migration and left the ticket open.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the agent finish the migration?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9998655319213867
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The agent did not finish the migration and left the ticket open.\n\nDid the agent finish the migration?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.6457124948501587
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The agent did not finish the migration and left the ticket open.\n\nDid the agent finish the migration?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051816,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.6493563055992126}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 20,
+      "completion_tokens": 22,
+      "total_tokens": 42,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "c0cda30d-eb17-46ff-a62a-10732b4601f9"
+     },
+     "token_usage": 42
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.6493563055992126
+    }
+   }
+  },
+  {
+   "pair": 11,
+   "text": "The patient is allergic to penicillin.",
+   "question": "Is the patient allergic to penicillin?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The patient is allergic to penicillin.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is the patient allergic to penicillin?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9972015619277954
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The patient is allergic to penicillin.\n\nIs the patient allergic to penicillin?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.5189510583877563
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The patient is allergic to penicillin.\n\nIs the patient allergic to penicillin?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051816,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5201916694641113}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 16,
+      "completion_tokens": 22,
+      "total_tokens": 38,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "96595e22-9293-40aa-8874-4c7e3de5f0f1"
+     },
+     "token_usage": 38
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5201916694641113
+    }
+   }
+  },
+  {
+   "pair": 11,
+   "text": "The patient is not allergic to penicillin.",
+   "question": "Is the patient allergic to penicillin?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The patient is not allergic to penicillin.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Is the patient allergic to penicillin?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9957072138786316
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The patient is not allergic to penicillin.\n\nIs the patient allergic to penicillin?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.8524256348609924
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The patient is not allergic to penicillin.\n\nIs the patient allergic to penicillin?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051817,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.8529354929924011}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 17,
+      "completion_tokens": 22,
+      "total_tokens": 39,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "57dcd2f7-834b-4df2-a686-e5143ff9bd95"
+     },
+     "token_usage": 39
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.8529354929924011
+    }
+   }
+  },
+  {
+   "pair": 12,
+   "text": "The package was delivered to the front door.",
+   "question": "Was the package delivered?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The package was delivered to the front door.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the package delivered?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9921872615814209
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The package was delivered to the front door.\n\nWas the package delivered?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6028202772140503
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The package was delivered to the front door.\n\nWas the package delivered?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051817,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.5987815260887146}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 14,
+      "completion_tokens": 22,
+      "total_tokens": 36,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "1eb90dbb-1236-4c6e-a497-13232d9b9215"
+     },
+     "token_usage": 36
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.5987815260887146
+    }
+   }
+  },
+  {
+   "pair": 12,
+   "text": "The package was not delivered.",
+   "question": "Was the package delivered?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The package was not delivered.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the package delivered?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.999272882938385
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The package was not delivered.\n\nWas the package delivered?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7964165210723877
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The package was not delivered.\n\nWas the package delivered?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051818,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.7981867790222168}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 11,
+      "completion_tokens": 22,
+      "total_tokens": 33,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "5b49d5ce-8552-4a85-8a70-e19d8b78c4de"
+     },
+     "token_usage": 33
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.7981867790222168
+    }
+   }
+  },
+  {
+   "pair": 13,
+   "text": "The contract allows early termination.",
+   "question": "Does the contract allow early termination?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The contract allows early termination.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the contract allow early termination?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9963493347167969
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The contract allows early termination.\n\nDoes the contract allow early termination?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6009221076965332
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The contract allows early termination.\n\nDoes the contract allow early termination?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051819,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6025294065475464}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 13,
+      "completion_tokens": 22,
+      "total_tokens": 35,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "c3d9c5a9-2dea-43c9-8d69-ae95f1e60def"
+     },
+     "token_usage": 35
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6025294065475464
+    }
+   }
+  },
+  {
+   "pair": 13,
+   "text": "The contract does not allow early termination.",
+   "question": "Does the contract allow early termination?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The contract does not allow early termination.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Does the contract allow early termination?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9990586638450623
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The contract does not allow early termination.\n\nDoes the contract allow early termination?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7643820643424988
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The contract does not allow early termination.\n\nDoes the contract allow early termination?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051819,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.7634837031364441}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 15,
+      "completion_tokens": 22,
+      "total_tokens": 37,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "1f369815-74c4-45ea-82dc-8ea666faeb45"
+     },
+     "token_usage": 37
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.7634837031364441
+    }
+   }
+  },
+  {
+   "pair": 14,
+   "text": "The user confirmed the payment.",
+   "question": "Did the user confirm the payment?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The user confirmed the payment.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the user confirm the payment?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9990842342376709
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The user confirmed the payment.\n\nDid the user confirm the payment?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.6872957348823547
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The user confirmed the payment.\n\nDid the user confirm the payment?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051821,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"yes\", \"confidence\": 0.6872103214263916}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 13,
+      "completion_tokens": 22,
+      "total_tokens": 35,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "17d45276-5691-4405-bf9d-f8cb48df0dc9"
+     },
+     "token_usage": 35
+    },
+    "answer": {
+     "label": "yes",
+     "confidence": 0.6872103214263916
+    }
+   }
+  },
+  {
+   "pair": 14,
+   "text": "The user did not confirm the payment.",
+   "question": "Did the user confirm the payment?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The user did not confirm the payment.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Did the user confirm the payment?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9995573163032532
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The user did not confirm the payment.\n\nDid the user confirm the payment?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.7352695465087891
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The user did not confirm the payment.\n\nDid the user confirm the payment?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051823,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.733738124370575}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 15,
+      "completion_tokens": 21,
+      "total_tokens": 36,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "16b818a9-da2c-432e-9d36-e01730217b00"
+     },
+     "token_usage": 36
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.733738124370575
+    }
+   }
+  },
+  {
+   "pair": 15,
+   "text": "The flight to Paris was cancelled.",
+   "question": "Was the flight cancelled?",
+   "gold": "yes",
+   "card": {
+    "request": {
+     "text": "The flight to Paris was cancelled.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the flight cancelled?"
+      }
+     }
+    },
+    "response": {
+     "label": "yes",
+     "confidence": 0.9951399564743042
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The flight to Paris was cancelled.\n\nWas the flight cancelled?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.5067774653434753
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The flight to Paris was cancelled.\n\nWas the flight cancelled?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051824,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.5077508687973022}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 12,
+      "completion_tokens": 22,
+      "total_tokens": 34,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "13a71894-1b64-4771-9ee3-f5f7def81c56"
+     },
+     "token_usage": 34
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.5077508687973022
+    }
+   }
+  },
+  {
+   "pair": 15,
+   "text": "The flight to Paris was not cancelled.",
+   "question": "Was the flight cancelled?",
+   "gold": "no",
+   "card": {
+    "request": {
+     "text": "The flight to Paris was not cancelled.",
+     "tasks": {
+      "answer": {
+       "labels": [
+        "yes",
+        "no"
+       ],
+       "prompt": "Was the flight cancelled?"
+      }
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.9992929697036743
+    }
+   },
+   "local-message": {
+    "request": {
+     "text": "The flight to Paris was not cancelled.\n\nWas the flight cancelled?",
+     "tasks": {
+      "answer": [
+       "yes",
+       "no"
+      ]
+     }
+    },
+    "response": {
+     "label": "no",
+     "confidence": 0.8640556931495667
+    }
+   },
+   "hosted": {
+    "request": {
+     "model": "fastino/GLiNER-2.5-Decide",
+     "messages": [
+      {
+       "role": "user",
+       "content": "The flight to Paris was not cancelled.\n\nWas the flight cancelled?"
+      }
+     ],
+     "schema": {
+      "classifications": [
+       {
+        "task": "answer",
+        "labels": [
+         "yes",
+         "no"
+        ],
+        "multi_label": false
+       }
+      ]
+     },
+     "include_confidence": true
+    },
+    "response": {
+     "object": "chat.completion",
+     "created": 1791051825,
+     "model": "fastino/GLiNER-2.5-Decide",
+     "choices": [
+      {
+       "index": 0,
+       "message": {
+        "role": "assistant",
+        "content": "{\"answer\": {\"label\": \"no\", \"confidence\": 0.8629302382469177}}"
+       },
+       "finish_reason": "stop"
+      }
+     ],
+     "usage": {
+      "prompt_tokens": 13,
+      "completion_tokens": 22,
+      "total_tokens": 35,
+      "prompt_tokens_details": null
+     },
+     "x_fastino": {
+      "inference_id": "d7676b7f-2004-4b35-b05c-fd87a05f6980"
+     },
+     "token_usage": 35
+    },
+    "answer": {
+     "label": "no",
+     "confidence": 0.8629302382469177
+    }
+   }
+  }
+ ]
+}
