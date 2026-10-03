@@ -232,3 +232,15 @@ errors and were rerun once at concurrency 1; both answered.
   a second engine, labelled as missing the instructions and descriptions.
 - **Predictions:** Amendment 8's four predictions apply to `gliner-2.5-decide`. No prediction is made about which
   form scores higher; both are reported whatever they show, and neither form will be changed after scoring.
+
+### Amendment 8d: GLiNER2.5-Decide through Fastino's hosted API (written before any hosted benchmark request)
+
+- **Why:** to rule out that our local setup is at fault, the benchmark is rerun on Fastino's hosted service
+  (`POST https://api.fastino.ai/v1/chat/completions`, model `fastino/GLiNER-2.5-Decide`) in both request forms:
+  `gliner-2.5-decide-hosted` (instructions and option meanings in the message, as Amendment 8b) and
+  `gliner-2.5-decide-hosted-labels-only` (the problem alone). Labels: the options; single-label. The hosted API
+  returns only the chosen label and its confidence.
+- **Spend:** about $0.44 for all four runs at the higher of Fastino's two listed prices ($0.15 per million input
+  tokens), approved by the owner.
+- **Expectation:** the hosted answers match the local ones (as on 21 of 21 spot-check inputs); no prediction is
+  made beyond that. Both forms are reported whatever they show.

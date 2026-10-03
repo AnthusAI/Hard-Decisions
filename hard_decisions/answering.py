@@ -20,7 +20,12 @@ from hard_decisions.tasks import Task
 
 JEV_USD_PER_INPUT_TOKEN = 42 / 1e9   # TypeSafe's published price; output tokens are free
 GLIDE_USD_PER_INPUT_TOKEN = 0.30 / 1e6   # docs.fastino.ai/pricing, read 2026-10-02; output tokens $0
-SYSTEM_ONE_RATES = {"jev": JEV_USD_PER_INPUT_TOKEN, "glide": GLIDE_USD_PER_INPUT_TOKEN}
+# Fastino lists GLiNER-2.5-Decide at $0.03 (pricing page) and $0.15 (model catalog) per million input tokens,
+# read 2026-10-02; budgeted at the higher.
+GLINER_HOSTED_USD_PER_INPUT_TOKEN = 0.15 / 1e6
+SYSTEM_ONE_RATES = {"jev": JEV_USD_PER_INPUT_TOKEN, "glide": GLIDE_USD_PER_INPUT_TOKEN,
+                    "gliner-2.5-decide-hosted": GLINER_HOSTED_USD_PER_INPUT_TOKEN,
+                    "gliner-2.5-decide-hosted-labels-only": GLINER_HOSTED_USD_PER_INPUT_TOKEN}
 DEFAULT_CHARS_PER_TOKEN = 3.6
 FALLBACK_OVERHEAD_TOKENS = 80          # wire framing around the text, replaced by measured usage
 

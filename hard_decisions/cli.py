@@ -108,6 +108,9 @@ def _engine(name: str):
     if name == "glide":
         from hard_decisions.engines.glide import GlideEngine
         return GlideEngine()
+    if name in ("gliner-2.5-decide-hosted", "gliner-2.5-decide-hosted-labels-only"):
+        from hard_decisions.engines.gliner_hosted import GlinerHostedEngine
+        return GlinerHostedEngine(form="full" if name == "gliner-2.5-decide-hosted" else "labels")
     if name in ("gliner-2.5-decide", "gliner-2.5-decide-labels-only"):
         from hard_decisions.engines.gliner_decide import GlinerDecideEngine
         return GlinerDecideEngine(form="full" if name == "gliner-2.5-decide" else "labels")
