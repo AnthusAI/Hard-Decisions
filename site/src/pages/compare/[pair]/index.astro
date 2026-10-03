@@ -19,6 +19,7 @@ import AnthusNote from "../../../components/AnthusNote.astro";
 import DecisionsApi from "../../../components/DecisionsApi.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
 import TimeAndMoney from "../../../components/TimeAndMoney.astro";
+import GlideRerun from "../../../components/GlideRerun.astro";
 import RequestExample from "../../../components/RequestExample.astro";
 import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
@@ -202,6 +203,8 @@ function sides(slug, b) {
     <p class="more-link"><a href={urls.asked()}>Every model's request and response, on four problems</a></p>
   </section>
   ); })()}
+
+  {c.b.includes("glide-rerun-2026-10-03") && <GlideRerun />}
 
   <TimeAndMoney ids={ids} />
 

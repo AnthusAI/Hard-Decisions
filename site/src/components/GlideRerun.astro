@@ -1,0 +1,40 @@
+---
+// GLiDE's launch-week run against the rerun Fastino's CEO asked for (studies/glide-rerun/compare.json).
+import { data, TASK_INFO, taskOrder, pct, pts, int } from "../lib/site.js";
+const R = data.glideRerun;
+const labels = R ? Object.keys(R.runs) : [];
+const secs = (ms) => (ms >= 10000 ? `${Math.round(ms / 1000)} s` : `${(ms / 1000).toFixed(2)} s`);
+const rows = [
+  ["Accuracy", (s) => `${pct(s.accuracy)}%`],
+  ["Accuracy minus Jev's (95% interval)", (s) => `${pts(s.minus_jev.diff)} (${pts(s.minus_jev.ci[0])} to ${pts(s.minus_jev.ci[1])})`],
+  ["By depth, 0 to 5", (s) => Object.values(s.by_depth).map((v) => pct(v, 0)).join(" · ")],
+  ["Median time per decision", (s) => secs(s.latency_ms.p50)],
+  ["Slowest 10% start at", (s) => secs(s.latency_ms.p90)],
+  ["Decisions taking 10 seconds or more", (s) => int(s.latency_ms.at_least_10s)],
+  ["Input tokens billed per decision", (s) => int(Math.round(s.input_tokens / s.n))],
+  ["List-price cost per million decisions", (s) => `$${Math.round(s.usd_per_million)}`],
+  ["How well its probability separates right from wrong (AUROC; 0.5 is chance)", (s) => s.auroc.toFixed(2)],
+];
+---
+{R && (
+<section class="wrap section sec-split" aria-labelledby="rerun-h">
+  <div class="sec-head">
+  <h2 class="display" id="rerun-h">Two runs: at launch, and again at Fastino's request</h2>
+  <p class="lede">On October 3, Fastino's CEO asked us to re-evaluate GLiDE, saying Fastino had problems during the launch. We sent the same 3,600 problems again with exactly the same request and settings, eight requests at a time as before. Fastino's API reports the model as "glide" both times, so the responses do not show what changed.</p>
+  </div>
+  <div class="sec-body">
+  {taskOrder.filter((s) => R.tasks[s]).map((s) => { const t = R.tasks[s]; return (
+    <Fragment>
+    <h3>{TASK_INFO[s].long}</h3>
+    <div class="table-scroll">
+      <table class="cell-table">
+        <thead><tr><th scope="col"></th>{labels.map((l) => <th scope="col" class="num">{l.replace(" (launch)", ", at launch").replace(" (rerun at Fastino's request)", ", rerun")}</th>)}</tr></thead>
+        <tbody>{rows.map(([name, f]) => <tr><th scope="row">{name}</th>{labels.map((l) => <td class="num">{f(t.runs[l])}</td>)}</tr>)}</tbody>
+      </table>
+    </div>
+    <p class="note">{int(t.changed.n)} of {int(t.common_items)} answers changed between the runs: {int(t.changed.right_to_wrong)} went from right to wrong and {int(t.changed.wrong_to_right)} from wrong to right{Object.values(t.changed.by_depth).some((v) => v) ? `, most of them at depth 3 and deeper` : ""}.</p>
+    </Fragment>
+  ); })}
+  </div>
+</section>
+)}

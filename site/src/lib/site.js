@@ -33,7 +33,8 @@ export const taskOrder = [OWA, CWA].filter((s) => taskBySlug[s]).concat(tasks.ma
 // ---------------------------------------------------------------------------------------------
 const META = {
   jev: { label: "Jev", slug: "jev", color: "#0377bd", color_dark: "#3aa7ec", marker: "circle", family: "jev" },
-  glide: { label: "GLiDE", slug: "glide", color: "#6d28d9", color_dark: "#a78bfa", marker: "triangle-down", family: "glide" },
+  "glide-rerun-2026-10-03": { label: "GLiDE, Oct 3 rerun", slug: "glide-rerun", color: "#a855f7", color_dark: "#d8b4fe", marker: "triangle-down", family: "glide" },
+  glide: { label: "GLiDE, Oct 2", slug: "glide", color: "#6d28d9", color_dark: "#a78bfa", marker: "triangle-down", family: "glide" },
   "openai-gpt-6-luna-effort-none": { label: "GPT-6 Luna", slug: "gpt-6-luna", color: "#2b7a3b", color_dark: "#5cc36f", marker: "triangle", family: "llm",
     setting: "reasoning off" },
   "kev-9b": { label: "Kev-9B", slug: "kev-9b", color: "#7c2d12", color_dark: "#f0a070", marker: "diamond", family: "kev", size: 9 },
@@ -44,7 +45,7 @@ const META = {
   "gliner-2.5-decide-labels-only": { label: "GLiNER2.5-Decide, without instructions", slug: "gliner-2-5-decide-labels-only", color: "#5f9e96", color_dark: "#8fd6cc", marker: "circle-open", family: "gliner" },
   laya: { label: "Laya", slug: "laya", color: "#b5177a", color_dark: "#e05ba6", marker: "square", family: "laya" },
 };
-const ORDER = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya", "kev-27b"];
+const ORDER = ["jev", "glide-rerun-2026-10-03", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya", "kev-27b"];
 
 const ids = [...new Set([...ORDER.filter((id) => data.facts[id] || Object.values(data.results).some((r) => r.status[id])),
   ...Object.keys(data.facts), ...Object.values(data.results).flatMap((r) => Object.keys(r.status))])];
@@ -87,7 +88,7 @@ export const L = (id) => (modelById[id] ? modelById[id].label : id);
 const BASE = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 const join = (...segs) => BASE + segs.filter(Boolean).map((s) => `${s}/`).join("");
 // Each non-Jev model's page is its comparison with Jev.
-export const RIVAL_PAGE = { "gliner-2.5-decide": "jev-vs-gliner-2-5-decide", "gliner-2.5-decide-labels-only": "jev-vs-gliner-2-5-decide", glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
+export const RIVAL_PAGE = { "glide-rerun-2026-10-03": "jev-vs-glide", "gliner-2.5-decide": "jev-vs-gliner-2-5-decide", "gliner-2.5-decide-labels-only": "jev-vs-gliner-2-5-decide", glide: "jev-vs-glide", "openai-gpt-6-luna-effort-none": "jev-vs-gpt-6-luna", laya: "jev-vs-laya" };
 export const rivalPageOf = (id) => RIVAL_PAGE[id] || (modelById[id] && modelById[id].family === "kev" ? "jev-vs-kev" : null);
 export const urls = {
   home: () => BASE,
@@ -289,6 +290,7 @@ const f = (id) => data.facts[id] || {};
 export function aboutModel(id) {
   const x = f(id);
   if (id === "jev") return `Jev is a hosted decision model made by ${x.maker || "TypeSafe"}. We call it through its maker's software kit, typesafe-sdk, on paid API access; the version is recorded on every answer (${(study("jev", OWA) && study("jev", OWA).overall.model || []).join(", ") || "jev-1.13.0"}). Its size and architecture are not published.`;
+  if (id === "glide-rerun-2026-10-03") return `The same GLiDE, run again on October 3 with exactly the same request and settings, because Fastino's CEO asked us to re-evaluate it: he said Fastino had problems during the launch. The October 2 run is kept and shown beside it. Fastino's API reports the model as "glide" both times, so the responses do not show what changed.`;
   if (id === "glide") return `GLiDE is a hosted decision model made by Fastino Labs, which describes it as a "thinking" decision model: it forms a probability over the options and spends more computation when the leading option is uncertain. Fastino serves it on the same System One request format as Jev, so it got exactly Jev's request: the text, the question and the options, one request per item. Its size and architecture are not published.`;
   if (id === "openai-gpt-6-luna-effort-none") return `GPT-6 Luna is a hosted large language model made by OpenAI. We used it as a classifier: one request per item through the Chat Completions API, with reasoning effort set to none (its lowest setting) and a strict JSON schema that allows only the task's options. Its size and architecture are not published.`;
   if (id === "gliner-2.5-decide") return `GLiNER2.5-Decide is an open decision model made by Fastino Labs: a ${x.parameters || "340M"}-parameter schema classifier on a DeBERTa-v3-large encoder, released under Apache 2.0. It answers in one pass; its model card says it "does not reason." We ran it on our own laptop with Fastino's gliner2 package, PyTorch on Apple's GPU, with everything every other model gets: the problem, then the question's instructions and each option with its description, in the message, and the options as its answer labels. On the same inputs, our copy gave Fastino's hosted model's answers.`;

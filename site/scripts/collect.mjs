@@ -90,11 +90,16 @@ function readTasks() {
 // ---------------------------------------------------------------------------------------------
 // Scored rows, paired differences and retest rows
 // ---------------------------------------------------------------------------------------------
+// Verification runs, not benchmark entries: GLiNER2.5-Decide through Fastino's hosted API gave the same answer as
+// the local runs on 7,197 of 7,200 problems (lab notes, Amendment 8d). They stay in answers/ and studies/.
+const VERIFICATION_ONLY = new Set(["gliner-2.5-decide-hosted", "gliner-2.5-decide-hosted-labels-only"]);
+
 function readStudies(task) {
   const dir = join(ROOT, "studies");
   const engines = {}, pairs = {};
   for (const f of ls(dir).filter((f) => f.startsWith(`${task.slug}-`) && f.endsWith(".jsonl")).sort()) {
     const name = f.slice(task.slug.length + 1, -".jsonl".length);
+    if ([...VERIFICATION_ONLY].some((v) => name === v || name.endsWith(`-vs-${v}`))) continue;
     const rows = jsonl(join(dir, f));
     if (name.includes("-vs-")) {
       const [a, b] = name.split("-vs-");
@@ -194,7 +199,7 @@ function readManifests() {
 
 // Engines with no one-at-a-time rerun, by the owner's decision (preregistration, deviation from
 // Amendment 7): their latency comes from the scored run, sent several requests at a time.
-const SCORED_RUN_LATENCY = ["glide"];
+const SCORED_RUN_LATENCY = ["glide", "glide-rerun-2026-10-03"];
 const SLOW_MS = 2000;
 
 function readLatency(task, manifests) {
@@ -314,7 +319,7 @@ for (const task of tasks) {
   const studies = readStudies(task);
   for (const e of Object.keys(studies.engines)) engineIds.add(e);
   const records = {};
-  for (const e of new Set([...ls(join(ROOT, "answers")), ...Object.keys(studies.engines)])) {
+  for (const e of new Set([...ls(join(ROOT, "answers")).filter((e) => !VERIFICATION_ONLY.has(e)), ...Object.keys(studies.engines)])) {
     const r = readRecord(e, task);
     if (r) { records[e] = r; engineIds.add(e); }
   }
@@ -443,6 +448,8 @@ const lunaMissesPath = join(ROOT, "studies", "luna-misses.json");
 const lunaMisses = existsSync(lunaMissesPath)
   ? { file: rel(lunaMissesPath), modified: mtime(lunaMissesPath), ...JSON.parse(readFileSync(lunaMissesPath, "utf8")) } : null;
 
+const glideRerunPath = join(ROOT, "studies", "glide-rerun", "compare.json");
+const glideRerun = existsSync(glideRerunPath) ? { file: rel(glideRerunPath), ...JSON.parse(readFileSync(glideRerunPath, "utf8")) } : null;
 const requestExamplesPath = join(ROOT, "studies", "request-examples.json");
 const requestExamples = existsSync(requestExamplesPath)
   ? { file: rel(requestExamplesPath), modified: mtime(requestExamplesPath), ...JSON.parse(readFileSync(requestExamplesPath, "utf8")) } : null;
@@ -529,6 +536,7 @@ const data = {
   depthExamples,
   modelExamples,
   requestExamples,
+  glideRerun,
   lunaMisses,
 };
 

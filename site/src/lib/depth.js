@@ -52,7 +52,7 @@ export function depthHeading(ex) {
 
 // The models in a fixed display order, with their answers on this example.
 export function answersOf(ex) {
-  const order = ["jev", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya"];
+  const order = ["jev", "glide-rerun-2026-10-03", "glide", "openai-gpt-6-luna-effort-none", "kev-9b", "kev-4b", "kev-0.8b", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "laya"];
   const ids = [...order.filter((id) => ex.answers[id]), ...Object.keys(ex.answers).filter((id) => !order.includes(id))];
   return ids.map((id) => ({ id, m: modelById[id] || null, ...ex.answers[id] }));
 }

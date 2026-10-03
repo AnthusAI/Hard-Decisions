@@ -59,11 +59,11 @@ const kevIds = ["kev-9b", "kev-4b", "kev-0.8b"];
 // One page per rival model, written as its comparison with Jev. A model listed here that has no
 // scored results yet (Kev-9B) joins its page automatically once it does.
 export const comparisons = [
-  { slug: "jev-vs-glide", a: "jev", b: ["glide"], query: "Jev vs GLiDE",
+  { slug: "jev-vs-glide", a: "jev", b: ["glide-rerun-2026-10-03", "glide"], query: "Jev vs GLiDE",
     title: "Jev vs GLiDE: two hosted decision models on deep reasoning",
     intro: "GLiDE is Fastino's hosted decision model, released on 1 October 2026, which Fastino calls the first thinking decision model. It takes the same request as Jev, so both got exactly the same text, question and options for the same 3,600 problems.",
     seoTitle: "Jev vs GLiDE: Fastino's thinking decision model on multi-hop reasoning",
-    note: "Jev answers every decision in one parallel pass. GLiDE, by Fastino's own description, spends extra time and tokens on decisions it is unsure of, so it is slower and costs more, most of all on the problems it finds hard (see Time and money). Fastino reports that GLiDE beats Jev on its Decision Index 0.2.1 (64.81 to 57.91); that is Fastino's benchmark, not this one." },
+    note: "We ran GLiDE twice. The first run was on October 2, the day after launch. On October 3 Fastino's CEO asked us to re-evaluate GLiDE, saying Fastino had problems during the launch, so we ran exactly the same benchmark again with the same request. Both runs are shown side by side. Jev answers every decision in one parallel pass; GLiDE, by Fastino's own description, spends extra time and tokens on decisions it is unsure of. Fastino reports that GLiDE beats Jev on its Decision Index 0.2.1 (64.81 to 57.91); that is Fastino's benchmark, not this one." },
   { slug: "jev-vs-gpt-6-luna", a: "jev", b: ["openai-gpt-6-luna-effort-none"], query: "Jev vs LLM",
     title: "Jev vs GPT-6 Luna: a decision model against an LLM classifier",
     intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems.",
@@ -76,7 +76,7 @@ export const comparisons = [
   { slug: "jev-vs-gliner-2-5-decide", a: "jev", b: ["gliner-2.5-decide", "gliner-2.5-decide-labels-only"], query: "GLiNER2.5-Decide vs Jev",
     title: "Jev vs GLiNER2.5-Decide: a hosted decision model against Fastino's open one",
     intro: "GLiNER2.5-Decide is Fastino's open 340M-parameter decision model, released under Apache 2.0, that answers in one pass. We ran it on a laptop against Jev on the same 3,600 problems.",
-    note: "Every model received the same problem, the same question and the same meaning for each answer. GLiNER2.5-Decide is shown two ways. GLiNER2.5-Decide: the instructions and the meaning of each answer are in its text, after the problem, because Fastino's API for this model has no separate field for them; given them, it answered unknown to every open-world problem and false to almost every closed-world one. GLiNER2.5-Decide, without instructions: only the problem and the three answer words; its answers vary but stay near chance, even at depth 0, where the answer is written in the text. The same setup scores 63.7% on Fastino's own benchmark data (Fastino reports 60.2%), so the model is working as published; these problems ask for something it does not do." },
+    note: "Every model received the same problem, the same question and the same meaning for each answer. GLiNER2.5-Decide is shown two ways. GLiNER2.5-Decide: the instructions and the meaning of each answer are in its text, after the problem, because Fastino's API for this model has no separate field for them; given them, it answered unknown to every open-world problem and false to almost every closed-world one. GLiNER2.5-Decide, without instructions: only the problem and the three answer words; its answers vary but stay near chance, even at depth 0, where the answer is written in the text. Fastino's hosted API for this model gave the same answer as our copy on 7,197 of the 7,200 problems in both forms, and the same setup scores 63.7% on Fastino's own benchmark data (Fastino reports 60.2%), so the model is working as published. Asked a plain yes-or-no question in the form its model card shows (“Is it true that …?”, with the facts as the passage), it does better: 76% at depth 0 on held-out ProofWriter problems whose answer is true or false, against Jev's 98% on the benchmark. That form leaves out the instructions, so it is not a benchmark entry." },
   { slug: "jev-vs-laya", a: "jev", b: ["laya"], query: "Jev vs Laya",
     title: "Jev vs Laya: hosted and open decision models on deep reasoning",
     intro: "Laya is a small open decision model built on an encoder. Both it and Jev answered the same problems." },
@@ -97,6 +97,7 @@ export const DECISIONS_API = {
 };
 // How each vendor says its model reaches an answer, quoted, for the Time and money section.
 export const VENDOR_DESIGN = {
+  "glide-rerun-2026-10-03": null,
   glide: { source: "Fastino", url: "https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model",
     text: "Fastino is upfront that GLiDE works this way. It writes that \"traditional decision models score a set of options in a single fixed pass,\" while GLiDE \"first produces a fast probability distribution, then allocates additional reasoning when the leading result is uncertain,\" so it can \"spend more computation on difficult decisions while keeping straightforward ones fast.\" Fastino bills that reasoning as tokens, and its API documentation recommends a read timeout of at least 300 seconds." },
   jev: { source: "TypeSafe", url: "https://typesafe.ai/blog/introducing-system-one-models-and-jev",

@@ -100,6 +100,52 @@
       },
       "correct": true
      },
+     "glide-rerun-2026-10-03": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The bear is green. Green things are not young.\n\nStatement: The bear is not big."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "The same request as GLiDE's first run, sent again on October 3 at Fastino's request."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "unknown",
+         "confidence": 0.9724408909000181,
+         "probabilities": {
+          "false": 0.007048396451747089,
+          "true": 0.010255356324117408,
+          "unknown": 0.9826962472241355
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 203,
+        "output_tokens": 1
+       },
+       "latency_ms": 495.53
+      },
+      "correct": true
+     },
      "openai-gpt-6-luna-effort-none": {
       "request": {
        "how": "HTTP",
@@ -511,6 +557,52 @@
         "output_tokens": 1143
        },
        "latency_ms": 14481.15
+      },
+      "correct": true
+     },
+     "glide-rerun-2026-10-03": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The squirrel is kind. All kind people are big. Green, big people are red. Big, kind people are green.\n\nStatement: The squirrel is red."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true, false, or unknown? A statement is true if it can be derived from the facts and rules, and false if its negation can be derived. If neither the statement nor its negation can be derived, it is unknown. A rule applies only when all of its conditions are established; 'not' in a condition requires the negation to be stated or derived.",
+          "criteria": {
+           "true": "The statement follows from the facts and rules.",
+           "false": "The negation of the statement follows from the facts and rules.",
+           "unknown": "Neither the statement nor its negation follows from the facts and rules."
+          }
+         }
+        }
+       },
+       "note": "The same request as GLiDE's first run, sent again on October 3 at Fastino's request."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.4987494352608489,
+         "probabilities": {
+          "false": 0.10070379431627627,
+          "true": 0.6990228204722864,
+          "unknown": 0.20027338521143745
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 216,
+        "output_tokens": 1
+       },
+       "latency_ms": 666.78
       },
       "correct": true
      },
@@ -926,6 +1018,50 @@
       },
       "correct": true
      },
+     "glide-rerun-2026-10-03": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The mouse is kind. If something is kind then it is rough.\n\nStatement: The mouse is young."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "The same request as GLiDE's first run, sent again on October 3 at Fastino's request."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "false",
+         "confidence": 0.9838760180308329,
+         "probabilities": {
+          "false": 0.9919380090154164,
+          "true": 0.008061990984583519
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 185,
+        "output_tokens": 1
+       },
+       "latency_ms": 473.42
+      },
+      "correct": true
+     },
      "openai-gpt-6-luna-effort-none": {
       "request": {
        "how": "HTTP",
@@ -1320,6 +1456,50 @@
         "output_tokens": 1
        },
        "latency_ms": 1567.2
+      },
+      "correct": true
+     },
+     "glide-rerun-2026-10-03": {
+      "request": {
+       "how": "HTTP",
+       "method": "POST",
+       "url": "https://api.fastino.ai/v1/systemone",
+       "body": {
+        "model": "fastino/GLiDE",
+        "state": {
+         "text": "The bald eagle is cold. Big things are green. Cold things are blue. All blue, cold things are big.\n\nStatement: The bald eagle is green."
+        },
+        "questions": {
+         "Decision": {
+          "type": "choice",
+          "instructions": "Using only the facts and rules in the text, is the statement true or false? Assume that anything which cannot be derived from the facts and rules is false: a positive statement is true only if it can be derived, and a statement with 'not' is true when the unnegated statement cannot be derived. A rule applies when all of its conditions hold; 'not' in a condition holds when the unnegated condition cannot be derived.",
+          "criteria": {
+           "true": "The statement holds under the closed-world assumption.",
+           "false": "The statement does not hold under the closed-world assumption."
+          }
+         }
+        }
+       },
+       "note": "The same request as GLiDE's first run, sent again on October 3 at Fastino's request."
+      },
+      "response": {
+       "model": "glide",
+       "answers": {
+        "Decision": {
+         "choice": "true",
+         "confidence": 0.5098299737352565,
+         "probabilities": {
+          "false": 0.24508501313237172,
+          "true": 0.7549149868676283
+         },
+         "type": "choice"
+        }
+       },
+       "usage": {
+        "input_tokens": 196,
+        "output_tokens": 1
+       },
+       "latency_ms": 641.28
       },
       "correct": true
      },

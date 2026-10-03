@@ -26,6 +26,19 @@ glide:
   list_price: {input_usd_per_mtok: 0.30, output_usd_per_mtok: 0, source: "docs.fastino.ai/pricing, read 2026-10-02"}
   source: https://docs.fastino.ai/concepts/glide
 
+glide-rerun-2026-10-03:
+  kind: hosted decision model
+  maker: Fastino Labs
+  parameters: undisclosed
+  architecture: undisclosed ("thinking" decision model that adds reasoning when its first distribution is uncertain)
+  context_tokens: 40000
+  weights: not available (hosted)
+  where_run: Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev); rerun on 2026-10-03 at the request of Fastino's CEO, who said Fastino had problems during the launch
+  hardware: not applicable (hosted)
+  price: $0.30 per million input tokens; output free
+  list_price: {input_usd_per_mtok: 0.30, output_usd_per_mtok: 0, source: "docs.fastino.ai/pricing, read 2026-10-02"}
+  source: https://docs.fastino.ai/concepts/glide
+
 laya:
   kind: open decision model
   maker: Convai Innovations

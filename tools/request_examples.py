@@ -38,6 +38,8 @@ def requests_for(text, q):
                 "note": "Through TypeSafe's typesafe-sdk; jev-latest is the SDK's default model name."},
         "glide": {**system_one(GLIDE_URL, GLIDE_MODEL),
                   "note": "Fastino serves GLiDE on the same System One format as Jev, so this is Jev's request with a different address and model name."},
+        "glide-rerun-2026-10-03": {**system_one(GLIDE_URL, GLIDE_MODEL),
+                  "note": "The same request as GLiDE's first run, sent again on October 3 at Fastino's request."},
         "openai-gpt-6-luna-effort-none": {
             "how": "HTTP", "method": "POST", "url": "https://api.openai.com/v1/chat/completions",
             "body": {"model": luna.model, "max_completion_tokens": luna.max_tokens, **luna.params,
