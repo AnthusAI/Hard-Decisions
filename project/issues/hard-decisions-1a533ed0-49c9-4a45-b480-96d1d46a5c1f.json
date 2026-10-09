@@ -1,0 +1,22 @@
+{
+  "id": "hard-decisions-1a533ed0-49c9-4a45-b480-96d1d46a5c1f",
+  "title": "Deploy hard-decisions.anth.us automatically through DevOps, like Biased-Decisions",
+  "description": "hard-decisions.anth.us deploys only by hand: tools/deploy_site.sh builds site/dist and uploads a zip to Amplify app da7a84vbkxuhu, and the repository has no git remote at all. Biased-Decisions deploys through a GitHub Actions workflow (.github/workflows/site.yml) on push to main. Bring Hard-Decisions to the same shape: a GitHub remote under AnthusAI, a site workflow that builds, tests, and deploys on push to main, and retire the manual zip path. Found 2026-10-09 when the client-pitch block merged to main could not be deployed because the SSO token for the legacy profile had expired.",
+  "type": "task",
+  "status": "open",
+  "priority": 1,
+  "assignee": null,
+  "creator": null,
+  "parent": null,
+  "labels": [],
+  "dependencies": [],
+  "comments": [],
+  "created_at": "2026-10-09T11:45:29.729645Z",
+  "updated_at": "2026-10-09T11:45:29.730415Z",
+  "closed_at": null,
+  "right_now_summary": "The site still deploys by hand, with no GitHub remote or automated push-to-main workflow.",
+  "right_now_updated_at": "2026-10-09T11:45:38.092610Z",
+  "custom": {},
+  "agent": null,
+  "agent_assignment": null
+}

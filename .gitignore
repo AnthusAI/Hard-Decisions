@@ -5,3 +5,4 @@ __pycache__/
 .data/
 var/
 .pytest_cache/
+project/.overlay/
