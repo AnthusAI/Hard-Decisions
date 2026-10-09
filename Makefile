@@ -10,5 +10,5 @@ replay:      ## rescore every committed record, offline
 report:
 	hd report
 check: test replay report
-deploy:      ## build, test and upload site/dist to Amplify (hard-decisions.anth.us; AWS profile legacy)
+deploy:      ## manual fallback: build, test, upload site/dist to Amplify (pushes to main deploy automatically via GitHub Actions; AWS profile legacy)
 	tools/deploy_site.sh

@@ -68,3 +68,10 @@ docs/preregistration.md
 
 ProofWriter is synthetic and templated, and may be in training data. Axes other than depth correlate with it, so
 breakdowns are descriptive, not causal. Results are reported against a chance floor and a best-constant floor.
+
+## Deployment
+
+The results site (https://hard-decisions.anth.us) deploys automatically: every push to `main` runs
+`.github/workflows/site.yml`, which builds and tests `site/`, then uploads the tested `site/dist` to the
+Amplify app through a GitHub OIDC role (variables in the `production` environment). `make deploy`
+(`tools/deploy_site.sh`) remains the manual fallback.
