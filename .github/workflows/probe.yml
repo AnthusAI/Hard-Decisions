@@ -1,9 +1,0 @@
-name: probe
-on:
-  push:
-  pull_request:
-jobs:
-  p:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo probe ${{ github.event_name }}
