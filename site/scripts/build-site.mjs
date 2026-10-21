@@ -94,6 +94,7 @@ rmSync(dist, { recursive: true, force: true });
 mkdirSync(staged.content, { recursive: true });
 cpSync(join(site, "web"), staged.web, { recursive: true });
 mkdirSync(join(staged.web, "fragments"), { recursive: true });
+mkdirSync(join(staged.web, "assets"), { recursive: true });
 
 run(join(site, "node_modules/.bin/astro"), ["build"]);
 
