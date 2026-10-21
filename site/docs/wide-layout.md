@@ -69,7 +69,7 @@ Every content section is one of two kinds:
 
 ## CSS
 
-At the end of `src/styles/site.css`:
+At the end of `web/css/site-theme.css`:
 
 ```css
 @media (min-width: 1500px) {

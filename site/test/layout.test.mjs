@@ -26,7 +26,7 @@ test("every content section is split into a head and a body, or marked as prose"
 });
 
 test("the wide rules are in the stylesheet: column growth, zoom steps, the two-column split and a line measure", () => {
-  const css = readFileSync(new URL("../src/styles/site.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/css/site-theme.css", import.meta.url), "utf8");
   assert.match(css, /@media \(min-width: 2000px\) \{[^}]*html \{ zoom: 1\.25; \}[^}]*:root \{ --max: 88%; \}/);
   assert.match(css, /@media \(min-width: 2400px\) \{\s*\.sec-split, \.sec-prose \{ display: grid; grid-template-columns: minmax\(0, 30%\) minmax\(0, 1fr\)/);
   assert.match(css, /\.section p, \.section li[^{]*\{ max-width: 38em; \}/);

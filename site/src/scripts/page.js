@@ -1,5 +1,4 @@
-// The only script every page runs: open a <details> the URL's #fragment points at, and open every
-// <details> before printing. The pages and their charts are static HTML.
+// Opens a <details> the URL's #fragment points at, and every <details> before printing.
 function openFragment() {
   if (!location.hash) return;
   const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

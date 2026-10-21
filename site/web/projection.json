@@ -1,0 +1,99 @@
+{
+ "theme": null,
+ "site": {
+  "name": "Hard-Decisions",
+  "publisher": "Anthus",
+  "description": "",
+  "productionUrl": "https://hard-decisions.anth.us"
+ },
+ "urls": {
+  "style": "directory"
+ },
+ "nav": {
+  "brandHtml": "<span class=\"brand\"><span><span class=\"brand-a\">Hard</span><span class=\"brand-b\">Decisions</span></span> <span class=\"brand-icon\" aria-hidden=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 41 41\" width=\"1em\" height=\"1em\"><path fill=\"currentColor\" d=\"M4 36h5v5h-5zM9 32h5v9h-5zM14 28h5v13h-5zM19 24h5v17h-5zM24 20h5v21h-5zM29 16h5v25h-5z\"/></svg></span></span>",
+  "links": [
+   {
+    "label": "Models",
+    "href": "/models/"
+   },
+   {
+    "label": "Breakdowns",
+    "href": "/breakdowns/"
+   },
+   {
+    "label": "How we measured",
+    "href": "/how-we-measured/"
+   },
+   {
+    "label": "About",
+    "href": "/about/"
+   }
+  ]
+ },
+ "footer": {
+  "family": {
+   "siteId": "hard-decisions"
+  }
+ },
+ "seo": {
+  "imageSize": [
+   1200,
+   630
+  ],
+  "breadcrumbs": false
+ },
+ "fonts": {
+  "stylesheet": "https://fonts.googleapis.com/css2?family=Jersey+25&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap",
+  "preconnect": [
+   "https://fonts.googleapis.com",
+   "https://fonts.gstatic.com"
+  ]
+ },
+ "icons": {
+  "icon": "/favicon.svg",
+  "iconType": "image/svg+xml",
+  "appleTouch": "/apple-touch-icon.png",
+  "themeColor": "#f1f9fe",
+  "themeColorDark": "#0f1a22"
+ },
+ "robots": {
+  "extra": [
+   "Disallow: /og-gallery/"
+  ]
+ },
+ "feeds": {
+  "formats": []
+ },
+ "listings": {
+  "tags": false
+ },
+ "sitemap": {
+  "tags": false
+ },
+ "components": {
+  "breadcrumbs": false
+ },
+ "pageActions": {
+  "enabled": false
+ },
+ "static": {
+  "copy": [
+   "public"
+  ]
+ },
+ "chrome": {
+  "body_class": "",
+  "stylesheets": [
+   "css/markus-vendor.css",
+   "assets/engines.css",
+   "css/site-theme.css"
+  ],
+  "scripts": [
+   "assets/page.js"
+  ],
+  "ga_measurement_id": "G-31SC26SDGX",
+  "ga_owner_opt_out": true,
+  "title_template": "{title} · {site}"
+ },
+ "hooks": "hooks.py"
+}

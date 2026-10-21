@@ -17,18 +17,19 @@ export function walk(dir, out = []) {
 export const files = walk(DIST);
 const urlOf = (file) => "/" + relative(DIST, file).split(sep).join("/").replace(/index\.html$/, "");
 export const pages = files.filter((f) => f.endsWith("index.html")).map((f) => ({ file: f, path: urlOf(f), html: readFileSync(f, "utf8") }));
-export const noindex = (p) => /<meta name="robots" content="noindex">/.test(p.html);
+export const noindex = (p) => /<meta name="robots" content="noindex(?:, nofollow)?">/.test(p.html);
 export const content = pages.filter((p) => !noindex(p));
 
-export const unescape = (s) => s.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+export const unescape = (s) => s.replace(/&quot;/g, '"').replace(/&#39;|&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 export function meta(html, key) {
   const re = new RegExp(`<meta (?:property|name)="${key.replace(/[.:]/g, "\\$&")}" content="([^"]*)"`);
   const m = re.exec(html);
   return m ? unescape(m[1]) : null;
 }
 export function text(html) {
-  const at = html.indexOf("<body");
-  const body = at >= 0 ? html.slice(at) : html;
+  // The page's own words: the standard header and the family footer are Papyrus's, shared by every Anthus site.
+  const at = html.indexOf("<main");
+  const body = at >= 0 ? html.slice(at, html.indexOf("</main>")) : html;
   return unescape(body.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ");
 }
 export const strip = (s) => unescape(s.replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();

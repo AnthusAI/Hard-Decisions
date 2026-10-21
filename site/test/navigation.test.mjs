@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const styles = readFileSync(new URL("../src/styles/site.css", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../web/css/site-theme.css", import.meta.url), "utf8");
 
 test("the top filter rail always wraps instead of scrolling or fading buttons", () => {
   const rail = /\.rail \{([^}]*)\}/.exec(styles)?.[1];
