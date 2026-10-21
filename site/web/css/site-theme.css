@@ -57,8 +57,6 @@ code { background: var(--surface-2); padding: .08em .35em; border-radius: 4px; o
 .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
 @media (min-width: 720px) { .wrap { padding: 0 32px; } }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.skip { position: absolute; left: -999px; top: 8px; background: var(--ink); color: var(--bg); padding: 8px 12px; z-index: 50; }
-.skip:focus { left: 8px; }
 .muted { color: var(--muted); }
 .loading { padding: 20vh 0; color: var(--muted); }
 
@@ -81,16 +79,23 @@ h2.display { font-size: clamp(36px, 5vw, 56px); }
 h2.display.sm { font-size: clamp(30px, 4vw, 40px); }
 h3 { font-size: 18px; font-weight: 700; margin: 1.6em 0 .4em; }
 
-/* Masthead */
-.masthead { border-bottom: 1px solid var(--rule); background: color-mix(in srgb, var(--bg) 88%, transparent); position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(1.2) blur(8px); }
-.mast-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 10px; padding-bottom: 6px; flex-wrap: wrap; }
+/* Masthead: the standard Papyrus header (nav.links and nav.brandHtml in projection.json). */
+.markus-site-masthead { --pad: 16px; border-bottom: 1px solid var(--rule); background: color-mix(in srgb, var(--bg) 88%, transparent); position: sticky; top: 0; z-index: 20; backdrop-filter: saturate(1.2) blur(8px);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 10px max(var(--pad), calc((100% - var(--max)) / 2 + var(--pad))) 6px; }
+@media (min-width: 720px) { .markus-site-masthead { --pad: 32px; } }
+.markus-site-wordmark { margin: 0; }
+.markus-site-wordmark a { text-decoration: none; color: var(--ink); }
 .brand { font-family: var(--display); font-size: 1.875em; line-height: 1; text-decoration: none; color: var(--ink); white-space: nowrap; }
 .brand-icon svg { width: 1em; height: 1em; vertical-align: baseline; }
 .brand-b { color: var(--muted); margin-left: .12em; }
-.topnav { display: flex; align-items: center; gap: 4px 14px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
-.topnav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
-.topnav a:hover, .topnav a.on { color: var(--ink); border-bottom-color: var(--ink); }
-.rail { display: flex; flex-wrap: wrap; gap: 6px; overflow-x: visible; padding: 4px 0 10px; font-size: 13px; }
+.markus-site-nav { display: flex; align-items: center; gap: 4px 14px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
+.markus-site-nav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 6px; }
+.markus-site-nav a:hover, .markus-site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--ink); text-decoration: none; }
+/* The family footer takes the site's own colours. */
+.markus-site-footer { margin-top: 0; }
+.papyrus-family-footer { --papyrus-family-footer-background: var(--surface-2); --papyrus-family-footer-accent-background: var(--surface); --papyrus-family-footer-text: var(--ink);
+  --papyrus-family-footer-muted-text: var(--muted); --papyrus-family-footer-link: var(--link); --papyrus-family-footer-max-width: var(--max); --papyrus-family-footer-font-family: var(--body); }
+.rail { display: flex; flex-wrap: wrap; gap: 6px; overflow-x: visible; padding: 10px 0 4px; font-size: 13px; }
 .rail-h { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 11px; align-self: center; padding-right: 4px; white-space: nowrap; }
 .rail a { position: relative; white-space: nowrap; color: var(--ink-2); text-decoration: none; padding: 3px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
 .rail a:hover { border-color: var(--ink-2); }
@@ -368,7 +373,7 @@ details.cell > *:not(summary) { margin-left: 18px; margin-right: 18px; }
     --below-floor: rgba(138,148,156,.08); --floor-fill: rgba(138,148,156,.28); --link: #000; --det: #000; --chip-nd: #eee; --hatch-a: #bbb; --shadow: none; color-scheme: light;
   }
   body { font-size: 11pt; background: #fff; }
-  .masthead, .skip, .tip, noscript { display: none !important; }
+  .markus-site-masthead, .markus-site-footer, .markus-skip-link, .tip, noscript { display: none !important; }
   .hero-fig, .spider-card, details.cell, .dim-card { box-shadow: none; break-inside: avoid; }
   .section { padding-top: 24px; }
   h2.display { break-after: avoid; }
@@ -377,9 +382,8 @@ details.cell > *:not(summary) { margin-left: 18px; margin-right: 18px; }
   .cell-table { min-width: 0; }
 }
 @media (max-width: 719px) {
-  .masthead { position: static; backdrop-filter: none; }
-  .mast-row { gap: 6px; }
-  .topnav { gap: 2px 12px; font-size: 13.5px; }
+  .markus-site-masthead { position: static; backdrop-filter: none; gap: 6px; }
+  .markus-site-nav { gap: 2px 12px; font-size: 13.5px; }
   /* On a narrow screen, wrap the pill nav onto more lines instead of scrolling it sideways: a
      horizontally-scrolling primary nav is easy to miss and awkward to use with a thumb. */
   .rail { flex-wrap: wrap; overflow-x: visible; -webkit-mask-image: none; mask-image: none; padding-bottom: 6px; }

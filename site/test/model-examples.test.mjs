@@ -59,7 +59,7 @@ for (const [engine, path] of Object.entries(PAGE)) {
 }
 
 test("the right and wrong colours contrast with their marks in both themes (WCAG 3:1 for graphics)", () => {
-  const css = readFileSync(new URL("../src/styles/site.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/css/site-theme.css", import.meta.url), "utf8");
   const lum = (hex) => { const c = hex.match(/\w\w/g).map((h) => parseInt(h, 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
   const blocks = [/:root \{[^}]*\}/.exec(css)[0], /@media \(prefers-color-scheme: dark\) \{\s*:root \{[^}]*\}/.exec(css)[0]];

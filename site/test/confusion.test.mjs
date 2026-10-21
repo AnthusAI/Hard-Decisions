@@ -81,7 +81,7 @@ test("the true/false/unknown page has every fully scored model's matrix, ordered
 });
 
 test("every matrix's text and fill contrast passes in both modes (4.5:1)", () => {
-  const css = readFileSync(new URL("../src/styles/site.css", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../web/css/site-theme.css", import.meta.url), "utf8");
   const hex = (h) => h.match(/\w\w/g).map((x) => parseInt(x, 16));
   const lum = (rgb) => { const c = rgb.map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };

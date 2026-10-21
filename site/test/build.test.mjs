@@ -77,7 +77,7 @@ test("the sitemap lists every indexable page and nothing else, and robots.txt na
 
 test("the colophon names the version and the data's commit on every page", () => {
   for (const p of pages) {
-    const colo = p.html.slice(p.html.indexOf('<footer class="colophon">'));
+    const colo = p.html.slice(p.html.indexOf('<div class="colophon">'));
     assert.ok(colo.includes(`v${DATA.provenance.version}`), `${p.path}: no version`);
     if (DATA.provenance.record_commit_short) assert.ok(colo.includes(DATA.provenance.record_commit_short), `${p.path}: no commit`);
   }
@@ -138,8 +138,8 @@ test("Google Analytics 4 and its opt-out are on every page, once, opt-out first"
   for (const p of pages) {
     const head = p.html.slice(0, p.html.indexOf("</head>"));
     assert.equal(head.split(`googletagmanager.com/gtag/js?id=${ID}`).length - 1, 1, `${p.path}: gtag.js`);
-    assert.equal(head.split(`gtag('config', '${ID}')`).length - 1, 1, `${p.path}: gtag config`);
-    const optOut = head.indexOf("anthus-no-analytics");
+    assert.equal(head.split(`gtag('config', "${ID}")`).length - 1, 1, `${p.path}: gtag config`);
+    const optOut = head.indexOf("-no-analytics");
     assert.ok(optOut > 0 && optOut < head.indexOf("gtag('config'"), `${p.path}: opt-out must come before gtag config`);
   }
 });

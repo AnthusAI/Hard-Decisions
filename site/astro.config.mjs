@@ -13,6 +13,8 @@ export default defineConfig({
   output: "static",
   trailingSlash: "always",
   build: { format: "directory" },
+  // Astro renders the body of every page into .build/astro; scripts/build-site.mjs wraps those fragments with Papyrus.
+  outDir: ".build/astro",
   devToolbar: { enabled: false },
   server: { host: "127.0.0.1", port: 4331 },
 });

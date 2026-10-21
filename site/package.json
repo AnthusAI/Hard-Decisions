@@ -9,11 +9,9 @@
   },
   "scripts": {
     "collect": "node scripts/collect.mjs",
-    "predev": "node scripts/collect.mjs",
-    "dev": "astro dev --port 4331",
+    "dev": "npm run build && node scripts/serve.mjs 4331",
     "prebuild": "node scripts/collect.mjs",
-    "build": "astro build",
-    "preview": "astro preview --port 4331",
+    "build": "node scripts/build-site.mjs",
     "serve": "node scripts/serve.mjs 4331",
     "logo": "node scripts/generate-logo.mjs",
     "test": "node --test test/*.test.mjs"
@@ -24,6 +22,7 @@
     "@resvg/resvg-wasm": "2.6.2",
     "astro": "7.3.4",
     "satori": "0.33.5",
+    "esbuild": "0.28.2",
     "yaml": "2.8.1"
   }
 }
