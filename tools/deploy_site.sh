@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Deploy site/dist to the Hard-Decisions Amplify app (manual deployments, no Git connection).
 # Builds and tests the site first, refuses a dirty tree, then uploads the exact artifact and waits for the job.
-# Usage: tools/deploy_site.sh            (AWS profile "legacy", region us-east-1; override with AWS_PROFILE / AWS_REGION)
+# Usage: AMPLIFY_APP_ID=<amplify-app-id> tools/deploy_site.sh   (AWS profile "legacy", region us-east-1; override with AWS_PROFILE / AWS_REGION)
 set -euo pipefail
 cd "$(dirname "$0")/.."
-APP_ID="da7a84vbkxuhu"            # Amplify app "Hard-Decisions", serves https://hard-decisions.anth.us
+APP_ID="${AMPLIFY_APP_ID:?set AMPLIFY_APP_ID to the id of the Hard-Decisions Amplify app (serves https://hard-decisions.anth.us)}"
 BRANCH="main"
 PROFILE="${AWS_PROFILE:-legacy}"
 REGION="${AWS_REGION:-us-east-1}"
