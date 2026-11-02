@@ -5,8 +5,8 @@ biased-decisions.anth.us, in the `legacy` AWS account (us-east-1). The setup mir
 manual-deployment app: Amplify has no Git connection and builds nothing; we upload the exact artifact we built
 and tested.
 
-- **App:** `Hard-Decisions` (`da7a84vbkxuhu`), branch `main` (production), default URL
-  https://main.da7a84vbkxuhu.amplifyapp.com
+- **App:** `Hard-Decisions` (its id is `<amplify-app-id>`; the deploy script reads it from `AMPLIFY_APP_ID`),
+  branch `main` (production), default URL `https://main.<amplify-app-id>.amplifyapp.com`
 - **Domain:** `hard-decisions.anth.us`, an Amplify-managed certificate; the DNS records live in the `anth.us`
   Route 53 zone in the same account and were created by Amplify.
 - **Rules and headers:** `deploy/amplify-rules.json` (404 page, `/index.html` redirect) and `customHttp.yml`
@@ -16,7 +16,7 @@ and tested.
 ## Deploy
 
 ```sh
-make deploy          # = tools/deploy_site.sh: clean tree, build, test, upload, wait for the job
+AMPLIFY_APP_ID=<amplify-app-id> make deploy   # = tools/deploy_site.sh: clean tree, build, test, upload, wait for the job
 ```
 
 You need an AWS session for the `legacy` profile (SSO). Rebuild and deploy after `hd replay && hd report`
