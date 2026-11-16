@@ -255,3 +255,20 @@ errors and were rerun once at concurrency 1; both answered.
 - **Spend:** about $0.80 at $0.30 per million input tokens, approved by the owner.
 - **Reported:** both runs side by side (accuracy overall and by depth, paired differences against Jev, latency, cost,
   confidence) and how many answers changed between the runs. No prediction is made about the direction of change.
+
+## Amendment 10: OpenAI's Decisions API (written before any benchmark request)
+
+- **Why:** the Decisions API reached general availability on 2026-10-22. Until then the site previewed it through GPT-6
+  Luna on the chat endpoint; this tests the product itself. Engine: `openai-decisions-gpt-6-luna`.
+- **Request:** `POST https://api.openai.com/v1/decisions`, model `gpt-6-luna`, one `choice` question per request. The
+  problem text is `input`; the question's instructions are `instructions`; the options, each with its description,
+  are `choices`. Nothing is added or dropped relative to the other engines (the request is in
+  `hard_decisions/engines/openai_decisions.py`). Default settings, no caching options, up to eight requests in flight,
+  failed requests retried with backoff and never answered twice.
+- **Dev check first:** 120 requests on the ProofWriter dev split (`tools/openai_decisions_dev.py`,
+  `studies/openai-decisions-dev/`) confirmed the response shape. No benchmark item was used. It gave non-constant answers
+  (OWA 55%, CWA 43% on 60 items each). Its confidence and probabilities are rounded to two decimals.
+- **Run:** all 1,800 items per task, unchanged protocol, about 1.3 million input tokens, about $0.13 at $0.10 per
+  million, approved by the owner. A latency-only rerun is not planned; per-request latency of the scored run is recorded.
+- **Predictions:** none beyond the dev check. Accuracy, accuracy by depth, paired differences against Jev and against
+  `openai-gpt-6-luna-effort-none`, AUROC of the returned `confidence`, and latency and cost are reported whatever they show.

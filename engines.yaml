@@ -137,3 +137,16 @@ machine:
   model: MacBookPro18,4 (Apple M1 Max)
   memory: 32 GB unified memory
   note: on Apple silicon, model weights live in GPU (Metal) memory, which a process's RSS does not count; memory figures here are macOS physical footprint (footprint -p), current and peak, where peak includes loading.
+
+openai-decisions-gpt-6-luna:
+  kind: hosted decision model
+  maker: OpenAI
+  parameters: undisclosed
+  architecture: undisclosed (GPT-6 Luna through OpenAI's dedicated Decisions endpoint)
+  context_tokens: undisclosed
+  weights: not available (hosted)
+  where_run: OpenAI API, POST /v1/decisions, model gpt-6-luna, one choice question per request; generally available 2026-10-22
+  hardware: not applicable (hosted)
+  price: $0.10 per million input tokens; cached input $0.01; output free
+  list_price: {input_usd_per_mtok: 0.10, output_usd_per_mtok: 0, source: "developers.openai.com/api/docs/guides/decisions, read 2026-11-16"}
+  source: https://developers.openai.com/api/docs/guides/decisions
