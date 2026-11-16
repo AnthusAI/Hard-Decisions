@@ -109,6 +109,9 @@ def _engine(name: str):
     if name == "laya":
         from hard_decisions.engines.laya import LayaEngine
         return LayaEngine()
+    if name == "openai-decisions-gpt-6-luna":
+        from hard_decisions.engines.openai_decisions import OpenAIDecisionsEngine
+        return OpenAIDecisionsEngine()
     if name in GLIDE_RUNS:
         from hard_decisions.engines.glide import GlideEngine
         return GlideEngine(name=name)
