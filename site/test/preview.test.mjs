@@ -1,5 +1,5 @@
-// The OpenAI Decisions API preview page: its numbers come from the probe's analysis.json, it carries a
-// verbatim request and response, and it never claims the API itself was tested.
+// The OpenAI Decisions API page: its secondary section reads its numbers from the Luna chat probe's
+// analysis.json and carries a verbatim request and response from that probe.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -10,11 +10,11 @@ const page = () => content.find((p) => p.path === "/openai-decisions-api-preview
 const pct = (x, d = 1) => (100 * x).toFixed(d);
 const top = (bands) => bands.find((b) => b.from >= 0.99);
 
-test("the preview page exists, is in the sitemap set, and names the OpenAI Decisions API", () => {
+test("the Decisions API page exists, is in the sitemap set, and names the OpenAI Decisions API", () => {
   const p = page();
   assert.ok(p, "no preview page");
   assert.match(text(p.html), /OpenAI Decisions API/);
-  assert.match(meta(p.html, "description"), /^When GPT-6 Luna[^.]*99% or more[^.]*right \d+\.\d%/);
+  assert.match(meta(p.html, "description"), /^OpenAI's Decisions API answered \d+\.\d% of open-world/);
 });
 
 test("the preview page reads its numbers from the probe's analysis.json", () => {
@@ -42,10 +42,8 @@ test("the preview page carries a verbatim request and response from the probe", 
   assert.equal(shown.correct, false, "the main example should be a wrong answer");
 });
 
-test("the preview page never claims the Decisions API itself was tested", () => {
+test("the probe section is labelled secondary and never says Luna hides its probabilities", () => {
   const t = text(page().html);
-  assert.doesNotMatch(t, /we (?:have )?(?:tested|benchmarked|measured|ran|probed) the (?:OpenAI )?Decisions API/i);
-  assert.match(t, /We have not tested the Decisions API/);
-  assert.match(t, /untested/);
+  assert.match(t, /Secondary: an earlier probe of GPT-6 Luna's log-probabilities on the chat endpoint/);
   assert.doesNotMatch(t, /\bhid(?:e|es|den|ing)\b/i, "the page must not say Luna hides its probabilities");
 });

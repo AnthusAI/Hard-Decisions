@@ -49,6 +49,7 @@ function marker(id, size) {
     : e.marker === "diamond" ? { type: "path", props: { d: "M12 1 L23 12 L12 23 L1 12 Z", fill } }
     : e.marker === "diamond-open" ? { type: "path", props: { d: "M12 3.5 L20.5 12 L12 20.5 L3.5 12 Z", fill: "none", stroke: fill, strokeWidth: 3.5 } }
     : e.marker === "circle-open" ? { type: "circle", props: { cx: 12, cy: 12, r: 8.5, fill: "none", stroke: fill, strokeWidth: 3.5 } }
+    : e.marker === "cross" ? { type: "path", props: { d: "M9 2 H15 V9 H22 V15 H15 V22 H9 V15 H2 V9 H9 Z", fill } }
     : e.marker === "triangle-down" ? { type: "path", props: { d: "M12 22 L22.5 3 L1.5 3 Z", fill } }
     : e.marker === "triangle" ? { type: "path", props: { d: "M12 2 L22.5 21 L1.5 21 Z", fill } }
     : { type: "circle", props: { cx: 12, cy: 12, r: 10, fill } };

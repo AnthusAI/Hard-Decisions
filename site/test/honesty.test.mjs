@@ -10,7 +10,8 @@ test("every page that names GPT-6 Luna says it ran with reasoning off", () => {
   for (const p of content) {
     // Links to other pages (a comparison's title, a nav chip) only name it; the page they lead to says the rest.
     const main = p.html.slice(p.html.indexOf("<main"), p.html.indexOf('<aside class="wrap honesty"')).replace(/<a\b[^>]*>[\s\S]*?<\/a>/g, " ");
-    const t = text(main);
+    // The Decisions API entry is "OpenAI Decisions API (GPT-6 Luna)": it has no reasoning setting to state.
+    const t = text(main).replace(/OpenAI Decisions API \(GPT-6 Luna\)/g, "OpenAI Decisions API");
     if (/GPT-6 Luna/.test(t) && !/reasoning off|reasoning effort set to none|reasoning effort/i.test(t)) bad.push(p.path);
   }
   assert.deepEqual(bad, [], "pages naming Luna without its setting");

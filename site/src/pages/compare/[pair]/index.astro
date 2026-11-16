@@ -20,6 +20,7 @@ import DecisionsApi from "../../../components/DecisionsApi.astro";
 import ModelDepthExamples from "../../../components/ModelDepthExamples.astro";
 import TimeAndMoney from "../../../components/TimeAndMoney.astro";
 import GlideRerun from "../../../components/GlideRerun.astro";
+import ExampleCard from "../../../components/ExampleCard.astro";
 import RequestExample from "../../../components/RequestExample.astro";
 import { data, modelById, urls, OWA, CWA, taskOrder, TASK_INFO, pct, pts, int, gb, overall, axisTable, axisRow, pair, isComplete, statusWords, latency, memoryOf,
   aboutModel, kindOf, whereRun, valueLabel, L, listOf } from "../../../lib/site.js";
@@ -36,6 +37,7 @@ const ids = [a.id, ...bs.map((m) => m.id)];
 const bIds = bs.map((m) => m.id);
 const bNames = listOf(bs.map((m) => m.label));
 const LUNA = "openai-gpt-6-luna-effort-none";
+const API = "openai-decisions-gpt-6-luna";
 const isKev = c.b.some((id) => /^kev-/.test(id));
 // Kev sizes, smallest first, for "Does a bigger Kev help?".
 const kevs = isKev ? [...bs].sort((x, y) => (x.size || 0) - (y.size || 0)) : [];
@@ -54,9 +56,9 @@ function sides(slug, b) {
     <p class="kicker">Comparison · {c.query}</p>
     <h1 class="display xl">{c.title}</h1>
     <p class="deck">{c.intro}</p>
-    {c.b.includes(LUNA) && <p class="footnote">GPT-6 Luna ran with reasoning effort set to none, its lowest setting, under the same one-request protocol as every model here: the same question, the same options, one answer per item. A different reasoning setting would be a different model, scored separately.</p>}
+    {c.b.includes(LUNA) && <p class="footnote">GPT-6 Luna ran through OpenAI's chat endpoint with reasoning effort set to none, its lowest setting, under the same one-request protocol as every model here: the same question, the same options, one answer per item. A different reasoning setting would be a different model, scored separately.</p>}
     {bs.some((m) => taskOrder.some((s) => statusWords(m.id, s))) && <p class="footnote">{bs.flatMap((m) => taskOrder.filter((s) => statusWords(m.id, s)).map((s) => `${m.label}, ${TASK_INFO[s].short.toLowerCase()}: ${statusWords(m.id, s)}.`)).join(" ")} Partial numbers change when scoring finishes.</p>}
-    {c.note && <p class="note">{c.note}{c.b.includes(LUNA) && <Fragment> <a href="#decisions-api">What this means for the OpenAI Decisions API</a>.</Fragment>}</p>}
+    {c.note && <p class="note">{c.note}{c.b.includes(API) && <Fragment> <a href="#decisions-api">The OpenAI Decisions API, as we tested it</a>.</Fragment>}{c.b.includes(LUNA) && !c.b.includes(API) && <Fragment> <a href={urls.comparison("jev-vs-openai-decisions-api")}>Jev vs the OpenAI Decisions API</a>.</Fragment>}</p>}
     {waiting.length > 0 && <p class="note">Not yet scored: {listOf(waiting.map((m) => m.label))}. {waiting.length === 1 ? "It appears" : "They appear"} here once scored, never as zero.</p>}
   </section>
 
@@ -109,7 +111,22 @@ function sides(slug, b) {
 
   {bs.map((b) => <ModelDepthExamples id={b.id} />)}
 
-  {c.b.includes(LUNA) && <DecisionsApi />}
+  {c.b.includes(LUNA) && !c.b.includes(API) && data.lunaMisses && (
+    <section class="wrap section sec-split" aria-labelledby="miss-h">
+      <div class="sec-head">
+      <h2 class="display" id="miss-h">One step of reasoning: problems GPT-6 Luna got wrong and Jev got right</h2>
+      <p class="lede">At proof depth 1 the answer takes one rule applied to facts stated in the text. {taskOrder.map((s) => { const t = data.lunaMisses.tasks[s]; return t && `On the ${TASK_INFO[s].short.toLowerCase().replace(" ", "-")} task, GPT-6 Luna (reasoning off) got ${int(t.luna_wrong)} of ${int(t.n)} such problems wrong, and Jev got ${int(t.luna_wrong_jev_right)} of those right.`; }).filter(Boolean).join(" ")}</p>
+      <p class="note">How these four are chosen: {data.lunaMisses.selection.split(" Each example has")[0]} Each card shows GPT-6 Luna's answer; Jev answered every one correctly. <a href={urls.depthMeans()}>What proof depth means</a>.</p>
+      </div>
+      <div class="sec-body">
+      <div class="mde-grid">
+        {taskOrder.flatMap((s) => ((data.lunaMisses.tasks[s] || {}).examples || []).map((ex) => <ExampleCard ex={ex} task={s} depth={data.lunaMisses.depth} />))}
+      </div>
+      </div>
+    </section>
+  )}
+
+  {c.b.includes(API) && <DecisionsApi />}
 
   {isKev && (
     <section class="wrap section sec-split" aria-labelledby="size-help-h">

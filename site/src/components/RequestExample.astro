@@ -8,9 +8,11 @@ const { id, ex } = Astro.props;
 const e = ex.engines[id];
 const m = modelById[id];
 const req = e && e.request;
-const readsText = req && (req.body.state && req.body.state.text) || (req && req.body.messages && req.body.messages[0].content) || (req && typeof req.body.state === "string" && req.body.state) || (req && req.body.text) || null;
-const labels = req && (req.body.questions ? Object.keys(Object.values(req.body.questions)[0].criteria) : req.body.tasks ? Object.values(req.body.tasks)[0] : req.body.response_format ? req.body.response_format.json_schema.schema.properties.answer.enum : null);
-const separate = req && req.body.questions ? Object.values(req.body.questions)[0] : null;
+const readsText = req && (req.body.state && req.body.state.text) || (req && req.body.messages && req.body.messages[0].content) || (req && typeof req.body.state === "string" && req.body.state) || (req && req.body.text) || (req && req.body.input) || null;
+// The Decisions API sends its questions as a list with choices as {value, description}; the others as a map with criteria.
+const q0 = req && req.body.questions ? (Array.isArray(req.body.questions) ? req.body.questions[0] : Object.values(req.body.questions)[0]) : null;
+const separate = q0 ? { instructions: q0.instructions, criteria: q0.criteria || Object.fromEntries(q0.choices.map((c) => [c.value, c.description])) } : null;
+const labels = req && (separate ? Object.keys(separate.criteria) : req.body.tasks ? Object.values(req.body.tasks)[0] : req.body.response_format ? req.body.response_format.json_schema.schema.properties.answer.enum : null);
 const a = e && e.response.answers ? Object.values(e.response.answers)[0] : null;
 const pct = (x) => `${(100 * x).toFixed(1)}%`;
 ---
@@ -25,7 +27,7 @@ const pct = (x) => `${(100 * x).toFixed(1)}%`;
       <p class="req-l">The answers it can give, each with its meaning</p><pre class="req-text">{Object.entries(separate.criteria).map(([k, v]) => `${k}: ${v}`).join("\n")}</pre></div>}
     {!separate && labels && <div><p class="req-l">The answers it can give</p><pre class="req-text">{labels.join("\n")}</pre></div>}
   </div>
-  {a && a.probabilities && <p class="req-probs">Its probability for each answer: {Object.entries(a.probabilities).map(([k, v]) => `${k} ${pct(v)}`).join(", ")}.</p>}
+  {a && a.probabilities && <p class="req-probs">Its probability for each answer: {Object.entries(a.probabilities).map(([k, v]) => `${k} ${pct(v)}`).join(", ")}.{a.confidence != null && ` Its separate confidence: ${pct(a.confidence)}.`}</p>}
   <details class="req-raw"><summary>The full request and response, exactly as sent and recorded</summary>
     <p class="req-l">Request</p><pre class="code"><code>{JSON.stringify(req.how === "HTTP" ? req.body : { call: req.call, ...req.body }, null, 2)}</code></pre>
     <p class="req-l">Response (the saved record)</p><pre class="code"><code>{JSON.stringify({ model: e.response.model, answers: e.response.answers, usage: e.response.usage }, null, 2)}</code></pre>

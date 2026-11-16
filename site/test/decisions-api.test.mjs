@@ -1,37 +1,53 @@
-// The OpenAI Decisions API is an SEO target on the GPT-6 Luna comparison: the page names it, cites
-// a source for it, says the results are a preview rather than a test of the API, and never says
-// whether the API returns a confidence score (no OpenAI source says so).
+// The OpenAI Decisions API has its own comparison page and a benchmark page: they cite OpenAI's guide and
+// announcement for OpenAI's claims, report our measured results, and keep the claims apart from the measurements.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { content, text, meta } from "./helpers.mjs";
+import { content, text, meta, DATA } from "./helpers.mjs";
 
-const SOURCES = ["https://the-decoder.com/openai-expands-codex-and-its-api-at-devday-with-security-scans-a-decisions-api-and-ultrafast/",
-  "https://www.axios.com/2026/09/29/openai-dev-day-2026-dots-space-sol"];
-const page = () => content.find((p) => p.path === "/compare/jev-vs-gpt-6-luna/");
+const GUIDE = "https://developers.openai.com/api/docs/guides/decisions";
+const ANNOUNCEMENT = "https://openai.com/index/decisions-api/";
+const API = "openai-decisions-gpt-6-luna";
+const pages = () => ["/compare/jev-vs-openai-decisions-api/", "/openai-decisions-api-preview/"].map((path) => content.find((p) => p.path === path));
+const pct = (x, d = 1) => (100 * x).toFixed(d);
 
-test("the Luna comparison names the OpenAI Decisions API and links a source for it", () => {
-  const p = page();
-  assert.ok(p, "no Luna comparison page");
-  assert.match(text(p.html), /OpenAI Decisions API/);
-  assert.ok(SOURCES.some((u) => p.html.includes(`href="${u}"`)), "no Decisions API source linked");
-  assert.match(/<title>([^<]*)<\/title>/.exec(p.html)[1], /OpenAI Decisions API/);
-  assert.match(meta(p.html, "description"), /Decisions API/);
+test("the Decisions API pages name the API, link OpenAI's guide and announcement, and are titled for it", () => {
+  for (const p of pages()) {
+    assert.ok(p, "missing Decisions API page");
+    assert.match(text(p.html), /OpenAI Decisions API/, p.path);
+    assert.ok(p.html.includes(`href="${GUIDE}"`), `${p.path}: guide not linked`);
+    assert.ok(p.html.includes(`href="${ANNOUNCEMENT}"`), `${p.path}: announcement not linked`);
+    assert.match(/<title>([^<]*)<\/title>/.exec(p.html)[1], /OpenAI Decisions API/, p.path);
+    assert.match(meta(p.html, "description"), /Decisions API/, p.path);
+  }
 });
 
-test("the Decisions API is framed as a preview, not as something we tested", () => {
-  const t = text(page().html);
-  assert.match(t, /not results for the Decisions API itself|not a test of the (?:OpenAI Decisions )?API itself/);
-  for (const p of content) assert.doesNotMatch(text(p.html), /we (?:have )?(?:tested|benchmarked|measured|ran|probed) the (?:OpenAI )?Decisions API|our (?:test|benchmark|probe) of the (?:OpenAI )?Decisions API/i, p.path);
-});
-
-test("no page says whether the Decisions API returns a confidence score", () => {
-  // Naming confidence near the API is fine ("accuracy and confidence" of the model it is built on);
-  // saying the API returns, gives or lacks one is not: no OpenAI source says either way.
-  const claims = [/Decisions API[^.]*\b(?:returns?|gives?|provides?|exposes?|reports?|outputs?|includes?|lacks?|offers?)\b[^.]*\b(?:confidence|probabilit|log-?prob)/i,
-    /(?:confidence|probabilit|log-?prob)[^.]*\b(?:from|returned by|in) the (?:OpenAI )?Decisions API/i];
-  for (const p of content) {
-    for (const sentence of text(p.html).split(/(?<=[.!?])\s+/)) {
-      for (const re of claims) assert.doesNotMatch(sentence, re, `${p.path}: "${sentence}"`);
+test("the Decisions API pages report the scored accuracy, and the confidence AUROC from the analysis", () => {
+  for (const p of pages()) {
+    const t = text(p.html);
+    for (const slug of ["proofwriter-owa", "proofwriter-cwa"]) {
+      const o = DATA.results[slug].studies.engines[API].overall;
+      assert.ok(t.includes(`${pct(o.accuracy)}%`), `${p.path}: ${slug} accuracy`);
     }
+  }
+  const t = text(pages()[1].html);
+  for (const [slug, task] of Object.entries(DATA.probe.tasks)) {
+    const c = task.decisions_api_confidence;
+    assert.ok(c, `${slug}: no confidence analysis`);
+    assert.ok(t.includes(c.auroc.toFixed(3)), `${slug}: confidence AUROC`);
+    assert.ok(t.includes(String(c.distinct_values)), `${slug}: distinct confidence values`);
+  }
+});
+
+test("OpenAI's speed claim is attributed to OpenAI, never presented as our measurement", () => {
+  for (const p of pages()) {
+    const t = text(p.html);
+    assert.match(t, /10x faster than the Responses API|tenfold speed-up over the Responses API/, p.path);
+    assert.match(t, /we did not (?:time|compare)/i, p.path);
+  }
+});
+
+test("no page says the Decisions API is untested, in preview, or undocumented", () => {
+  for (const p of content) {
+    assert.doesNotMatch(text(p.html), /(?:have not|haven't) tested the (?:OpenAI )?(?:Decisions API|API itself)|not a test of the (?:OpenAI )?(?:Decisions )?API itself|limited preview|published no Decisions API documentation|until we can get access/i, p.path);
   }
 });

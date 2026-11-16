@@ -36,7 +36,7 @@ export const intro = {
     intro: "How long one decision takes, how big each model is, what hardware its maker states, and how much memory the open models used on our laptop." },
   asked: { title: "Exactly what each model was asked, and what it answered", query: "decision model API request examples",
     intro: "The request each model received for the same problems, field for field, and the answer it sent back, taken from the saved records. Every model got the same problem, the same question and the same meaning for each answer; where a model's interface is shaped differently, this shows exactly where each piece went." },
-  cost: { title: "Decision model cost per decision: Jev, GLiDE and GPT-6 Luna", query: "decision model API cost",
+  cost: { title: "Decision model cost per decision: Jev, GLiDE, GPT-6 Luna and the OpenAI Decisions API", query: "decision model API cost",
     intro: "What each hosted model cost to answer the same 3,600 problems, at its published list price and the tokens its own API reported, per decision and per correct decision." },
   sizes: { title: "Model sizes and memory", query: "open-source Jev alternative hardware", intro: "Parameters, weights on disk and memory." },
   evaluating: { title: "Evaluating decision models: what a deep-reasoning benchmark shows", query: "evaluating decision models",
@@ -45,9 +45,9 @@ export const intro = {
     intro: "The failures in this benchmark are specific enough to plan training data around: deep proofs, the unknown answer, reworded rules and a lean toward one answer. Here is what the results show, model by model." },
   aligning: { title: "Aligning decision models with the decision you mean", query: "aligning decision models",
     intro: "A decision model can be accurate and still answer a different question from the one you meant. The open-world and closed-world tasks ask the same problems under two rules for what \"unknown\" means; the gap between them is an alignment problem you can measure." },
-  preview: { title: "Previewing the OpenAI Decisions API through GPT-6 Luna: accuracy and confidence on deep reasoning",
-    seoTitle: "OpenAI Decisions API preview: GPT-6 Luna's accuracy and confidence", query: "OpenAI Decisions API",
-    intro: "OpenAI's new Decisions API is built on a version of GPT-6 Luna. We have not tested the API itself. We tested GPT-6 Luna the way such a decision model works: one request, a fixed list of answers, reasoning off. Here is how accurate it is on multi-step reasoning, and whether its own probabilities can tell you when to trust an answer." },
+  preview: { title: "OpenAI Decisions API benchmark: accuracy, confidence and speed on deep reasoning",
+    seoTitle: "OpenAI Decisions API benchmark: accuracy, confidence and speed", query: "OpenAI Decisions API",
+    intro: "We sent OpenAI's Decisions API, generally available since 22 October 2026, the same 3,600 multi-step reasoning problems as every other model. Here is how accurate it is by proof depth, whether its confidence tells right answers from wrong ones, how fast it answered, and what it cost." },
   depthMeans: { title: "What proof depth means: multi-hop reasoning, step by step, with examples",
     seoTitle: "What proof depth means: multi-hop reasoning examples from ProofWriter", query: "multi-hop reasoning examples",
     intro: "Proof depth is how many rules must be chained to reach an answer. Here is what that means, from a statement written in the text (depth 0) to one that needs five chained inferences (depth 5), with a real ProofWriter problem and its proof at every depth." },
@@ -67,9 +67,13 @@ export const comparisons = [
   { slug: "jev-vs-gpt-6-luna", a: "jev", b: ["openai-gpt-6-luna-effort-none"], query: "Jev vs LLM",
     title: "Jev vs GPT-6 Luna: a decision model against an LLM classifier",
     intro: "Jev is built to make one decision per request. GPT-6 Luna is a general large language model, used here as a classifier with reasoning off. Both answered the same 3,600 problems.",
-    // OpenAI's Decisions API (announced 2026-09-29) is built on a version of GPT-6 Luna: these results preview it; they do not test it.
-    seoTitle: "Jev vs GPT-6 Luna, the model behind the OpenAI Decisions API",
-    note: "OpenAI's new Decisions API is built on a version of GPT-6 Luna, so these results preview the accuracy of a Luna-based decision model on multi-step reasoning. They are not a test of the API itself." },
+    seoTitle: "Jev vs GPT-6 Luna: a chat-endpoint LLM classifier with reasoning off",
+    note: "This is GPT-6 Luna through OpenAI's chat endpoint with reasoning off. OpenAI's dedicated Decisions API, which also serves gpt-6-luna, is a separate entry with its own page." },
+  { slug: "jev-vs-openai-decisions-api", a: "jev", b: ["openai-decisions-gpt-6-luna", "openai-gpt-6-luna-effort-none"], query: "OpenAI Decisions API vs Jev",
+    title: "Jev vs the OpenAI Decisions API: a decision model against OpenAI's decision endpoint",
+    intro: "OpenAI's Decisions API (POST /v1/decisions, model gpt-6-luna) answers a question with a choice, probabilities and a confidence. Jev and the Decisions API answered the same 3,600 problems, and GPT-6 Luna through the chat endpoint is shown beside them.",
+    seoTitle: "Jev vs the OpenAI Decisions API: accuracy on multi-step reasoning",
+    note: "The Decisions API entry is gpt-6-luna through OpenAI's dedicated endpoint, sent the benchmark's identical instructions and option descriptions. The GPT-6 Luna entry is the same model name through the chat endpoint with reasoning off. We did not test other wordings of the instructions. We do not know why the two endpoints differ." },
   { slug: "jev-vs-kev", a: "jev", b: kevIds, query: "Kev vs Jev",
     title: "Kev vs Jev: is an open-source decision model a Jev alternative?",
     intro: "Kev is an open decision model you can run on your own hardware; Jev is hosted. We ran every Kev size that fits a 32 GB laptop against Jev on the same problems, and asked whether a bigger Kev helps." },
@@ -81,13 +85,13 @@ export const comparisons = [
     title: "Jev vs Laya: hosted and open decision models on deep reasoning",
     intro: "Laya is a small open decision model built on an encoder. Both it and Jev answered the same problems." },
 ];
-// The OpenAI Decisions API: facts and sources as fact-checked on 2026-10-01. Nothing here says whether
-// the API returns a confidence score: no OpenAI source says so.
+// The OpenAI Decisions API: facts as OpenAI's guide states them (read 2026-11-16) and the sources for the
+// secondary log-probability section.
 export const DECISIONS_API = {
   sources: {
-    decoder: { label: "The Decoder", url: "https://the-decoder.com/openai-expands-codex-and-its-api-at-devday-with-security-scans-a-decisions-api-and-ultrafast/" },
-    axios: { label: "Axios", url: "https://www.axios.com/2026/09/29/openai-dev-day-2026-dots-space-sol" },
-    guide: { label: "OpenAI's latest-model guide", url: "https://developers.openai.com/api/docs/guides/latest-model" },
+    guide: { label: "OpenAI's Decisions API guide", url: "https://developers.openai.com/api/docs/guides/decisions" },
+    announcement: { label: "OpenAI's announcement of 22 October 2026", url: "https://openai.com/index/decisions-api/" },
+    latest: { label: "OpenAI's latest-model guide", url: "https://developers.openai.com/api/docs/guides/latest-model" },
     luna: { label: "GPT-6 Luna's model page", url: "https://developers.openai.com/api/docs/models/gpt-6-luna" },
     gpt4: { label: "GPT-4 Technical Report", url: "https://arxiv.org/abs/2303.08774" },
     carlini: { label: "Carlini et al., 2024", url: "https://arxiv.org/abs/2403.06634" },
@@ -109,11 +113,12 @@ export const liveComparisons = comparisons.filter((c) => modelById[c.a] && model
 export const comparisonsFor = (id) => liveComparisons.filter((c) => c.a === id || c.b.includes(id));
 
 export const modelQuery = (m) => ({
-  jev: "Jev accuracy", "gliner-2.5-decide": "GLiNER2.5-Decide accuracy", glide: "GLiDE decision model accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", laya: "Laya decision model accuracy",
+  jev: "Jev accuracy", "gliner-2.5-decide": "GLiNER2.5-Decide accuracy", glide: "GLiDE decision model accuracy", "openai-gpt-6-luna-effort-none": "GPT-6 Luna classifier accuracy", "openai-decisions-gpt-6-luna": "OpenAI Decisions API accuracy", laya: "Laya decision model accuracy",
 }[m.id] || `${m.label} accuracy`);
 export const modelTitle = (m) => ({
   jev: "Jev accuracy on multi-hop reasoning",
   "openai-gpt-6-luna-effort-none": "GPT-6 Luna as a classifier: accuracy with reasoning off",
+  "openai-decisions-gpt-6-luna": "OpenAI Decisions API accuracy on multi-hop reasoning",
   laya: "Laya accuracy on multi-hop reasoning",
 }[m.id] || `${m.label} accuracy on multi-hop reasoning`);
 export { models, pendingModels };
