@@ -10,6 +10,7 @@ Local engines ran on MacBookPro18,4 (Apple M1 Max) with 32 GB unified memory. Me
 |---|---|---|---|---|---|---|---|
 | jev | hosted decision model | undisclosed | not available (hosted) | TypeSafe API (typesafe-sdk); version recorded per row (jev-1.13.0) | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
 | glide | hosted decision model | undisclosed | not available (hosted) | Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev) | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
+| glide-rerun-2026-10-03 | hosted decision model | undisclosed | not available (hosted) | Fastino API, POST /v1/systemone, model fastino/GLiDE (same System One request as Jev); rerun on 2026-10-03 at the request of Fastino's CEO, who said Fastino had problems during the launch | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
 | laya | open decision model | 421M | 0.84 GB (model.safetensors, convaiinnovations/laya repo root) | this machine, laya 0.3.21 package, PyTorch on MPS | not stated by the maker | 10.0 GB | 10.0 GB |
 | gliner-2.5-decide | open decision model | 340M | 1.95 GB (model.safetensors, fastino/GLiNER2.5-Decide@5a7adf7) | this machine, gliner2 2.0.0 (local extra), PyTorch on MPS | "CPU or GPU"; 38.3 ms p50 on an NVIDIA V100, 167.3 ms on a 48-vCPU Xeon, short inputs (Fastino) | 3.9 GB | 4.4 GB |
 | gliner-2.5-decide-labels-only | open decision model | 340M | 1.95 GB (model.safetensors, fastino/GLiNER2.5-Decide@5a7adf7) | this machine, gliner2 2.0.0 (local extra), PyTorch on MPS | "CPU or GPU"; 38.3 ms p50 on an NVIDIA V100, 167.3 ms on a 48-vCPU Xeon, short inputs (Fastino) | 4.5 GB | 4.5 GB |
@@ -18,6 +19,7 @@ Local engines ran on MacBookPro18,4 (Apple M1 Max) with 32 GB unified memory. Me
 | kev-9b | open decision model | 9B base (Qwen3.5-9B-Base) + rank-16 LoRA adapter and pointer head | 19.31 GB base (Qwen/Qwen3.5-9B-Base@68c46c4b) + 0.18 GB adapter and head (jaredpalmer/kev-9b@b5d8c18e) | this machine, Kev server c9c1f855 on MLX | "32 GB Mac, L40S, H100" (Kev README) | 17.0 GB | 18.0 GB |
 | kev-27b | open decision model (not run) | 27B, every weight fine-tuned from Qwen3.8-27B (post-trained) | 51.26 GB full weights (jaredpalmer/kev-27b) | does not fit this 32 GB machine; would need a rented 80 GB GPU | "B200, H200, H100 80 GB; 96-128 GB Mac (expected)" (Kev README, later revision) | not run | not run |
 | openai-gpt-6-luna-effort-none | hosted LLM, used as a classifier with reasoning off | undisclosed | not available (hosted) | OpenAI Chat Completions API, reasoning_effort none, strict JSON schema | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
+| openai-decisions-gpt-6-luna | hosted decision model | undisclosed | not available (hosted) | OpenAI API, POST /v1/decisions, model gpt-6-luna, one choice question per request; generally available 2026-10-22 | not applicable (hosted) | n/a (hosted) | n/a (hosted) |
 
 ## proofwriter-cwa
 
