@@ -101,6 +101,28 @@ def engine_rows(engine: str, task: Task, ids: List[str], gold: Dict[str, str]) -
     return rows
 
 
+DECISIONS_ENGINE = "openai-decisions-gpt-6-luna"
+
+
+def decisions_confidence(task: Task, ids: List[str], gold: Dict[str, str]) -> Optional[dict]:
+    """The Decisions API returns a ``confidence`` separate from its ``probabilities``: how well that field separates
+    right answers from wrong ones (AUROC), and how many distinct values it takes, on the same items."""
+    path = record_path(DECISIONS_ENGINE, task.slug)
+    if not path.exists():
+        return None
+    record = read_by_id(path)
+    rows = []
+    for i in ids:
+        answer = ((record.get(i) or {}).get("answers") or {}).get(QUESTION_NAME) or {}
+        if answer.get("confidence") is not None and answer.get("choice"):
+            rows.append((answer["confidence"], int(answer["choice"] == gold[i])))
+    if len(rows) != len(ids):
+        return None
+    scores = [r[0] for r in rows]
+    return {"n": len(rows), "auroc": auroc(scores, [r[1] for r in rows]), "distinct_values": len(set(scores)),
+            "mean": sum(scores) / len(scores)}
+
+
 def main() -> int:
     out = {"tasks": {}, "examples": []}
     all_luna = []
@@ -146,12 +168,15 @@ def main() -> int:
                         "by_depth": {str(d): summarize([r for r in rows if r["depth"] == d])
                                      for d in sorted({r["depth"] for r in rows})}})
         others = {}
-        for engine in ("jev", "glide", "glide-rerun-2026-10-03", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "kev-4b", "kev-0.8b", "laya", "kev-9b"):
+        for engine in ("jev", "glide", "glide-rerun-2026-10-03", "gliner-2.5-decide", "gliner-2.5-decide-labels-only", "openai-decisions-gpt-6-luna", "kev-4b", "kev-0.8b", "laya", "kev-9b"):
             er = engine_rows(engine, task, ids, gold)
             if len(er) == len(ids):
                 s = summarize(er)
                 others[engine] = {k: s[k] for k in ("n", "accuracy", "ece", "auroc", "wrong_at_95", "wrong_at_99", "bands")}
         summary["other_engines_same_items"] = others
+        conf = decisions_confidence(task, ids, gold)
+        if conf:
+            summary["decisions_api_confidence"] = conf
         out["tasks"][slug] = summary
         all_luna += rows
         # Verbatim examples for the write-up: the first confident wrong answer and the first right one, per task.

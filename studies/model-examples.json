@@ -22178,6 +22178,1702 @@
     }
    ]
   },
+  "openai-decisions-gpt-6-luna": {
+   "proofwriter-cwa": [
+    {
+     "accuracy": 0.82,
+     "depth": 0,
+     "examples": [
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNonegNatLang-CWA-301-Q14",
+       "paraphrased": true,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Harry is round.",
+       "theory": "That guy Bob sure is nice. Dave is young, round and kind with green ideas and wears blue clothes. Eric is somehow red and kind and also green. That guy Harry sure is nice. People who are very nice and easily flush red are often wearing green concealer. All those who are nice and big are red. Watch out for young people that are kind for they are rough. Blue eyed people, green with sickness and rough around the edges quickly turn red and blush when stepping ashore. Any person who can be red and blue at the same time is cold. A person that is round and somewhat green while being nice tends to be red as well."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNonegNatLang-CWA-205-Q1",
+       "paraphrased": true,
+       "probability": 0.96,
+       "probability_source": "model",
+       "proof": {
+        "stated": "Fred is nice.",
+        "steps": []
+       },
+       "statement": "Fred is nice.",
+       "theory": "Green, big and red are qualities which all describe Alan. Green, big and red are qualities which all describe Charlie. That guy Fred sure is nice. Harry is a round and rough around the edges, and he is also big. Red people are almost always rough. If a person is described as being nice, cold and young it usually follow that they are red. Cold people that are big and red are usually nice. People who are feeling blue and green are said to be red. Rough people who look red are cold."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNeg-CWA-D1-253-Q2",
+       "paraphrased": false,
+       "probability": 0.97,
+       "probability_source": "model",
+       "proof": {
+        "stated": "The bald eagle is green.",
+        "steps": []
+       },
+       "statement": "The bald eagle is not green.",
+       "theory": "The bald eagle is green. The cow chases the rabbit. The rabbit sees the squirrel. The squirrel sees the cow. If something needs the bald eagle then it is nice. If something chases the rabbit then it chases the cow. If something sees the bald eagle and the bald eagle needs the cow then the bald eagle chases the rabbit."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "RelNoneg-CWA-D1-2815-Q8",
+       "paraphrased": false,
+       "probability": 0.96,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The bald eagle is nice.",
+       "theory": "The bald eagle is big. The bear eats the cow. The cow sees the mouse. The mouse likes the bald eagle. If something likes the bald eagle then the bald eagle sees the mouse."
+      }
+     ],
+     "n": 300,
+     "right_shown": 3,
+     "wrong_shown": 1
+    },
+    {
+     "accuracy": 0.6566666666666666,
+     "depth": 1,
+     "examples": [
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNonegNatLang-CWA-12-Q3",
+       "paraphrased": true,
+       "probability": 0.51,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int1",
+          "conclusion_text": "Alan is big.",
+          "rule": "rule4",
+          "rule_text": "If someone is kind and round then they are big.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "Alan is kind."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "Alan is round."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Alan is big.",
+       "theory": "Rough and round Alan is nice and kind and he's also cold. For being so cold, it's good Bob can remain nice. Gary seems to be round. That guy Harry sure is nice. A person who is feeling rough, has red cheeks and feeling green will also tend to feel blue. If someone is green and naive they may also have red, rough skin. It is a safe guess then that they are also round. Even though a person is big and rough when they are cold they turn red. Kind people that are round are on the big side. When you meet and big and nice man, they will be kind to the earth and live green lifestyle. People who are round and green while being cold are also red."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNonegNatLang-CWA-457-Q12",
+       "paraphrased": true,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Fred is red.",
+       "theory": "Dave is red, but he has turned blue as he is cold.  He is nice but can be rough. Gary seems to be round. Harry is a big fellow, often blue and sad, but he is nice. People here that are both big and kind while being cold are always red. A very nice person who is also green is certainly kind. Every single big person is a little green in some areas. People who are young and blue are also red. People that are rough and red in the face, are usually big in size. People who are round and behave in a cold way are surely blue."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNonegNatLang-CWA-432-Q4",
+       "paraphrased": true,
+       "probability": 0.92,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int1",
+          "conclusion_text": "Dave is young.",
+          "rule": "rule5",
+          "rule_text": "If someone is round and kind then they are young.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple2",
+            "text": "Dave is round."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Dave is kind."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Dave is not young.",
+       "theory": "That guy Bob sure is nice. No one knows Dave like me and he is a kind guy, very round in the belly and green as grass. Fred seems to be round. That person with the super big round body wearing red and green clothes who is acting quite nice towards you while being cold and feeling blue is named Harry. A rather big person is a red person. An individual with the traits of being nice, red, and cold is also round. Every person I met that was cold and round was also red. Young people who are both nice and cold also tend to be rough. I bet anyone who is round and kind is also pretty young. If a person acts cold yet nice and green, they will be kind."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "RelNeg-CWA-D3-858-Q11",
+       "paraphrased": false,
+       "probability": 0.91,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The tiger does not like the tiger.",
+       "theory": "The bear likes the mouse. The mouse sees the tiger. The tiger sees the bear. If someone likes the mouse and they like the bear then the mouse eats the tiger. If someone likes the tiger then the tiger eats the bear. If someone eats the bear and they are green then they see the bear. If someone is green then they like the tiger. If someone sees the bear then they like the bear. If someone eats the tiger then they are rough. If someone is blue and they like the mouse then they are rough. If someone likes the mouse then the mouse is green."
+      }
+     ],
+     "n": 300,
+     "right_shown": 3,
+     "wrong_shown": 1
+    },
+    {
+     "accuracy": 0.5466666666666666,
+     "depth": 2,
+     "examples": [
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNeg-CWA-D5-562-Q6",
+       "paraphrased": false,
+       "probability": 0.98,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int2",
+          "conclusion_text": "Bob is quiet.",
+          "rule": "rule2",
+          "rule_text": "Round things are quiet.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "Bob is round."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Bob is blue.",
+          "rule": "rule1",
+          "rule_text": "Quiet, young things are blue.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Bob is quiet."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "Bob is young."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Bob is not blue.",
+       "theory": "Bob is cold. Bob is furry. Bob is rough. Bob is round. Bob is young. Dave is blue. Dave is rough. Erin is cold. Erin is furry. Erin is quiet. Erin is rough. Erin is round. Erin is young. Gary is round. Quiet, young things are blue. Round things are quiet. All furry things are young. All round, quiet things are rough. Blue, quiet things are rough. Rough things are furry. Blue things are furry. If Gary is young and Gary is quiet then Gary is rough."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNoneg-CWA-D3-450-Q6",
+       "paraphrased": false,
+       "probability": 0.56,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int2",
+          "conclusion_text": "The lion chases the mouse.",
+          "rule": "rule3",
+          "rule_text": "If something visits the mouse then it chases the mouse.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple2",
+            "text": "The lion visits the mouse."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The mouse chases the cow.",
+          "rule": "rule2",
+          "rule_text": "If something chases the mouse then the mouse chases the cow.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The lion chases the mouse."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The mouse does not chase the cow.",
+       "theory": "The cow eats the lion. The lion visits the mouse. The mouse is big. If something chases the cow then the cow chases the mouse. If something chases the mouse then the mouse chases the cow. If something visits the mouse then it chases the mouse."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "RelNeg-CWA-D5-610-Q13",
+       "paraphrased": false,
+       "probability": 0.84,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The mouse does not need the dog.",
+       "theory": "The bear is nice. The dog is young. The dog likes the mouse. The dog likes the squirrel. The dog needs the mouse. The dog needs the squirrel. The mouse is green. The mouse needs the bear. The squirrel is young. The squirrel likes the bear. The squirrel needs the bear. The squirrel visits the mouse. If someone likes the dog then they need the dog. If the dog does not need the mouse then the mouse visits the dog. If someone is nice then they visit the mouse. If the bear is nice then the bear visits the dog. If someone visits the squirrel and they are young then they are red. If someone visits the mouse then they are green. If someone likes the bear then they like the dog. If someone needs the dog and the dog needs the mouse then the dog likes the bear."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNeg-CWA-D1-3026-Q5",
+       "paraphrased": false,
+       "probability": 0.95,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Bob is not young.",
+       "theory": "Bob is nice. Dave is kind. Dave is nice. Dave is smart. Dave is young. Fiona is kind. Fiona is nice. Gary is kind. Gary is red. Gary is smart. If someone is red then they are young. Nice people are kind. If someone is quiet and kind then they are red. All young people are rough. If Gary is not nice then Gary is quiet. If Gary is nice and Gary is not red then Gary is rough."
+      }
+     ],
+     "n": 300,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.5133333333333333,
+     "depth": 3,
+     "examples": [
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNeg-CWA-D2-761-Q9",
+       "paraphrased": false,
+       "probability": 0.92,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Dave is not cold.",
+       "theory": "Charlie is smart. Dave is blue. Round things are cold. Young things are smart. If something is smart then it is round."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "RelNeg-CWA-D5-699-Q7",
+       "paraphrased": false,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int3",
+          "conclusion_text": "The bear chases the cow.",
+          "rule": "rule1",
+          "rule_text": "If something is nice then it chases the cow.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "The bear is nice."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "The bear visits the cow.",
+          "rule": "rule9",
+          "rule_text": "If something chases the cow then it visits the cow.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "The bear chases the cow."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The cow is nice.",
+          "rule": "rule6",
+          "rule_text": "If the bear visits the cow then the cow is nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The bear visits the cow."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The cow is nice.",
+       "theory": "The bear chases the dog. The bear is cold. The bear is nice. The bear is red. The bear is young. The bear likes the dog. The cow chases the bear. The cow is kind. The cow is red. The cow likes the mouse. The cow visits the bear. The dog chases the mouse. The dog is kind. The dog is nice. The dog likes the bear. The mouse is cold. If something is nice then it chases the cow. If something visits the dog then it chases the bear. If the cow likes the dog and the dog chases the mouse then the dog likes the bear. If something likes the mouse then the mouse likes the cow. If something visits the mouse and it does not visit the bear then the bear visits the cow. If the bear visits the cow then the cow is nice. If the cow visits the bear and the bear visits the cow then the cow likes the mouse. If something is kind then it likes the dog. If something chases the cow then it visits the cow."
+      },
+      {
+       "choice": "false",
+       "correct": false,
+       "gold": "true",
+       "id": "AttNeg-CWA-D1-3290-Q5",
+       "paraphrased": false,
+       "probability": 0.85,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Erin is not smart.",
+       "theory": "Bob is cold. Erin is quiet. Harry is round. If someone is round then they are cold. If someone is smart and cold then they are nice. Round, smart people are nice. If Erin is round then Erin is smart. Cold, nice people are big. If someone is smart and round then they are big. All nice people are round. If Bob is quiet and Bob is big then Bob is cold."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNeg-CWA-D2-646-Q8",
+       "paraphrased": false,
+       "probability": 0.72,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Dave is green.",
+       "theory": "Anne is cold. Bob is rough. Dave is white. All cold people are rough. If Anne is red then Anne is blue. If Dave is not white then Dave is green. If someone is red then they are blue. If someone is rough then they are red. All rough people are green. If someone is young and not cold then they are green. If someone is red and not blue then they are green."
+      }
+     ],
+     "n": 300,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.46,
+     "depth": 4,
+     "examples": [
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNoneg-CWA-D5-938-Q10",
+       "paraphrased": false,
+       "probability": 0.96,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int4",
+          "conclusion_text": "The tiger is round.",
+          "rule": "rule2",
+          "rule_text": "If something sees the tiger and it needs the squirrel then the tiger is round.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "The bald eagle sees the tiger."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple2",
+            "text": "The bald eagle needs the squirrel."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "The tiger sees the squirrel.",
+          "rule": "rule4",
+          "rule_text": "If something is round then it sees the squirrel.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "The tiger is round."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "The tiger is nice.",
+          "rule": "rule5",
+          "rule_text": "If something sees the squirrel then it is nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "The tiger sees the squirrel."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The tiger visits the bald eagle.",
+          "rule": "rule3",
+          "rule_text": "If something is nice then it visits the bald eagle.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The tiger is nice."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The tiger does not visit the bald eagle.",
+       "theory": "The bald eagle is green. The bald eagle needs the squirrel. The bald eagle sees the tiger. The bald eagle visits the mouse. The mouse is round. The mouse needs the squirrel. The mouse sees the squirrel. The squirrel is big. The squirrel is round. The squirrel needs the mouse. The squirrel visits the mouse. The squirrel visits the tiger. The tiger is big. The tiger is rough. The tiger needs the squirrel. The tiger visits the squirrel. If something visits the bald eagle and it is round then the bald eagle sees the squirrel. If something sees the tiger and it needs the squirrel then the tiger is round. If something is nice then it visits the bald eagle. If something is round then it sees the squirrel. If something sees the squirrel then it is nice."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "RelNeg-CWA-D2-808-Q7",
+       "paraphrased": false,
+       "probability": 0.95,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The lion does not like the lion.",
+       "theory": "The dog eats the lion. The dog is big. The dog is rough. The dog is round. The dog likes the lion. The dog sees the lion. The lion likes the dog. If someone is round then they like the lion. If someone is green then they eat the dog. If someone likes the dog and they like the lion then they eat the dog. If the dog sees the lion and the lion is big then the lion sees the dog. If someone eats the dog then they are round. If someone eats the lion then they are green. If someone is nice and not round then they see the dog. If someone is rough then they see the dog."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNoneg-CWA-D1-1216-Q6",
+       "paraphrased": false,
+       "probability": 0.58,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The cow is rough.",
+       "theory": "The cow is blue. If something is blue then it is young. All rough, young things are blue. If the cow is round then the cow is cold. If the cow is blue then the cow is young. All cold things are round. If something is rough then it is round. All rough, round things are cold. All cold, blue things are rough."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNeg-CWA-D5-1163-Q16",
+       "paraphrased": false,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Charlie is big.",
+       "theory": "Charlie is nice. Dave is green. Erin is big. Erin is nice. Erin is rough. Fiona is quiet. Fiona is rough. All green people are rough. If someone is rough then they are quiet. If someone is quiet then they are young. Young people are big. If someone is big and quiet then they are nice. If someone is quiet and not rough then they are nice."
+      }
+     ],
+     "n": 300,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.38,
+     "depth": 5,
+     "examples": [
+      {
+       "choice": "false",
+       "correct": false,
+       "gold": "true",
+       "id": "RelNoneg-CWA-D5-597-Q11",
+       "paraphrased": false,
+       "probability": 0.95,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int5",
+          "conclusion_text": "The bald eagle eats the rabbit.",
+          "rule": "rule1",
+          "rule_text": "If something sees the rabbit then it eats the rabbit.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "The bald eagle sees the rabbit."
+           }
+          ]
+         },
+         {
+          "concludes": "int4",
+          "conclusion_text": "The bald eagle eats the dog.",
+          "rule": "rule3",
+          "rule_text": "If something eats the rabbit then it eats the dog.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int5",
+            "text": "The bald eagle eats the rabbit."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "The lion sees the rabbit.",
+          "rule": "rule6",
+          "rule_text": "If something eats the dog and it eats the lion then the lion sees the rabbit.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "The bald eagle eats the dog."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "The bald eagle eats the lion."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "The lion eats the rabbit.",
+          "rule": "rule1",
+          "rule_text": "If something sees the rabbit then it eats the rabbit.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "The lion sees the rabbit."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The lion eats the dog.",
+          "rule": "rule3",
+          "rule_text": "If something eats the rabbit then it eats the dog.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The lion eats the rabbit."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The lion eats the dog.",
+       "theory": "The bald eagle eats the lion. The bald eagle needs the rabbit. The bald eagle sees the dog. The bald eagle sees the rabbit. The dog eats the bald eagle. The dog eats the rabbit. The dog needs the lion. The lion needs the bald eagle. The lion needs the dog. The rabbit eats the lion. The rabbit is green. The rabbit is round. If something sees the rabbit then it eats the rabbit. If something sees the lion and it is blue then the lion sees the dog. If something eats the rabbit then it eats the dog. If something is green and it sees the lion then the lion eats the rabbit. If something is rough then it eats the lion. If something eats the dog and it eats the lion then the lion sees the rabbit. If something is rough and it sees the lion then the lion is blue."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNoneg-CWA-D5-1245-Q13",
+       "paraphrased": false,
+       "probability": 0.97,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Harry is not big.",
+       "theory": "Bob is cold. Bob is smart. Fiona is cold. Fiona is quiet. Fiona is smart. Gary is nice. Harry is smart. If someone is quiet and cold then they are rough. All nice people are red. Big people are nice. All red people are quiet. If someone is quiet and rough then they are big. If Fiona is red then Fiona is cold. All red, nice people are smart. Quiet, smart people are rough. All cold people are big."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNoneg-CWA-D5-840-Q18",
+       "paraphrased": false,
+       "probability": 0.98,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Anne is red.",
+       "theory": "Anne is round. Fiona is big. Fiona is round. Fiona is young. Gary is red. Gary is white. Harry is big. Harry is round. Harry is smart. Harry is white. Young things are smart. Young things are red. If something is red and smart then it is white. Big things are red. Big, rough things are round. All smart, white things are red. Smart things are big. If something is red then it is young. Big things are rough."
+      },
+      {
+       "choice": "true",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNoneg-CWA-D5-415-Q16",
+       "paraphrased": false,
+       "probability": 0.69,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Bob is white.",
+       "theory": "Bob is cold. Charlie is big. Charlie is blue. Charlie is cold. Charlie is furry. Charlie is white. Gary is big. Gary is cold. Harry is big. Harry is cold. Harry is quiet. Furry, blue people are big. All big, cold people are green. If someone is quiet and furry then they are blue. Furry, quiet people are white. If someone is quiet and furry then they are green. If Gary is white then Gary is quiet. If Bob is green and Bob is white then Bob is furry. If someone is furry then they are white. All green people are furry."
+      }
+     ],
+     "n": 300,
+     "right_shown": 2,
+     "wrong_shown": 2
+    }
+   ],
+   "proofwriter-owa": [
+    {
+     "accuracy": 0.8966666666666666,
+     "depth": 0,
+     "examples": [
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNeg-OWA-D3-1536-Q2",
+       "paraphrased": false,
+       "probability": 0.71,
+       "probability_source": "model",
+       "proof": {
+        "stated": "Anne is not kind.",
+        "steps": []
+       },
+       "statement": "Anne is kind.",
+       "theory": "Anne is big. Anne is not kind. Anne is rough. Dave is nice. Fiona is kind. Fiona is not quiet. Fiona is not smart. Harry is not kind. Harry is rough. Harry is not smart. If Anne is quiet then Anne is not kind. Quiet things are rough. Nice, quiet things are rough. Nice things are kind. All big things are green. All kind things are green. If something is green then it is big. If something is kind and not rough then it is not big."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "AttNeg-OWA-D5-1040-Q22",
+       "paraphrased": false,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Charlie is cold.",
+       "theory": "Bob is cold. Bob is not nice. Bob is not quiet. Charlie is blue. Charlie is round. Gary is rough. Harry is cold. Rough things are blue. Red, quiet things are blue. All rough, blue things are nice. If something is quiet and round then it is not nice. If Harry is red then Harry is rough. If something is nice then it is round. If something is round then it is red. Red things are not quiet."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNeg-OWA-D2-1070-Q2",
+       "paraphrased": false,
+       "probability": 0.74,
+       "probability_source": "model",
+       "proof": {
+        "stated": "Charlie is not cold.",
+        "steps": []
+       },
+       "statement": "Charlie is cold.",
+       "theory": "Charlie is not cold. Harry is green. Kind things are green. If something is big then it is not green. If something is cold and red then it is green. All green things are kind. Kind, quiet things are nice. All green things are cold. Nice things are quiet. If Harry is cold then Harry is red."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "AttNonegNatLang-OWA-470-Q14",
+       "paraphrased": true,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Harry is blue.",
+       "theory": "Charlie rather resembles the rainbow, as he is green, red and blue. Charlie is also said to be very kind. Thankfully Dave is nice. People have realized that he is big and rough. Since he is young he has tendency to become red when they mention it. That guy Eric sure is nice. Harry seems to be round. A person who is kind and rough and blue is young. One who is young, red and also cold will definitely be round, too. Nice people with blue and rough skin are very young and cannot be trusted with responsibility. Someone who has a round shape with a nice personality with big size are always kind. Nice and green people are often found to be big as well. Nice people who are also red are going to be cold too."
+      }
+     ],
+     "n": 300,
+     "right_shown": 4,
+     "wrong_shown": 0
+    },
+    {
+     "accuracy": 0.6125827814569537,
+     "depth": 1,
+     "examples": [
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "RelNeg-OWA-D1-1089-Q6",
+       "paraphrased": false,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The mouse sees the mouse.",
+       "theory": "The cat needs the mouse. The cow does not see the cat. The mouse is big. If something chases the cat then the cat is not nice. If something needs the mouse then the mouse is not nice. If something chases the cow and it is not nice then it sees the mouse."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNeg-OWA-D1-2236-Q4",
+       "paraphrased": false,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int1",
+          "conclusion_text": "The tiger does not eat the tiger.",
+          "rule": "rule6",
+          "rule_text": "If something eats the bald eagle and it does not like the bald eagle then it does not eat the tiger.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple10",
+            "text": "The tiger eats the bald eagle."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple12",
+            "text": "The tiger does not like the bald eagle."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The tiger eats the tiger.",
+       "theory": "The bald eagle chases the tiger. The bald eagle eats the tiger. The bald eagle is big. The bald eagle is blue. The bald eagle is not cold. The bald eagle is green. The bald eagle is round. The bald eagle likes the tiger. The tiger chases the bald eagle. The tiger eats the bald eagle. The tiger is not big. The tiger does not like the bald eagle. If the tiger likes the bald eagle then the tiger eats the bald eagle. If something chases the tiger then it likes the tiger. If something chases the tiger and it likes the bald eagle then the tiger likes the bald eagle. If the tiger likes the bald eagle and the tiger eats the bald eagle then the tiger chases the bald eagle. If something is cold and it likes the bald eagle then the bald eagle likes the tiger. If something eats the bald eagle and it does not like the bald eagle then it does not eat the tiger."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNeg-OWA-D5-180-Q4",
+       "paraphrased": false,
+       "probability": 0.49,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int1",
+          "conclusion_text": "The bald eagle needs the squirrel.",
+          "rule": "rule3",
+          "rule_text": "If something is kind and big then it needs the squirrel.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple2",
+            "text": "The bald eagle is kind."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "The bald eagle is big."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The bald eagle does not need the squirrel.",
+       "theory": "The bald eagle is big. The bald eagle is kind. The bald eagle does not like the rabbit. The bald eagle needs the cat. The bald eagle needs the rabbit. The bald eagle does not see the squirrel. The cat is not green. The cat likes the rabbit. The rabbit likes the bald eagle. The squirrel is not blue. The squirrel is not cold. The squirrel is kind. The squirrel needs the cat. The squirrel needs the rabbit. If something likes the squirrel then the squirrel is big. All big things are green. If something is kind and big then it needs the squirrel. If something sees the rabbit and it needs the cat then it does not like the rabbit. If something needs the rabbit and the rabbit is kind then it needs the cat. If the bald eagle likes the squirrel and the bald eagle needs the squirrel then the squirrel does not like the bald eagle. If something sees the cat and it is blue then the cat does not see the bald eagle. If something needs the squirrel then it likes the squirrel."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "AttNonegNatLang-OWA-59-Q11",
+       "paraphrased": true,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Charlie is not kind.",
+       "theory": "Dave may be round, but he is also kind. Eric is rather round shaped nice fellow who is feeling blue and looking green today. Harry is big, round and rough, but he is nice and kind. Young people who are cold to others and green with envy are actually nice. Every single big person is a little green in some areas. You'll always find rough, cold, green people to also be red people. Someone that is cold rough and red is also considered to be kind. A round shaped kind person who is colored green will be cold natured."
+      }
+     ],
+     "n": 302,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.5148514851485149,
+     "depth": 2,
+     "examples": [
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "true",
+       "id": "RelNeg-OWA-D5-808-Q5",
+       "paraphrased": false,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int2",
+          "conclusion_text": "The mouse eats the cow.",
+          "rule": "rule4",
+          "rule_text": "If the mouse needs the rabbit and the mouse eats the cat then the mouse eats the cow.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple6",
+            "text": "The mouse needs the rabbit."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "The mouse eats the cat."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The mouse does not need the mouse.",
+          "rule": "rule1",
+          "rule_text": "If someone eats the cat and they eat the cow then they do not need the mouse.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "The mouse eats the cat."
+           },
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The mouse eats the cow."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The mouse does not need the mouse.",
+       "theory": "The cat is young. The cow is young. The cow visits the mouse. The mouse eats the cat. The mouse needs the cat. The mouse needs the rabbit. The mouse does not visit the cow. The mouse visits the rabbit. The rabbit is round. The rabbit does not need the cat. The rabbit visits the mouse. If someone eats the cat and they eat the cow then they do not need the mouse. If someone visits the cat then the cat eats the cow. All nice people are red. If the mouse needs the rabbit and the mouse eats the cat then the mouse eats the cow. If someone is red and they visit the mouse then the mouse needs the cow. If someone needs the cow then the cow visits the cat. All round people are nice. If someone needs the cat and the cat visits the rabbit then they do not eat the rabbit."
+      },
+      {
+       "choice": "false",
+       "correct": true,
+       "gold": "false",
+       "id": "AttNonegNatLang-OWA-475-Q6",
+       "paraphrased": true,
+       "probability": 0.97,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int2",
+          "conclusion_text": "Charlie is blue.",
+          "rule": "rule7",
+          "rule_text": "If someone is young then they are blue.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "Charlie is young."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Charlie is red.",
+          "rule": "rule4",
+          "rule_text": "If someone is blue and young and kind then they are red.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Charlie is blue."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "Charlie is young."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "Charlie is kind."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Charlie is not red.",
+       "theory": "Charlie is young, round, and kind, but that doesn't mean he isn't also rough and cold at times, as well. The young person who is always feeling cold is named Dave. Eric is cold to his ex-wife. She knows he is round and red. He is kind to everyone else. That guy Harry sure is nice. Kind red people are green on the inside. Rough and big people are always also cold people. Any person that's blue, young and green will turn out to be a nice person, too. All young and kind people that feel blue are described as red. A big and round individual is sure to be a kind individual, too. Any person who can be red and blue at the same time is cold. People who are young are also blue."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "RelNeg-OWA-D2-1181-Q8",
+       "paraphrased": false,
+       "probability": 0.51,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The bear needs the dog.",
+       "theory": "The bear likes the dog. The bear needs the mouse. The bear sees the dog. The dog is kind. The dog is not rough. The mouse is not round. The mouse likes the bear. If something is red then it needs the dog. If something is round then it needs the dog. If something is kind then it is round."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "RelNeg-OWA-D3-1026-Q6",
+       "paraphrased": false,
+       "probability": 0.48,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int2",
+          "conclusion_text": "The rabbit is nice.",
+          "rule": "rule6",
+          "rule_text": "All blue things are nice.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "The rabbit is blue."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The rabbit is not red.",
+          "rule": "rule1",
+          "rule_text": "All nice things are not red.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The rabbit is nice."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The rabbit is red.",
+       "theory": "The rabbit is blue. All nice things are not red. Nice, kind things are red. Nice things are green. All green things are not kind. All green things are nice. All blue things are nice."
+      }
+     ],
+     "n": 303,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.47854785478547857,
+     "depth": 3,
+     "examples": [
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNonegNatLang-OWA-457-Q8",
+       "paraphrased": true,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int3",
+          "conclusion_text": "Dave is big.",
+          "rule": "rule5",
+          "rule_text": "If someone is red and rough then they are big.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple2",
+            "text": "Dave is red."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "Dave is rough."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Dave is green.",
+          "rule": "rule3",
+          "rule_text": "If someone is big then they are green.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Dave is big."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Dave is kind.",
+          "rule": "rule2",
+          "rule_text": "If someone is green and nice then they are kind.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Dave is green."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Dave is nice."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Dave is not kind.",
+       "theory": "Dave is red, but he has turned blue as he is cold.  He is nice but can be rough. Gary seems to be round. Harry is a big fellow, often blue and sad, but he is nice. People here that are both big and kind while being cold are always red. A very nice person who is also green is certainly kind. Every single big person is a little green in some areas. People who are young and blue are also red. People that are rough and red in the face, are usually big in size. People who are round and behave in a cold way are surely blue."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "true",
+       "id": "AttNonegNatLang-OWA-196-Q7",
+       "paraphrased": true,
+       "probability": 0.88,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int3",
+          "conclusion_text": "Bob is rough.",
+          "rule": "rule4",
+          "rule_text": "If someone is blue and cold then they are rough.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple6",
+            "text": "Bob is blue."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "Bob is cold."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Bob is big.",
+          "rule": "rule2",
+          "rule_text": "If someone is kind and cold and rough then they are big.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Bob is kind."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "Bob is cold."
+           },
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Bob is rough."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Bob is red.",
+          "rule": "rule1",
+          "rule_text": "If someone is big and kind and cold then they are red.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Bob is big."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Bob is kind."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "Bob is cold."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Bob is red.",
+       "theory": "For being so cold, it's good Alan can remain nice. Bob is green, but often kind, even when he is blue and cold. Eric is a big guy who is colored red from a sunburn. He also has a cold. After Harry got wet in the rain, he feels cold. He also looks green but big. People here that are both big and kind while being cold are always red. A person who is kind, cold, and rough is big. Young, red people are usually quite blue too. A blue, cold natured person will be rough textured. I've noticed that nice people who have rough, green skin have a tendancy to be round. If someone is green and naive they may also have red, rough skin. It is a safe guess then that they are also round. Nice people who feel blue often look green when ill."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "AttNeg-OWA-D3-1437-Q7",
+       "paraphrased": false,
+       "probability": 0.97,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int3",
+          "conclusion_text": "Gary is big.",
+          "rule": "rule2",
+          "rule_text": "Rough people are big.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Gary is rough."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Gary is not nice.",
+          "rule": "rule1",
+          "rule_text": "If Gary is big then Gary is not nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Gary is big."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Gary is not smart.",
+          "rule": "rule3",
+          "rule_text": "If someone is rough and not nice then they are not smart.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Gary is rough."
+           },
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Gary is not nice."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Gary is not smart.",
+       "theory": "Bob is not rough. Dave is furry. Gary is rough. If Gary is big then Gary is not nice. Rough people are big. If someone is rough and not nice then they are not smart."
+      },
+      {
+       "choice": "true",
+       "correct": true,
+       "gold": "true",
+       "id": "RelNeg-OWA-D3-1447-Q7",
+       "paraphrased": false,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int3",
+          "conclusion_text": "The rabbit is green.",
+          "rule": "rule1",
+          "rule_text": "All cold things are green.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple1",
+            "text": "The rabbit is cold."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "The rabbit is round.",
+          "rule": "rule2",
+          "rule_text": "All green things are round.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "The rabbit is green."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The rabbit is red.",
+          "rule": "rule6",
+          "rule_text": "Round things are red.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The rabbit is round."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The rabbit is red.",
+       "theory": "The rabbit is cold. All cold things are green. All green things are round. If something is young and not green then it is round. If something is round and not cold then it is red. All young things are red. Round things are red."
+      }
+     ],
+     "n": 303,
+     "right_shown": 2,
+     "wrong_shown": 2
+    },
+    {
+     "accuracy": 0.35313531353135313,
+     "depth": 4,
+     "examples": [
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNeg-OWA-D5-571-Q10",
+       "paraphrased": false,
+       "probability": 0.91,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int4",
+          "conclusion_text": "Charlie is young.",
+          "rule": "rule4",
+          "rule_text": "All rough people are young.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple4",
+            "text": "Charlie is rough."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "Charlie is red.",
+          "rule": "rule7",
+          "rule_text": "All young people are red.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Charlie is young."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Charlie is big.",
+          "rule": "rule1",
+          "rule_text": "Young, red people are big.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Charlie is young."
+           },
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Charlie is red."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Charlie is nice.",
+          "rule": "rule8",
+          "rule_text": "If someone is big then they are nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Charlie is big."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Charlie is not nice.",
+       "theory": "Anne is red. Anne is rough. Anne is young. Charlie is rough. Fiona is not kind. Fiona is nice. Gary is big. Young, red people are big. Nice people are green. If someone is big and not kind then they are green. All rough people are young. All nice people are young. All rough people are young. All young people are red. If someone is big then they are nice. If Charlie is kind then Charlie is young."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "true",
+       "id": "AttNeg-OWA-D5-822-Q9",
+       "paraphrased": false,
+       "probability": 0.99,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int4",
+          "conclusion_text": "Fiona is quiet.",
+          "rule": "rule3",
+          "rule_text": "Nice people are quiet.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "Fiona is nice."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "Fiona is green.",
+          "rule": "rule7",
+          "rule_text": "All quiet people are green.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Fiona is quiet."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Fiona is white.",
+          "rule": "rule4",
+          "rule_text": "If someone is green and quiet then they are white.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Fiona is green."
+           },
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Fiona is quiet."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Fiona is not cold.",
+          "rule": "rule5",
+          "rule_text": "All white people are not cold.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Fiona is white."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Fiona is not cold.",
+       "theory": "Charlie is not red. Erin is big. Erin is not red. Erin is not white. Fiona is nice. Harry is not cold. Harry is white. Cold people are not big. If Erin is big then Erin is not green. Nice people are quiet. If someone is green and quiet then they are white. All white people are not cold. If Erin is nice then Erin is white. All quiet people are green. If someone is quiet and not cold then they are red."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "false",
+       "id": "AttNeg-OWA-D5-6-Q10",
+       "paraphrased": false,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int4",
+          "conclusion_text": "Erin is cold.",
+          "rule": "rule2",
+          "rule_text": "Smart things are cold.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple3",
+            "text": "Erin is smart."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "Erin is rough.",
+          "rule": "rule3",
+          "rule_text": "If something is cold then it is rough.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Erin is cold."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Erin is kind.",
+          "rule": "rule4",
+          "rule_text": "If something is rough and cold then it is kind.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Erin is rough."
+           },
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Erin is cold."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Erin is not furry.",
+          "rule": "rule1",
+          "rule_text": "All cold, kind things are not furry.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Erin is cold."
+           },
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Erin is kind."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Erin is furry.",
+       "theory": "Charlie is furry. Erin is quiet. Erin is smart. Fiona is kind. Fiona is not quiet. Fiona is rough. Gary is not cold. Gary is furry. Gary is green. Gary is kind. Gary is quiet. Gary is rough. All cold, kind things are not furry. Smart things are cold. If something is cold then it is rough. If something is rough and cold then it is kind. If Fiona is kind then Fiona is rough. All furry, smart things are green. If something is cold and not furry then it is green."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "RelNoneg-OWA-D3-1253-Q10",
+       "paraphrased": false,
+       "probability": 0.51,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "The bald eagle chases the cow.",
+       "theory": "The bald eagle is young. The bald eagle needs the lion. The cow eats the bald eagle. The cow needs the bald eagle. The lion chases the cow. The lion eats the cow. The lion needs the bald eagle. If someone needs the cow and they eat the bald eagle then the bald eagle eats the lion. If someone needs the lion and they need the bald eagle then they chase the cow. If someone is cold then they need the bald eagle. If someone is round then they need the bald eagle. If someone eats the lion then they are round. If someone needs the bald eagle and the bald eagle is round then the bald eagle is rough. If someone needs the bald eagle then they are round. If someone is round then they need the lion."
+      }
+     ],
+     "n": 303,
+     "right_shown": 1,
+     "wrong_shown": 3
+    },
+    {
+     "accuracy": 0.3806228373702422,
+     "depth": 5,
+     "examples": [
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "AttNeg-OWA-D5-899-Q17",
+       "paraphrased": false,
+       "probability": 0.66,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Gary is not round.",
+       "theory": "Erin is nice. Erin is white. Fiona is quiet. Gary is white. Harry is cold. Harry is green. Harry is nice. Harry is quiet. Harry is round. Harry is white. All quiet people are round. If someone is quiet then they are round. If Erin is round then Erin is green. Nice people are cold. If someone is quiet and nice then they are cold. If someone is round then they are nice. If someone is cold then they are quiet. If Gary is quiet then Gary is not white. If someone is nice and green then they are smart."
+      },
+      {
+       "choice": "unknown",
+       "correct": true,
+       "gold": "unknown",
+       "id": "AttNoneg-OWA-D5-1314-Q15",
+       "paraphrased": false,
+       "probability": 0.98,
+       "probability_source": "model",
+       "proof": null,
+       "statement": "Charlie is not white.",
+       "theory": "Anne is big. Anne is furry. Anne is nice. Anne is round. Bob is furry. Bob is kind. Bob is round. Bob is smart. Bob is white. Charlie is nice. Harry is furry. Harry is nice. If Bob is big then Bob is nice. If Bob is round then Bob is furry. If someone is furry then they are big. Big people are round. If someone is kind and white then they are smart. Nice, round people are kind. Kind, white people are nice. If someone is smart then they are white. Kind, nice people are white."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "true",
+       "id": "AttNoneg-OWA-D5-333-Q11",
+       "paraphrased": false,
+       "probability": 0.95,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int5",
+          "conclusion_text": "Bob is rough.",
+          "rule": "rule6",
+          "rule_text": "Big things are rough.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple6",
+            "text": "Bob is big."
+           }
+          ]
+         },
+         {
+          "concludes": "int4",
+          "conclusion_text": "Bob is quiet.",
+          "rule": "rule2",
+          "rule_text": "If something is rough then it is quiet.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int5",
+            "text": "Bob is rough."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "Bob is nice.",
+          "rule": "rule5",
+          "rule_text": "If Bob is rough and Bob is quiet then Bob is nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int5",
+            "text": "Bob is rough."
+           },
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Bob is quiet."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "Bob is white.",
+          "rule": "rule1",
+          "rule_text": "Quiet, nice things are white.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "Bob is quiet."
+           },
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "Bob is nice."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "Bob is young.",
+          "rule": "rule3",
+          "rule_text": "If Bob is white then Bob is young.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "Bob is white."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "Bob is young.",
+       "theory": "Anne is blue. Anne is nice. Anne is quiet. Anne is rough. Anne is white. Bob is big. Charlie is rough. Erin is big. Erin is nice. Erin is young. Quiet, nice things are white. If something is rough then it is quiet. If Bob is white then Bob is young. If Anne is big and Anne is blue then Anne is rough. If Bob is rough and Bob is quiet then Bob is nice. Big things are rough. If Erin is nice and Erin is young then Erin is big."
+      },
+      {
+       "choice": "unknown",
+       "correct": false,
+       "gold": "true",
+       "id": "RelNeg-OWA-D5-767-Q11",
+       "paraphrased": false,
+       "probability": 1.0,
+       "probability_source": "model",
+       "proof": {
+        "stated": null,
+        "steps": [
+         {
+          "concludes": "int5",
+          "conclusion_text": "The cow chases the cat.",
+          "rule": "rule1",
+          "rule_text": "If something chases the cow then the cow chases the cat.",
+          "uses": [
+           {
+            "kind": "fact",
+            "ref": "triple6",
+            "text": "The rabbit chases the cow."
+           }
+          ]
+         },
+         {
+          "concludes": "int4",
+          "conclusion_text": "The cat likes the cow.",
+          "rule": "rule5",
+          "rule_text": "If something chases the cat then the cat likes the cow.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int5",
+            "text": "The cow chases the cat."
+           }
+          ]
+         },
+         {
+          "concludes": "int3",
+          "conclusion_text": "The cow is nice.",
+          "rule": "rule3",
+          "rule_text": "If something likes the cow then the cow is nice.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int4",
+            "text": "The cat likes the cow."
+           }
+          ]
+         },
+         {
+          "concludes": "int2",
+          "conclusion_text": "The cow chases the rabbit.",
+          "rule": "rule7",
+          "rule_text": "If something is nice and it sees the rabbit then it chases the rabbit.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int3",
+            "text": "The cow is nice."
+           },
+           {
+            "kind": "fact",
+            "ref": "triple5",
+            "text": "The cow sees the rabbit."
+           }
+          ]
+         },
+         {
+          "concludes": "int1",
+          "conclusion_text": "The cow is not big.",
+          "rule": "rule2",
+          "rule_text": "If something chases the rabbit then it is not big.",
+          "uses": [
+           {
+            "kind": "derived",
+            "ref": "int2",
+            "text": "The cow chases the rabbit."
+           }
+          ]
+         }
+        ]
+       },
+       "statement": "The cow is not big.",
+       "theory": "The cat is not round. The cow is blue. The cow is kind. The cow likes the cat. The cow sees the rabbit. The rabbit chases the cow. The rabbit is nice. The tiger does not chase the cow. The tiger does not like the rabbit. The tiger sees the rabbit. If something chases the cow then the cow chases the cat. If something chases the rabbit then it is not big. If something likes the cow then the cow is nice. If something is kind then it sees the rabbit. If something chases the cat then the cat likes the cow. If the rabbit chases the tiger then the rabbit does not see the cow. If something is nice and it sees the rabbit then it chases the rabbit. If something is big then it is round."
+      }
+     ],
+     "n": 289,
+     "right_shown": 2,
+     "wrong_shown": 2
+    }
+   ]
+  },
   "openai-gpt-6-luna-effort-none": {
    "proofwriter-cwa": [
     {

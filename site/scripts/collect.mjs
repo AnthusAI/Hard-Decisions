@@ -199,7 +199,7 @@ function readManifests() {
 
 // Engines with no one-at-a-time rerun, by the owner's decision (preregistration, deviation from
 // Amendment 7): their latency comes from the scored run, sent several requests at a time.
-const SCORED_RUN_LATENCY = ["glide", "glide-rerun-2026-10-03"];
+const SCORED_RUN_LATENCY = ["glide", "glide-rerun-2026-10-03", "openai-decisions-gpt-6-luna"];
 const SLOW_MS = 2000;
 
 function readLatency(task, manifests) {

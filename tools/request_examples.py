@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 from hard_decisions.engines.gliner_decide import REPO as GLINER_REPO, REVISION as GLINER_REV, message  # noqa: E402
 from hard_decisions.engines.glide import BASE_URL as GLIDE_URL, MODEL as GLIDE_MODEL  # noqa: E402
+from hard_decisions.engines.openai_decisions import MODEL as DECISIONS_MODEL, URL as DECISIONS_URL, request_body as decisions_body  # noqa: E402
 from hard_decisions.engines.llm import answer_schema, render_prompt, spec_for  # noqa: E402
 from hard_decisions.record import read_by_id, record_path  # noqa: E402
 from hard_decisions.tasks import QUESTION_NAME, Task  # noqa: E402
@@ -47,6 +48,9 @@ def requests_for(text, q):
                      "response_format": {"type": "json_schema", "json_schema": {"name": "decision", "strict": True,
                                                                                 "schema": answer_schema(options)}}},
             "note": "GPT-6 Luna with reasoning off (reasoning_effort none, its lowest setting), as a direct classifier. One chat message carries the problem, the question and every option with its meaning; the strict JSON schema only allows one of the options as the answer."},
+        "openai-decisions-gpt-6-luna": {
+            "how": "HTTP", "method": "POST", "url": DECISIONS_URL, "body": decisions_body(text, wire),
+            "note": f"OpenAI's Decisions API, model {DECISIONS_MODEL}. The problem is the input; the question is one choice question whose instructions are the question's and whose choices are the options, each with its meaning. The answer carries the chosen option, a probability for each option and a separate confidence."},
         **{k: {**system_one(KEV_URL, "kev-latest"),
                "note": f"Kev's own server running {k.replace('kev-', 'Kev-').replace('b', 'B')} on our laptop, answering Jev's System One format."}
            for k in ("kev-9b", "kev-4b", "kev-0.8b")},
